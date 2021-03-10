@@ -31,6 +31,7 @@ CREATE TABLE `board` (
   `password` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'password',
   `ip` varchar(16) COLLATE utf8_unicode_ci NOT NULL COMMENT 'ip',
   `good` int NOT NULL DEFAULT '0' COMMENT 'good',
+  `regdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`board_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='board';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -58,6 +59,7 @@ CREATE TABLE `comment` (
   `nickname` varchar(45) COLLATE utf8_unicode_ci NOT NULL COMMENT 'nickname',
   `password` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'password',
   `ip` varchar(16) COLLATE utf8_unicode_ci NOT NULL COMMENT 'ip',
+  `regdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`comment_no`),
   KEY `FK_comment_board_no_board_board_no` (`board_no`),
   CONSTRAINT `FK_comment_board_no_board_board_no` FOREIGN KEY (`board_no`) REFERENCES `board` (`board_no`) ON DELETE RESTRICT ON UPDATE RESTRICT
@@ -107,4 +109,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-03-10 15:33:06
+-- Dump completed on 2021-03-10 17:21:19
