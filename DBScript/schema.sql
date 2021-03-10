@@ -24,13 +24,13 @@ DROP TABLE IF EXISTS `board`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `board` (
   `board_no` int NOT NULL AUTO_INCREMENT COMMENT 'board_no',
-  `content_type` varchar(200) COLLATE utf8_unicode_ci NOT NULL COMMENT 'content_type',
+  `title` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   `content` longtext COLLATE utf8_unicode_ci NOT NULL COMMENT 'content',
+  `content_type` varchar(200) COLLATE utf8_unicode_ci NOT NULL COMMENT 'content_type',
   `nickname` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'nickname',
   `password` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'password',
   `ip` varchar(16) COLLATE utf8_unicode_ci NOT NULL COMMENT 'ip',
   `good` int NOT NULL DEFAULT '0' COMMENT 'good',
-  `regdate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`board_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='board';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -54,11 +54,10 @@ DROP TABLE IF EXISTS `comment`;
 CREATE TABLE `comment` (
   `comment_no` int NOT NULL AUTO_INCREMENT COMMENT 'comment_no',
   `board_no` int NOT NULL COMMENT 'board_no',
-  `comment` longtext COLLATE utf8_unicode_ci NOT NULL COMMENT 'comment',
+  `content` longtext COLLATE utf8_unicode_ci NOT NULL COMMENT 'comment',
   `nickname` varchar(45) COLLATE utf8_unicode_ci NOT NULL COMMENT 'nickname',
   `password` varchar(100) COLLATE utf8_unicode_ci NOT NULL COMMENT 'password',
   `ip` varchar(16) COLLATE utf8_unicode_ci NOT NULL COMMENT 'ip',
-  `regdate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`comment_no`),
   KEY `FK_comment_board_no_board_board_no` (`board_no`),
   CONSTRAINT `FK_comment_board_no_board_board_no` FOREIGN KEY (`board_no`) REFERENCES `board` (`board_no`) ON DELETE RESTRICT ON UPDATE RESTRICT
@@ -108,4 +107,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-03-09 14:39:53
+-- Dump completed on 2021-03-10 15:33:06
