@@ -53,7 +53,16 @@ async def findBoardDetailByBoardNo(
 # output : 게시글 작성 성공 유무
 @app.post("/api/v1/board/write", name="게시글 작성")
 async def writeBoard(
-        content: str, content_type: str, nickname: str, password: str, request: Request
+        title: str, content: str, content_type: str, nickname: str, password: str, request: Request
+):
+    ip = request.client.host
+    pass
+
+#  S04P22D101-67     백엔드 RESTful API 프로토콜 / 게시글 수정
+# output : 게시글 수정 성공 유무
+@app.post("/api/v1/board/{board_no}", name="게시글 수정")
+async def editBoard(
+        board_no: int, title: str, content: str, content_type: str, nickname: str, password: str, request: Request
 ):
     ip = request.client.host
     pass
@@ -110,6 +119,14 @@ async def deleteComment(
 ):
     pass
 
+#  S04P22D101-66     백엔드 RESTful API 프로토콜 / 댓글 수정
+# output : 댓글 수정 성공 유무
+@app.put("/api/v1/comment/{comment_no}", name="댓글 수정")
+async def editComment(
+        board_no: int, content: str, nickanme: str, password: str, request: Request
+):
+    ip = request.client.host
+    pass
 
 ### 여기까지 댓글 기능 종료 ###
 
