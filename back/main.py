@@ -53,7 +53,7 @@ async def findBoardDetailByBoardNo(
 # output : 게시글 작성 성공 유무
 @app.post("/api/v1/board/write", name="게시글 작성")
 async def writeBoard(
-        content: str, content_type: str, nickname: str, password: str, request: Request
+        title: str, content: str, content_type: str, nickname: str, password: str, request: Request
 ):
     ip = request.client.host
     pass
@@ -62,7 +62,7 @@ async def writeBoard(
 # output : 게시글 수정 성공 유무
 @app.post("/api/v1/board/{board_no}", name="게시글 수정")
 async def editBoard(
-        board_no: int, content: str, content_type: str, nickname: str, password: str, request: Request
+        board_no: int, title: str, content: str, content_type: str, nickname: str, password: str, request: Request
 ):
     ip = request.client.host
     pass
