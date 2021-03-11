@@ -1,15 +1,18 @@
 <template>
-  <v-navigation-drawer v-model="getDrawer" absolute temporary right width="30vh">
+  <v-navigation-drawer
+    v-model="getDrawer"
+    absolute
+    temporary
+    right
+    width="30vh"
+  >
     <v-list-item>
       <v-list-item-content>
-          <v-list-item-title>{{ nickname }}</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-
+        <v-list-item-title>{{ nickname }}</v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
 
     <v-divider></v-divider>
-
-    <v-btn text color="red" @click="Out">로그아웃</v-btn>
 
     <v-list dense>
       <v-list-item v-for="item in items" :key="item.title" link>
@@ -45,7 +48,7 @@ export default {
         { title: 'About', icon: 'mdi-forum' },
       ],
       nickname: '',
-    }
+    };
   },
   updated() {
     // 바탕화면 누르면 vuex 값을 바꿔주기 위해
@@ -60,5 +63,5 @@ export default {
       this.$store.commit('SET_ON_OFF_MENU', false);
     },
   },
-}
+};
 </script>
