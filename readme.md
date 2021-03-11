@@ -6,12 +6,12 @@
 ### 프론트
 <img src="/uploads/95c86ac00bb9068fbaddfde923ea99f8/goo.jpg" width="100px" height="100px">&emsp;
 <img src="/uploads/ba2a3448a0c37d1793d6c6ee48c57055/4.jpg" width="100px" height="100px"> 
-<br>&emsp;강구원 &emsp;&emsp;&emsp;&emsp;정준영 
+<br>&emsp;강구원 &emsp;&emsp;&emsp;&emsp;&emsp;정준영 
 
 ### 백엔드
 <img src="/uploads/7640898ee20c5daec513d93820395bf8/2.jpg" width="100px" height="100px">&emsp;
 <img src="/uploads/102c25d71feaf1951631d7100c99c180/3.jpg" width="100px" height="100px"> 
-<br>&emsp;현진혁 &emsp;&emsp;&emsp;&emsp;곽충섭 
+<br>&emsp;현진혁 &emsp;&emsp;&emsp;&emsp;&emsp;곽충섭 
 
 ### 서버
 <img src="/uploads/caba213988a96f88a9509cf2d29a3b9a/5.png" width="100px" height="100px">
