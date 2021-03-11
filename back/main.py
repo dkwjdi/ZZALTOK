@@ -1,6 +1,7 @@
 from fastapi import FastAPI, File, Form, UploadFile, Request
 from typing import Optional, List
 import os
+import DBUtil
 
 app = FastAPI()
 
@@ -39,6 +40,7 @@ async def removeBackGroundOnVideo(video: UploadFile = File(...), image: UploadFi
 #  S04P22D101-63	백엔드 RESTful API 프로토콜 / 최근 게시글들 조회(추천순 반영)
 @app.get("/api/v1/board", name="전체 게시글 조회(24시간 내, 추천순)")
 async def findAllBoardOnDay():
+    DBUtil.findAllBoardOnDay()
     pass
 
 #  S04P22D101-64     백엔드 RESTful API 프로토콜 / 게시글 상세 조회
@@ -46,6 +48,7 @@ async def findAllBoardOnDay():
 async def findBoardDetailByBoardNo(
         board_no: int
 ):
+    DBUtil.findBoardDetailByBoardNo(board_no)
     pass
 
 #  S04P22D101-57	백엔드 RESTful API 프로토콜 / 게시글 작성(공유)
@@ -56,6 +59,18 @@ async def writeBoard(
         title: str, content: str, content_type: str, nickname: str, password: str, request: Request
 ):
     ip = request.client.host
+    board_info = [
+        {
+            "title": title,
+            "content": content,
+            "content_type": content_type,
+            "nickname": nickname,
+            "password": password,
+            "ip": ip
+        }
+    ]
+    DBUtil.writeBoard(board_info)
+    print(board_info)
     pass
 
 #  S04P22D101-67     백엔드 RESTful API 프로토콜 / 게시글 수정
@@ -65,6 +80,19 @@ async def editBoard(
         board_no: int, title: str, content: str, content_type: str, nickname: str, password: str, request: Request
 ):
     ip = request.client.host
+    board_info = [
+        {
+            "title": title,
+            "content": content,
+            "content_type": content_type,
+            "nickname": nickname,
+            "password": password,
+            "ip": ip,
+            "board_no": board_no
+        }
+    ]
+    DBUtil.writeBoard(board_info)
+    print(board_info)
     pass
 
 #  S04P22D101-60	백엔드 RESTful API 프로토콜 / 게시글 삭제
@@ -74,6 +102,7 @@ async def editBoard(
 async def deleteBoard(
     password: str
 ):
+    DBUtil.deleteBoard(password)
     pass
 
 #  S04P22D101-62	백엔드 RESTful API 프로토콜 / 게시글 추천(좋아요 기능)
@@ -84,6 +113,7 @@ async def countUpThumbsUpOnBoard(
         board_no: int, request: Request
 ):
     ip = request.client.host
+    DBUtil.countUpThumbsUpOnBoard(board_no, ip)
     pass
 
 ### 여기까지 게시글 기능 종료 ###
@@ -98,6 +128,7 @@ async def countUpThumbsUpOnBoard(
 async def findCommentByBoardNo(
     board_no: int
 ):
+    DBUtil.findCommentByBoardNo(board_no)
     pass
 
 #  S04P22D101-59	백엔드 RESTful API 프로토콜 / 댓글 작성
@@ -105,9 +136,19 @@ async def findCommentByBoardNo(
 # output : 댓글 작성 성공 유무
 @app.post("/api/v1/comment/write/{board_no}", name="댓글 작성")
 async def writeComment(
-        board_no: int, content: str, nickanme: str, password: str, request: Request
+        board_no: int, content: str, nickname: str, password: str, request: Request
 ):
     ip = request.client.host
+    commentInfo = [
+        {
+            "content": content,
+            "nickname": nickname,
+            "password": password,
+            "ip": ip,
+            "board_no": board_no
+        }
+    ]
+    DBUtil.writeComment(commentInfo)
     pass
 
 #  S04P22D101-61	백엔드 RESTful API 프로토콜 / 댓글 삭제
@@ -117,15 +158,26 @@ async def writeComment(
 async def deleteComment(
     comment_no: int, password: str
 ):
+    DBUtil.deleteBoard(comment_no, password)
     pass
 
 #  S04P22D101-66     백엔드 RESTful API 프로토콜 / 댓글 수정
 # output : 댓글 수정 성공 유무
 @app.put("/api/v1/comment/{comment_no}", name="댓글 수정")
 async def editComment(
-        board_no: int, content: str, nickanme: str, password: str, request: Request
+        comment_no: int, content: str, nickname: str, password: str, request: Request
 ):
     ip = request.client.host
+    comment_info = [
+        {
+            "comment_no": comment_no,
+            "content": content,
+            "nickname": nickname,
+            "password": password,
+            "ip": ip
+        }
+    ]
+    DBUtil.editComment(comment_info)
     pass
 
 ### 여기까지 댓글 기능 종료 ###
