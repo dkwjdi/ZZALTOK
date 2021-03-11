@@ -5,11 +5,13 @@
 # 팀원소개
 ### 프론트
 <img src="/uploads/95c86ac00bb9068fbaddfde923ea99f8/goo.jpg" width="100px" height="100px">  &nbsp;&nbsp;&nbsp;&nbsp;
-<img src="/uploads/ba2a3448a0c37d1793d6c6ee48c57055/4.jpg" width="100px" height="100px"> <br>강구원
+<img src="/uploads/ba2a3448a0c37d1793d6c6ee48c57055/4.jpg" width="100px" height="100px"> 
+<br>&nbsp;강구원 &nbsp;&nbsp;&nbsp; 정준영 
 
 ### 백엔드
-<img src="/uploads/7640898ee20c5daec513d93820395bf8/2.jpg" width="100px" height="100px"> 현진혁
-<img src="/uploads/102c25d71feaf1951631d7100c99c180/3.jpg" width="100px" height="100px"> 곽충섭
+<img src="/uploads/7640898ee20c5daec513d93820395bf8/2.jpg" width="100px" height="100px"> &nbsp;&nbsp;&nbsp;&nbsp;
+<img src="/uploads/102c25d71feaf1951631d7100c99c180/3.jpg" width="100px" height="100px"> 
+
 ### 서버
 <img src="/uploads/caba213988a96f88a9509cf2d29a3b9a/5.png" width="100px" height="100px"> 박정환
 
