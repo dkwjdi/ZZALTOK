@@ -17,10 +17,22 @@ print(mydb)
 
 #  S04P22D101-63	백엔드 RESTful API 프로토콜 / 최근 게시글들 조회(추천순 반영)
 async def findAllBoardOnDay():
-    pass
     cursor.execute("SELECT * FROM board")
     res = cursor.fetchall()
-    return res
+    result = []
+    for item in res:
+        result.append({'board_no': item[0],
+                       'title': item[1],
+                       'content': item[2],
+                       'content_type': item[3],
+                       'nickname': item[4],
+                       # 'password' : item[5],
+                       'ip': item[6],
+                       'good': item[7],
+                       'regdate': item[8]
+                       })
+    return result
+
 
 #  S04P22D101-64     백엔드 RESTful API 프로토콜 / 게시글 상세 조회
 async def findBoardDetailByBoardNo(
@@ -28,9 +40,20 @@ async def findBoardDetailByBoardNo(
 ):
     pass
     sql = "SELECT * FROM board WHERE board_no = %s"
-    cursor.execute(sql, board_no)
-    res = cursor.fetchall()
-    return res
+    cursor.execute(sql, (board_no,))
+    res = cursor.fetchone()
+    if res is None:
+        return None
+    return {'board_no': res[0],
+            'title': res[1],
+            'content': res[2],
+            'content_type': res[3],
+            'nickname': res[4],
+            # 'password' : res[5],
+            'ip': res[6],
+            'good': res[7],
+            'regdate': res[8]
+            }
 
 #  S04P22D101-57	백엔드 RESTful API 프로토콜 / 게시글 작성(공유)
 async def writeBoard(
@@ -46,6 +69,7 @@ async def writeBoard(
     cursor.execute(sql, val)
     mydb.commit()
     print(cursor.rowcount, "board inserted.")
+
 
 #  S04P22D101-67     백엔드 RESTful API 프로토콜 / 게시글 수정
 async def editBoard(
@@ -66,6 +90,7 @@ async def editBoard(
     mydb.commit()
     print(cursor.rowcount, "board updated.")
 
+
 #  S04P22D101-60	백엔드 RESTful API 프로토콜 / 게시글 삭제
 async def deleteBoard(
         password: str
@@ -77,6 +102,7 @@ async def deleteBoard(
     cursor.execute(sql, val)
     mydb.commit()
     print(cursor.rowcount, "board deleted.")
+
 
 #  S04P22D101-62	백엔드 RESTful API 프로토콜 / 게시글 추천(좋아요 기능)
 async def countUpThumbsUpOnBoard(
@@ -93,6 +119,7 @@ async def countUpThumbsUpOnBoard(
     mydb.commit()
     print(cursor.rowcount, "board updated.")
 
+
 ### 여기까지 게시글 기능 종료 ###
 
 
@@ -101,7 +128,7 @@ async def countUpThumbsUpOnBoard(
 
 #  S04P22D101-65     백엔드 RESTful API 프로토콜 / 댓글 조회 (해당 게시글에 대해)
 async def findCommentByBoardNo(
-    board_no: int
+        board_no: int
 ):
     pass
     sql = """
@@ -113,6 +140,7 @@ async def findCommentByBoardNo(
     cursor.execute(sql, val)
     res = cursor.fetchall()
     return res
+
 
 #  S04P22D101-59	백엔드 RESTful API 프로토콜 / 댓글 작성
 async def writeComment(
@@ -129,9 +157,10 @@ async def writeComment(
     mydb.commit()
     print(cursor.rowcount, "board inserted.")
 
+
 #  S04P22D101-61	백엔드 RESTful API 프로토콜 / 댓글 삭제
 async def deleteComment(
-    comment_no: int, password: str
+        comment_no: int, password: str
 ):
     pass
     # 비밀번호 ??
@@ -141,6 +170,7 @@ async def deleteComment(
     cursor.execute(sql, val)
     mydb.commit()
     print(cursor.rowcount, "board deleted.")
+
 
 #  S04P22D101-66     백엔드 RESTful API 프로토콜 / 댓글 수정
 async def editComment(
