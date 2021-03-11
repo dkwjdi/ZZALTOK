@@ -34,33 +34,34 @@ async def findBoardDetailByBoardNo(
 
 #  S04P22D101-57	백엔드 RESTful API 프로토콜 / 게시글 작성(공유)
 async def writeBoard(
-        boardInfo: dict
+        board_info: dict
 ):
     pass
     sql = """
             INSERT INTO board (title, content, content_type, nickname, password, ip)
             VALUES (%s, %s, %s, %s, %s, %s)
           """
-    val = (boardInfo.title, boardInfo.content, boardInfo.content_type,
-           boardInfo.nickname, boardInfo.password, boardInfo.ip)
+    val = (board_info.title, board_info.content, board_info.content_type,
+           board_info.nickname, board_info.password, board_info.ip)
     cursor.execute(sql, val)
     mydb.commit()
     print(cursor.rowcount, "board inserted.")
 
 #  S04P22D101-67     백엔드 RESTful API 프로토콜 / 게시글 수정
 async def editBoard(
-        boardInfo: dict
+        board_info: dict
 ):
     pass
     # 비밀번호 ??
     sql = """
             UPDATE board 
             SET title = %s, content = %s, content_type = %s, 
-                nickname = %s, password = %s, ip = %s, regdate = %s
+                nickname = %s, password = %s, ip = %s
             WHERE board_no = %s
           """
-    val = (boardInfo.title, boardInfo.content, boardInfo.content_type,
-           boardInfo.nickname, boardInfo.password, boardInfo.ip)
+    val = (board_info.title, board_info.content, board_info.content_type,
+           board_info.nickname, board_info.password, board_info.ip)
+
     cursor.execute(sql, val)
     mydb.commit()
     print(cursor.rowcount, "board updated.")
@@ -108,21 +109,22 @@ async def findCommentByBoardNo(
               FROM comment 
              WHERE board_no = %s
           """
-    cursor.execute(sql, board_no)
+    val = board_no
+    cursor.execute(sql, val)
     res = cursor.fetchall()
     return res
 
 #  S04P22D101-59	백엔드 RESTful API 프로토콜 / 댓글 작성
 async def writeComment(
-        commentInfo: dict
+        comment_info: dict
 ):
     pass
     sql = """
             INSERT INTO comment (board_no, content, nickname, password, ip)
             VALUES (%s, %s, %s, %s, %s, %s)
           """
-    val = (commentInfo.board_no, commentInfo.content,
-           commentInfo.nickname, commentInfo.password, commentInfo.ip)
+    val = (comment_info.board_no, comment_info.content,
+           comment_info.nickname, comment_info.password, comment_info.ip)
     cursor.execute(sql, val)
     mydb.commit()
     print(cursor.rowcount, "board inserted.")
@@ -135,14 +137,14 @@ async def deleteComment(
     # 비밀번호 ??
     sql = """DELETE FROM comment 
     WHERE comment_no = %s AND password = %s"""
-    val = password
+    val = (comment_no, password)
     cursor.execute(sql, val)
     mydb.commit()
     print(cursor.rowcount, "board deleted.")
 
 #  S04P22D101-66     백엔드 RESTful API 프로토콜 / 댓글 수정
 async def editComment(
-        commentInfo: dict
+        comment_info: dict
 ):
     pass
     sql = """
@@ -150,7 +152,7 @@ async def editComment(
             SET content = %s
             WHERE comment_no = %s
           """
-    val = (commentInfo.comment, commentInfo.comment_no)
+    val = (comment_info.content, comment_info.comment_no)
     cursor.execute(sql, val)
     mydb.commit()
     print(cursor.rowcount, "board updated.")
