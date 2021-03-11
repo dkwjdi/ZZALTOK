@@ -1,9 +1,11 @@
 from fastapi import FastAPI, File, Form, UploadFile, Request
+from fastapi.responses import JSONResponse
 from typing import Optional, List
 import os
 import DBUtil
 
 app = FastAPI()
+
 
 ### 여기부터 메인기능 시작 ###
 
@@ -15,12 +17,14 @@ app = FastAPI()
 async def createDeepFakeImage(origin: UploadFile = File(...), target: UploadFile = File(...)):
     pass
 
+
 #  S04P22D101-55	백엔드 RESTful API 프로토콜 / 다메다메 짤 생성
 # input : 합성할 얼굴 사진
 # output : 합성된 동영상
 @app.post("/api/v1/damedame", name="다메다메 짤 생성 서비스")
 async def createDameMemeVideo(image: UploadFile = File(...)):
     pass
+
 
 #  S04P22D101-56	백엔드 RESTful API 프로토콜 / 동영상 배경 삭제 및 배경 변경
 # input : 동영상, 배경사진
@@ -33,23 +37,24 @@ async def removeBackGroundOnVideo(video: UploadFile = File(...), image: UploadFi
 ### 여기까지 메인기능 종료 ###
 
 
-
-
 ### 여기부터 게시글 기능 시작 ###
 
 #  S04P22D101-63	백엔드 RESTful API 프로토콜 / 최근 게시글들 조회(추천순 반영)
 @app.get("/api/v1/board", name="전체 게시글 조회(24시간 내, 추천순)")
 async def findAllBoardOnDay():
-    DBUtil.findAllBoardOnDay()
-    pass
+    result = await DBUtil.findAllBoardOnDay();
+    # return JSONResponse(status_code=200, content={"items":result})
+    return {"items": result}
+
 
 #  S04P22D101-64     백엔드 RESTful API 프로토콜 / 게시글 상세 조회
 @app.get("/api/v1/board/detail/{board_no}", name="게시글 상세 조회")
-async def findBoardDetailByBoardNo(
-        board_no: int
-):
-    DBUtil.findBoardDetailByBoardNo(board_no)
-    pass
+async def findBoardDetailByBoardNo(board_no: int):
+    result = await DBUtil.findBoardDetailByBoardNo(board_no)
+    if result is None:
+        return JSONResponse(status_code=400, content={"message": "존재하지 않는 게시글입니다."})
+    return result
+
 
 #  S04P22D101-57	백엔드 RESTful API 프로토콜 / 게시글 작성(공유)
 # input : content(게시글 내용), content_type(게시글 내용 - 구분용), nickname(익명 닉네임), password(비밀번호)
@@ -73,6 +78,7 @@ async def writeBoard(
     print(board_info)
     pass
 
+
 #  S04P22D101-67     백엔드 RESTful API 프로토콜 / 게시글 수정
 # output : 게시글 수정 성공 유무
 @app.post("/api/v1/board/{board_no}", name="게시글 수정")
@@ -95,15 +101,17 @@ async def editBoard(
     print(board_info)
     pass
 
+
 #  S04P22D101-60	백엔드 RESTful API 프로토콜 / 게시글 삭제
 # input : board_no(보드번호), password(비밀번호)
 # output :  게시글 삭제 성공 유무
 @app.delete("/api/v1/board/{board_no}", name="게시글 삭제")
 async def deleteBoard(
-    password: str
+        password: str
 ):
     DBUtil.deleteBoard(password)
     pass
+
 
 #  S04P22D101-62	백엔드 RESTful API 프로토콜 / 게시글 추천(좋아요 기능)
 # input : board_no(보드번호)
@@ -116,9 +124,8 @@ async def countUpThumbsUpOnBoard(
     DBUtil.countUpThumbsUpOnBoard(board_no, ip)
     pass
 
+
 ### 여기까지 게시글 기능 종료 ###
-
-
 
 
 ### 여기부터 댓글 기능 시작 ###
@@ -126,10 +133,11 @@ async def countUpThumbsUpOnBoard(
 #  S04P22D101-65     백엔드 RESTful API 프로토콜 / 댓글 조회 (해당 게시글에 대해)
 @app.get("/api/v1/comment/{board_no}", name="댓글 조회")
 async def findCommentByBoardNo(
-    board_no: int
+        board_no: int
 ):
     DBUtil.findCommentByBoardNo(board_no)
     pass
+
 
 #  S04P22D101-59	백엔드 RESTful API 프로토콜 / 댓글 작성
 # input : board_no(보드번호), content(댓글 내용), nickname(닉네임), password(비밀번호)
@@ -151,15 +159,17 @@ async def writeComment(
     DBUtil.writeComment(commentInfo)
     pass
 
+
 #  S04P22D101-61	백엔드 RESTful API 프로토콜 / 댓글 삭제
 # input : comment_no(댓글번호), password(비밀번호)
 # output : 댓글 삭제 성공 유무
 @app.delete("/api/v1/comment/{comment_no}", name="댓글 삭제")
 async def deleteComment(
-    comment_no: int, password: str
+        comment_no: int, password: str
 ):
     DBUtil.deleteBoard(comment_no, password)
     pass
+
 
 #  S04P22D101-66     백엔드 RESTful API 프로토콜 / 댓글 수정
 # output : 댓글 수정 성공 유무
@@ -179,6 +189,7 @@ async def editComment(
     ]
     DBUtil.editComment(comment_info)
     pass
+
 
 ### 여기까지 댓글 기능 종료 ###
 
