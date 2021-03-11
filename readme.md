@@ -15,7 +15,7 @@
 
 ### 서버
 <img src="/uploads/caba213988a96f88a9509cf2d29a3b9a/5.png" width="100px" height="100px">
-<br>&emsp;강구원
+<br>&emsp;박정환
 
 ## 설치방법
 
