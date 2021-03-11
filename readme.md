@@ -9,11 +9,13 @@
 <br>&emsp;강구원 &emsp;&emsp;&emsp;&emsp;정준영 
 
 ### 백엔드
-<img src="/uploads/7640898ee20c5daec513d93820395bf8/2.jpg" width="100px" height="100px"> &nbsp;&nbsp;&nbsp;&nbsp;
+<img src="/uploads/7640898ee20c5daec513d93820395bf8/2.jpg" width="100px" height="100px">
 <img src="/uploads/102c25d71feaf1951631d7100c99c180/3.jpg" width="100px" height="100px"> 
+<br>&emsp;현진혁 &emsp;&emsp;&emsp;&emsp;곽충섭 
 
 ### 서버
-<img src="/uploads/caba213988a96f88a9509cf2d29a3b9a/5.png" width="100px" height="100px"> 박정환
+<img src="/uploads/caba213988a96f88a9509cf2d29a3b9a/5.png" width="100px" height="100px">
+<br>&emsp;강구원
 
 ## 설치방법
 
