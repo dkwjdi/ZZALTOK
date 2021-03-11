@@ -4,7 +4,7 @@
 
 # 팀원소개
 ### 프론트
-![강구원](./documents/팀원사진/강구원.jpg){: width="100" height="100"}
+![강구원](./documents/팀원사진/강구원.jpg){:width="100" height="100"}
 
 ## 설치방법
 
