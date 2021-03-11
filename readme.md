@@ -4,7 +4,7 @@
 
 # 팀원소개
 ### 프론트
-<img src="https://lab.ssafy.com/s04-ai-image-sub2/s04p22d101/blob/develop/documents/%ED%8C%80%EC%9B%90%EC%82%AC%EC%A7%84/%EA%B0%95%EA%B5%AC%EC%9B%90.jpg"  width="100" height="100">
+<img src="./documents/팀장사진/강구원"  width="100" height="100">
 
 ## 설치방법
 
