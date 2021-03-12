@@ -67,13 +67,25 @@ async def findAllBoardOnDay():
         res = cursor.fetchall()
         result = []
         for item in res:
+            spilited_ip = item[6].split('.')
+
+            idx = 0
+            spilited_ip[2] = 'x'
+            spilited_ip[3] = 'x'
+
+            ip = ''
+            for s in spilited_ip:
+                ip += s
+                idx = idx + 1
+                if idx != 4:
+                    ip += '.'
             result.append({'board_no': item[0],
                            'title': item[1],
                            'content': item[2],
                            'content_type': item[3],
                            'nickname': item[4],
                            # 'password' : item[5],
-                           'ip': item[6],
+                           'ip': ip,
                            'good': item[7],
                            'regdate': item[8]
                            })
@@ -93,13 +105,27 @@ async def findBoardDetailByBoardNo(
         res = cursor.fetchone()
         if res is None:
             return None
+
+        spilited_ip = res[6].split('.')
+
+        idx = 0
+        spilited_ip[2] = 'x'
+        spilited_ip[3] = 'x'
+
+        ip = ''
+        for s in spilited_ip:
+            ip += s
+            idx = idx + 1
+            if idx != 4:
+                ip += '.'
+
         return {'board_no': res[0],
                 'title': res[1],
                 'content': res[2],
                 'content_type': res[3],
                 'nickname': res[4],
                 # 'password' : res[5],
-                'ip': res[6],
+                'ip': ip,
                 'good': res[7],
                 'regdate': res[8]
                 }
@@ -111,6 +137,7 @@ async def findBoardDetailByBoardNo(
 async def writeBoard(
         board_info: dict
 ):
+    print(board_info)
     sql = """
             INSERT INTO board (title, content, content_type, nickname, password, ip, regdate)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
@@ -203,12 +230,25 @@ async def findCommentByBoardNo(
         res = cursor.fetchall()
         result = []
         for item in res:
+            spilited_ip = item[5].split('.')
+
+            idx = 0
+            spilited_ip[2] = 'x'
+            spilited_ip[3] = 'x'
+
+            ip = ''
+            for s in spilited_ip:
+                ip += s
+                idx = idx + 1
+                if idx != 4:
+                    ip += '.'
+
             result.append({'comment_no': item[0],
                            'board_no': item[1],
                            'content': item[2],
                            'nickname': item[3],
                            # 'password' : item[4],
-                           'ip': item[5],
+                           'ip': ip,
                            'regdate': item[6]
                            })
         return result
