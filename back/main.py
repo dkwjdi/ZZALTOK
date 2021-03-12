@@ -1,9 +1,9 @@
-from fastapi import FastAPI, File, Form, UploadFile, Request
-from typing import Optional, List
-import os
-import DBUtil
+from fastapi import FastAPI, File, UploadFile, Request
+from fastapi.responses import JSONResponse
+from utils import DBUtil
 
 app = FastAPI()
+
 
 ### 여기부터 메인기능 시작 ###
 
@@ -15,12 +15,14 @@ app = FastAPI()
 async def createDeepFakeImage(origin: UploadFile = File(...), target: UploadFile = File(...)):
     pass
 
+
 #  S04P22D101-55	백엔드 RESTful API 프로토콜 / 다메다메 짤 생성
 # input : 합성할 얼굴 사진
 # output : 합성된 동영상
 @app.post("/api/v1/damedame", name="다메다메 짤 생성 서비스")
 async def createDameMemeVideo(image: UploadFile = File(...)):
     pass
+
 
 #  S04P22D101-56	백엔드 RESTful API 프로토콜 / 동영상 배경 삭제 및 배경 변경
 # input : 동영상, 배경사진
@@ -33,23 +35,26 @@ async def removeBackGroundOnVideo(video: UploadFile = File(...), image: UploadFi
 ### 여기까지 메인기능 종료 ###
 
 
-
-
 ### 여기부터 게시글 기능 시작 ###
 
 #  S04P22D101-63	백엔드 RESTful API 프로토콜 / 최근 게시글들 조회(추천순 반영)
 @app.get("/api/v1/board", name="전체 게시글 조회(24시간 내, 추천순)")
 async def findAllBoardOnDay():
-    DBUtil.findAllBoardOnDay()
-    pass
+    result = await DBUtil.findAllBoardOnDay();
+    # return JSONResponse(status_code=200, content={"items":result})
+    if result is None:
+        return JSONResponse(status_code=400, content={"message": "게시글 조회에 실패하였습니다."})
+    return {"items": result}
+
 
 #  S04P22D101-64     백엔드 RESTful API 프로토콜 / 게시글 상세 조회
 @app.get("/api/v1/board/detail/{board_no}", name="게시글 상세 조회")
-async def findBoardDetailByBoardNo(
-        board_no: int
-):
-    DBUtil.findBoardDetailByBoardNo(board_no)
-    pass
+async def findBoardDetailByBoardNo(board_no: int):
+    result = await DBUtil.findBoardDetailByBoardNo(board_no)
+    if result is None:
+        return JSONResponse(status_code=400, content={"message": "존재하지 않는 게시글입니다."})
+    return result
+
 
 #  S04P22D101-57	백엔드 RESTful API 프로토콜 / 게시글 작성(공유)
 # input : content(게시글 내용), content_type(게시글 내용 - 구분용), nickname(익명 닉네임), password(비밀번호)
@@ -59,19 +64,19 @@ async def writeBoard(
         title: str, content: str, content_type: str, nickname: str, password: str, request: Request
 ):
     ip = request.client.host
-    board_info = [
-        {
-            "title": title,
-            "content": content,
-            "content_type": content_type,
-            "nickname": nickname,
-            "password": password,
-            "ip": ip
-        }
-    ]
-    DBUtil.writeBoard(board_info)
-    print(board_info)
-    pass
+    board_info = {
+        "title": title,
+        "content": content,
+        "content_type": content_type,
+        "nickname": nickname,
+        "password": password,
+        "ip": ip
+    }
+    result = await DBUtil.writeBoard(board_info)
+    if result is None:
+        return JSONResponse(status_code=400, content={"message": "게시물 작성에 실패했습니다."})
+    return result
+
 
 #  S04P22D101-67     백엔드 RESTful API 프로토콜 / 게시글 수정
 # output : 게시글 수정 성공 유무
@@ -80,30 +85,40 @@ async def editBoard(
         board_no: int, title: str, content: str, content_type: str, nickname: str, password: str, request: Request
 ):
     ip = request.client.host
-    board_info = [
-        {
-            "title": title,
-            "content": content,
-            "content_type": content_type,
-            "nickname": nickname,
-            "password": password,
-            "ip": ip,
-            "board_no": board_no
-        }
-    ]
-    DBUtil.writeBoard(board_info)
-    print(board_info)
-    pass
+    board_info = {
+        "title": title,
+        "content": content,
+        "content_type": content_type,
+        "nickname": nickname,
+        "password": password,
+        "ip": ip,
+        "board_no": board_no
+    }
+
+    result = await DBUtil.editBoard(board_info)
+    if result is None:
+        return JSONResponse(status_code=400, content={"message": "게시물 수정에 실패했습니다."})
+    return result
+
 
 #  S04P22D101-60	백엔드 RESTful API 프로토콜 / 게시글 삭제
 # input : board_no(보드번호), password(비밀번호)
 # output :  게시글 삭제 성공 유무
 @app.delete("/api/v1/board/{board_no}", name="게시글 삭제")
 async def deleteBoard(
-    password: str
+        password: str,
+        board_no: int
 ):
-    DBUtil.deleteBoard(password)
-    pass
+    res_check = await DBUtil.checkPasswordOnBoard(password, board_no)
+    if res_check:
+        result = await DBUtil.deleteBoard(password, board_no)
+
+        if result is None:
+            return JSONResponse(status_code=400, content={"message": "게시물 삭제에 실패했습니다."})
+        return result
+    else:
+        return JSONResponse(status_code=400, content={"message": "비밀번호가 일치하지 않습니다."})
+
 
 #  S04P22D101-62	백엔드 RESTful API 프로토콜 / 게시글 추천(좋아요 기능)
 # input : board_no(보드번호)
@@ -113,12 +128,14 @@ async def countUpThumbsUpOnBoard(
         board_no: int, request: Request
 ):
     ip = request.client.host
-    DBUtil.countUpThumbsUpOnBoard(board_no, ip)
-    pass
+    result = await DBUtil.countUpThumbsUpOnBoard(board_no, ip)
+
+    if result is None:
+        return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
+    return result
+
 
 ### 여기까지 게시글 기능 종료 ###
-
-
 
 
 ### 여기부터 댓글 기능 시작 ###
@@ -126,10 +143,14 @@ async def countUpThumbsUpOnBoard(
 #  S04P22D101-65     백엔드 RESTful API 프로토콜 / 댓글 조회 (해당 게시글에 대해)
 @app.get("/api/v1/comment/{board_no}", name="댓글 조회")
 async def findCommentByBoardNo(
-    board_no: int
+        board_no: int
 ):
-    DBUtil.findCommentByBoardNo(board_no)
-    pass
+    result = await DBUtil.findCommentByBoardNo(board_no)
+
+    if result is None:
+        return JSONResponse(status_code=400, content={"message": "댓글 조회에 실패했습니다."})
+    return result
+
 
 #  S04P22D101-59	백엔드 RESTful API 프로토콜 / 댓글 작성
 # input : board_no(보드번호), content(댓글 내용), nickname(닉네임), password(비밀번호)
@@ -139,27 +160,38 @@ async def writeComment(
         board_no: int, content: str, nickname: str, password: str, request: Request
 ):
     ip = request.client.host
-    commentInfo = [
-        {
-            "content": content,
-            "nickname": nickname,
-            "password": password,
-            "ip": ip,
-            "board_no": board_no
-        }
-    ]
-    DBUtil.writeComment(commentInfo)
-    pass
+    comment_info = {
+        "board_no": board_no,
+        "content": content,
+        "nickname": nickname,
+        "password": password,
+        "ip": ip,
+    }
+
+    result = await DBUtil.writeComment(comment_info)
+
+    if result is None:
+        return JSONResponse(status_code=400, content={"message": "댓글 작성에 실패했습니다."})
+    return result
+
 
 #  S04P22D101-61	백엔드 RESTful API 프로토콜 / 댓글 삭제
 # input : comment_no(댓글번호), password(비밀번호)
 # output : 댓글 삭제 성공 유무
 @app.delete("/api/v1/comment/{comment_no}", name="댓글 삭제")
 async def deleteComment(
-    comment_no: int, password: str
+        comment_no: int, password: str
 ):
-    DBUtil.deleteBoard(comment_no, password)
-    pass
+    res_check = await DBUtil.checkPasswordOnComment(password, comment_no)
+    if res_check:
+        result = await DBUtil.deleteComment(comment_no)
+
+        if result is None:
+            return JSONResponse(status_code=400, content={"message": "댓글 삭제에 실패했습니다."})
+        return result
+    else:
+        return JSONResponse(status_code=400, content={"message": "비밀번호가 일치하지 않습니다."})
+
 
 #  S04P22D101-66     백엔드 RESTful API 프로토콜 / 댓글 수정
 # output : 댓글 수정 성공 유무
@@ -168,17 +200,46 @@ async def editComment(
         comment_no: int, content: str, nickname: str, password: str, request: Request
 ):
     ip = request.client.host
-    comment_info = [
-        {
-            "comment_no": comment_no,
-            "content": content,
-            "nickname": nickname,
-            "password": password,
-            "ip": ip
-        }
-    ]
-    DBUtil.editComment(comment_info)
-    pass
+    comment_info = {
+        "comment_no": comment_no,
+        "content": content,
+        "nickname": nickname,
+        "password": password,
+        "ip": ip
+    }
+
+    res_check = await DBUtil.checkPasswordOnComment(password, comment_no)
+    if res_check:
+        result = await DBUtil.editComment(comment_info)
+
+        if result is None:
+            return JSONResponse(status_code=400, content={"message": "댓글 수정에 실패했습니다."})
+        return result
+    else:
+        return JSONResponse(status_code=400, content={"message": "비밀번호가 일치하지 않습니다."})
+
+
+#  S04P22D101-85     백엔드 RESTful API 프로토콜 / 게시글 비밀번호 체크
+# input : comment_no(댓글번호), password(비밀번호)
+# output : 비밀번호 매칭 유무
+@app.post("/api/v1/board/check/{board_no}", name="게시글 비밀번호 체크")
+async def checkBoard(
+        board_no: int, password: str
+):
+    result = await DBUtil.checkPasswordOnBoard(password, board_no)
+    return {"result": result}
+
+
+#  S04P22D101-86     백엔드 RESTful API 프로토콜 / 댓글 비밀번호 체크
+# input : comment_no(댓글번호), password(비밀번호)
+# output : 비밀번호 매칭 유무
+@app.post("/api/v1/comment/check/{comment_no}", name="댓글 비밀번호 체크")
+async def checkComment(
+        comment_no: int, password: str
+):
+    result = await DBUtil.checkPasswordOnComment(password, comment_no)
+    return {"result": result}
+
 
 ### 여기까지 댓글 기능 종료 ###
 
