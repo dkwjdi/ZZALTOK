@@ -94,11 +94,15 @@ async def editBoard(
         "ip": ip,
         "board_no": board_no
     }
+    res_check = await checkBoard(board_no, password)
 
-    result = await DBUtil.editBoard(board_info)
-    if result is None:
-        return JSONResponse(status_code=400, content={"message": "게시물 수정에 실패했습니다."})
-    return result
+    if res_check['result']:
+        result = await DBUtil.editBoard(board_info)
+        if result is None:
+            return JSONResponse(status_code=400, content={"message": "게시물 수정에 실패했습니다."})
+        return result
+    else:
+        return JSONResponse(status_code=400, content={"message": "비밀번호가 일치하지 않습니다."})
 
 
 #  S04P22D101-60	백엔드 RESTful API 프로토콜 / 게시글 삭제
@@ -109,9 +113,9 @@ async def deleteBoard(
         password: str,
         board_no: int
 ):
-    res_check = await DBUtil.checkPasswordOnBoard(password, board_no)
-    if res_check:
-        result = await DBUtil.deleteBoard(board_no)
+    res_check = await checkBoard(board_no, password)
+    if res_check['result']:
+        result = await DBUtil.deleteBoard(password, board_no)
 
         if result is None:
             return JSONResponse(status_code=400, content={"message": "게시물 삭제에 실패했습니다."})
@@ -182,8 +186,8 @@ async def writeComment(
 async def deleteComment(
         comment_no: int, password: str
 ):
-    res_check = await DBUtil.checkPasswordOnComment(password, comment_no)
-    if res_check:
+    res_check = await checkComment(comment_no, password)
+    if res_check['result']:
         result = await DBUtil.deleteComment(comment_no)
 
         if result is None:
@@ -208,8 +212,8 @@ async def editComment(
         "ip": ip
     }
 
-    res_check = await DBUtil.checkPasswordOnComment(password, comment_no)
-    if res_check:
+    res_check = await checkComment(comment_no, password)
+    if res_check['result']:
         result = await DBUtil.editComment(comment_info)
 
         if result is None:
