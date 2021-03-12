@@ -1,14 +1,8 @@
 <template>
-  <v-navigation-drawer
-    v-model="getDrawer"
-    absolute
-    temporary
-    right
-    width="30vh"
-  >
+  <v-navigation-drawer v-model="getDrawer" absolute temporary right width="30vh">
     <v-list-item>
       <v-list-item-content>
-        <v-list-item-title>{{ nickname }}</v-list-item-title>
+        <v-list-item-title class="ml-2">페이지 이동 ? 로고?</div></v-list-item-title>
       </v-list-item-content>
     </v-list-item>
 
@@ -21,10 +15,14 @@
         </v-list-item-icon>
 
         <v-list-item-content>
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
+          <v-list-item-title>
+            <span class="font-we">{{ item.title }}</span>
+          </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>
+
+    <!-- 배경누르면 창 꺼지게 -->
     <button style="display:none" id="chagemenu" @click="OnOffMenu">ddd</button>
   </v-navigation-drawer>
 </template>
@@ -44,8 +42,9 @@ export default {
   data() {
     return {
       items: [
-        { title: 'Home', icon: 'mdi-view-dashboard' },
-        { title: 'About', icon: 'mdi-forum' },
+        { title: '격언생성', icon: 'mdi-view-dashboard' },
+        { title: '다메다메', icon: 'mdi-forum' },
+        { title: '나만의 배경', icon: 'mdi-forum' },
       ],
       nickname: '',
     };
