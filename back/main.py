@@ -111,7 +111,7 @@ async def deleteBoard(
 ):
     res_check = await DBUtil.checkPasswordOnBoard(password, board_no)
     if res_check:
-        result = await DBUtil.deleteBoard(password, board_no)
+        result = await DBUtil.deleteBoard(board_no)
 
         if result is None:
             return JSONResponse(status_code=400, content={"message": "게시물 삭제에 실패했습니다."})
