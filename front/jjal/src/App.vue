@@ -10,12 +10,17 @@
 </template>
 
 <script>
-import Navigation from "./components/common/Navigation.vue";
-import MenuBar from "./components/common/MenuBar.vue";
+import Navigation from './components/common/Navigation.vue';
+import MenuBar from './components/common/MenuBar.vue';
 
 export default {
-  name: "App",
+  name: 'App',
   components: { Navigation, MenuBar },
-  data: () => ({}),
 };
 </script>
+
+<style>
+.font-we {
+  font-weight: 600;
+}
+</style>

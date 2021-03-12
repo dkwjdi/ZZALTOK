@@ -6,3 +6,8 @@ Pillow
 dlib
 numpy>=1.13.1
 scipy>=0.18.0
+imageio
+matplotlib
+scikit_image
+gitpython
+ffmpeg-python

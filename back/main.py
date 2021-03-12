@@ -1,8 +1,6 @@
-from fastapi import FastAPI, File, Form, UploadFile, Request
+from fastapi import FastAPI, File, UploadFile, Request
 from fastapi.responses import JSONResponse
-from typing import Optional, List
-import os
-import DBUtil
+from utils import DBUtil
 
 app = FastAPI()
 
