@@ -2,15 +2,15 @@
   <v-app-bar app color="white" flat id="navbar" height="80vh">
     <img
       :src="require('../../assets/logo2.png')"
-      @click="MovePage('home')"
+      class="nav-choice"
+      @click="movePage('Main')"
       style="height: 80px"
     />
 
     <ul class="nav_mian hidden-sm-and-down">
-      <li class="nav_title">Menu1</li>
-      <li class="nav_title">Menu2</li>
-      <li class="nav_title">Menu3</li>
-      <li class="nav_title">Menu4</li>
+      <li class="nav_title nav-choice" @click="movePage('DeepFakeImage')">명언생성</li>
+      <li class="nav_title nav-choice" @click="movePage('DeepFakeMovie')">다메다메</li>
+      <li class="nav_title nav-choice" @click="movePage('RemoveBack')">나만의 배경</li>
     </ul>
 
     <v-spacer></v-spacer>
@@ -22,38 +22,16 @@
 <script>
 export default {
   data() {
-    return {drawer: null};
+    return { drawer: null };
   },
   created() {},
   methods: {
-    MovePage: function (check) {
-      switch (check) {
-        case "opinion":
-          this.$router.push({ name: "Opinion" });
-          break;
-        case "home":
-          this.$router.push({ name: "Main" });
-          break;
-        case "club":
-          this.$router.push({ name: "Club" });
-          break;
-        case "issue":
-          this.$router.push({ name: "Issue" });
-          break;
-        case "data":
-          this.$router.push({ name: "Magazine" });
-          break;
-        case "join":
-          this.$router.push({ name: "Join" });
-          break;
-        case "myPage":
-          this.$router.push({ name: "MyPage" });
-          break;
-      }
+    movePage: function(move) {
+      this.$router.push({ name: move });
     },
-    OnOffMenu(){
-        this.$store.commit("SET_ON_OFF_MENU", true);
-    }
+    OnOffMenu() {
+      this.$store.commit('SET_ON_OFF_MENU', true);
+    },
   },
 };
 </script>
@@ -67,5 +45,11 @@ ul li {
   list-style-type: none;
   float: left;
   margin: 20px;
+  font-weight: 600;
+}
+
+.nav-choice:hover {
+  cursor: pointer;
+  color: #3395f4;
 }
 </style>

@@ -18,3 +18,9 @@ export default {
   components: { Navigation, MenuBar },
 };
 </script>
+
+<style>
+.font-we {
+  font-weight: 600;
+}
+</style>
