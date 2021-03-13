@@ -1,11 +1,33 @@
+@echo off
 pushd %~dp0
-REM 관리자 권한으로 실행하셔야 문제가 없습니다.
+
+:: BatchGotAdmin
+:-------------------------------------
+REM  --> Check for permissions
+>nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
+
+REM --> If error flag set, we do not have admin.
+if '%errorlevel%' NEQ '0' (
+    echo Requesting administrative privileges...
+    goto UACPrompt
+) else ( goto gotAdmin )
+
+:UACPrompt
+    echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
+    echo UAC.ShellExecute "%~s0", "", "", "runas", 1 >> "%temp%\getadmin.vbs"
+
+    "%temp%\getadmin.vbs"
+    exit /B
+
+:gotAdmin
+    if exist "%temp%\getadmin.vbs" ( del "%temp%\getadmin.vbs" )
+    pushd "%CD%"
+    CD /D "%~dp0"
+:--------------------------------------
+
 title JJAL Python SERVER
-REM pip freeze > requirements.txt
-set conda=C:\ProgramData\Miniconda3
-call %conda%\Scripts\activate.bat %conda%
-call conda install -c conda-forge dlib -y
-REM call conda install pytorch==1.7.1 torchvision==0.8.2 torchaudio==0.7.2 cudatoolkit=10.2 -c pytorch
-call pip install -r requirements.txt
-call pip install -r torch_requirements.txt -f https://download.pytorch.org/whl/cu102/torch_stable.html
+
+set root=C:\ProgramData\Miniconda3
+call %root%\Scripts\activate.bat %root%
+call conda activate AI
 call uvicorn main:app --reload --host=0.0.0.0 --port=8000
