@@ -1,13 +1,15 @@
 @echo off
+@chcp 65001 1> NUL 2> NUL
+setlocal enableextensions enabledelayedexpansion
 pushd %~dp0
 
-echo ¼³Ä¡µÈ CUDA ¸ğµâ È®ÀÎ
+echo ì„¤ì¹˜ëœ CUDA ëª¨ë“ˆ í™•ì¸
 nvcc --version | find "10.2"
 if errorlevel 1 goto :exit
 goto :BatchGotAdmin
 :exit
-echo ÇØ´ç ÀÎ½ºÅç·¯´Â "CUDA 10.2" ¼³Ä¡°¡ ÇÊ¿äÇÕ´Ï´Ù
-echo ÇÏ´Ü ¸µÅ©¸¦ ÅëÇØ ¼³Ä¡¸¦ ÇÏ°í, ÀÎ½ºÅç·¯¸¦ Àç½ÇÇàÇÏ½Ã±â ¹Ù¶ø´Ï´Ù
+echo í•´ë‹¹ ì¸ìŠ¤í†¨ëŸ¬ëŠ” "CUDA 10.2" ì„¤ì¹˜ê°€ í•„ìš”í•©ë‹ˆë‹¤
+echo í•˜ë‹¨ ë§í¬ë¥¼ í†µí•´ ì„¤ì¹˜ë¥¼ í•˜ê³ , ì¸ìŠ¤í†¨ëŸ¬ë¥¼ ì¬ì‹¤í–‰í•˜ì‹œê¸° ë°”ëë‹ˆë‹¤
 echo https://developer.nvidia.com/cuda-10.2-download-archive
 timeout /t 30 >nul
 exit
@@ -41,34 +43,34 @@ set root=C:\ProgramData\Miniconda3
 call %root%\Scripts\activate.bat %root%
 
 REM echo .
-REM echo ±âÁ¸ ¼³Ä¡µÈ ¶óÀÌºê·¯¸® ¹× ¸ğµâ ÃÊ±âÈ­
+REM echo ê¸°ì¡´ ì„¤ì¹˜ëœ ë¼ì´ë¸ŒëŸ¬ë¦¬ ë° ëª¨ë“ˆ ì´ˆê¸°í™”
 REM call conda clean -a -y
 REM call conda install --revision 0 -y
 
 REM echo .
-REM echo ÆÄÀÌ½ã 3.7·Î Àç¼³Ä¡
+REM echo íŒŒì´ì¬ 3.7ë¡œ ì¬ì„¤ì¹˜
 REM call conda install python=3.7 -y
 
 echo .
-echo °¡»óÈ¯°æ "AI"¸¦ »ı¼ºÇÏ°í, ÆÄÀÌ½ã 3.8·Î ¼³Ä¡
+echo ê°€ìƒí™˜ê²½ "AI"ë¥¼ ìƒì„±í•˜ê³ , íŒŒì´ì¬ 3.8ë¡œ ì„¤ì¹˜
 call conda create -n AI python=3.8 -y
 call conda activate AI
 
 REM echo .
-REM echo ÆÄÀÌ½ãÀÌ 3.7·Î ¼³Ä¡µÇ¾î ÀÖÁö ¾Ê´Ù¸é °³¹ßÀÚ¿¡°Ô ÀÌ½´¸¦ ´Ş¾ÆÁÖ¼¼¿ä
+REM echo íŒŒì´ì¬ì´ 3.7ë¡œ ì„¤ì¹˜ë˜ì–´ ìˆì§€ ì•Šë‹¤ë©´ ê°œë°œìì—ê²Œ ì´ìŠˆë¥¼ ë‹¬ì•„ì£¼ì„¸ìš”
 REM call conda list python | find "python"
 
 echo .
-echo ¶óÀÌºê·¯¸® ¹× ¸ğµâ ¼³Ä¡ ½ÃÀÛ
+echo ë¼ì´ë¸ŒëŸ¬ë¦¬ ë° ëª¨ë“ˆ ì„¤ì¹˜ ì‹œì‘
 call conda install -c conda-forge dlib -y
 call pip install -r requirements.txt
 
 echo .
-echo pytorch ¼³Ä¡ ½ÃÀÛ
+echo pytorch ì„¤ì¹˜ ì‹œì‘
 REM call conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch/
 REM call conda install pytorch torchvision torchaudio cudatoolkit=10.2 -c pytorch -y
 call conda install pytorch torchvision torchaudio cudatoolkit=10.2 -c pytorch -y --channel https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch/
 
 echo .
-echo ¼³Ä¡°¡ ¿Ï·áµÇ¾ú½À´Ï´Ù. run.bat ÆÄÀÏ·Î ¼­¹ö¸¦ ½ÇÇàÇÏ½Ã¸é µË´Ï´Ù.
+echo ì„¤ì¹˜ê°€ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤. run.bat íŒŒì¼ë¡œ ì„œë²„ë¥¼ ì‹¤í–‰í•˜ì‹œë©´ ë©ë‹ˆë‹¤.
 pause

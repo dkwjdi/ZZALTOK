@@ -1,4 +1,6 @@
 @echo off
+@chcp 65001 1> NUL 2> NUL
+setlocal enableextensions enabledelayedexpansion
 pushd %~dp0
 
 :: BatchGotAdmin
