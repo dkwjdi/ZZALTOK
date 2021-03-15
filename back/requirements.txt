@@ -6,7 +6,6 @@ Pillow
 dlib
 numpy>=1.13.1
 gitpython
-ffmpeg-python
 cffi>=1.11.5
 cloudpickle>=0.5.3
 cycler>=0.10.0
