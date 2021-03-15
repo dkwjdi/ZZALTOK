@@ -32,3 +32,4 @@ intel-openmp
 tqdm
 aiofiles
 uuid
+opencv-python

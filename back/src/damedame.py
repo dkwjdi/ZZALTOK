@@ -12,22 +12,24 @@ from utils import video
 if not os.path.isdir(config.first_order_model_path):
     print("다메다메 프로젝트 클론 중")
     git.Repo.clone_from("https://github.com/AliaksandrSiarohin/first-order-model", config.first_order_model_path)
+    print("done")
 
 if not os.path.isdir(config.dame_path):
     print("다메다메 학습 모델 및 템플릿 다운로드 중 - 오래 걸림")
     urllib.request.urlretrieve(
         "https://github.com/KeepSOBP/dame/releases/download/damesource/damesource.zip"
-        , filename=os.path.join(config.video_path, "damesource.zip"))
+        , filename=os.path.join(config.root, "damesource.zip"))
     with zipfile.ZipFile(os.path.join(config.root, "damesource.zip"), "r") as zip_ref:
         zip_ref.extractall(config.dame_path)
+    os.remove(os.path.join(config.root, "damesource.zip"))
+    print("done")
+
+if not os.path.exists(os.path.join(config.dame_path, "bakamitai_template.mp3")):
+    print("다메다메 오디오 리소스 다운로드 중")
     urllib.request.urlretrieve(
         "https://github.com/KeepSOBP/dame/releases/download/damesource/bakamitai_template.mp3"
         , filename=os.path.join(config.dame_path, "bakamitai_template.mp3"))
-    os.remove(os.path.join(config.root, "damesource.zip"))
-
-# # 필요 없는 파일 삭제
-# if os.path.isfile(os.path.join(config.root, "complete.mp4")):
-#     os.remove(os.path.join(config.root, "complete.mp4"))
+    print("done")
 
 # make damedane
 import sys
