@@ -1,11 +1,23 @@
 <template>
   <v-app>
     <div>
+      <!-- <img src="@/assets/asf.png" alt="asdf" /> -->
       <div>
         <!-- SOURCE -->
-        <div ref="printMe" style="padding: 10px; background: #f5da55">
-          <textarea name="" id="" cols="30" rows="10" class="a"></textarea>
-        </div>
+        <v-container>
+          <v-row justify="center">
+            <v-col>
+              <div ref="printMe" style="padding: 10px;">
+                <textarea
+                  name=""
+                  id=""
+                  cols="70"
+                  rows="10"
+                  class="a"
+                ></textarea></div
+            ></v-col>
+          </v-row>
+        </v-container>
         <img style="display:none" :src="output" alt="" />
         <v-btn @click="print"> 캔버스에 그리기</v-btn>
       </div>
@@ -27,6 +39,8 @@
 </template>
 
 <script>
+// import '@/assets/asf.png';
+
 export default {
   data() {
     return {
@@ -54,6 +68,6 @@ export default {
 
 <style scoped>
 .a {
-  background-image: url('assets/asf.png');
+  background-image: url('../../assets/images/asf.png');
 }
 </style>
