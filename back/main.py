@@ -1,8 +1,12 @@
+import os
+import uuid
+
 from fastapi import FastAPI, File, UploadFile, Request
-from fastapi.responses import JSONResponse
-from utils import db
+from fastapi.responses import JSONResponse, FileResponse
+from utils import db, url
 from config import config
 from init import init
+from src import damedame as dame
 
 init()
 
@@ -24,11 +28,14 @@ async def createDeepFakeImage(origin: UploadFile = File(...), target: UploadFile
 @app.post("/api/v1/damedame", name="다메다메 짤 생성 서비스")
 async def createDameMemeVideo(image: UploadFile = File(...)):
         contents = await image.read()
-        with open(os.path.join(config.image_path, image.filename), "wb") as fp:
+        image.filename = image.filename.replace(' ', '')
+        input = os.path.join(config.image_path, image.filename)
+        output = os.path.join(config.video_path, str(uuid.uuid4()).replace('-', '') + ".mp4")
+        with open(input, "wb") as fp:
             fp.write(contents)
-        print(image.filename)
-
-        return {"filename": image.filename}
+        print("input:",input)
+        dame.makeDamedame(uploadimagePath=input, output=output)
+        return {"url": url.convertPathToURL(output, baseUrl="/api/v1/content/")}
 
 
 #  S04P22D101-56	백엔드 RESTful API 프로토콜 / 동영상 배경 삭제 및 배경 변경
@@ -38,9 +45,13 @@ async def createDameMemeVideo(image: UploadFile = File(...)):
 async def removeBackGroundOnVideo(video: UploadFile = File(...), image: UploadFile = File(...)):
     pass
 
-@app.get("/api/v1/content/{rest_of_path:path}")
+@app.get("/api/v1/content/{rest_of_path:path}", name="파일 가져오기")
 async def serveUploadFile(rest_of_path: str):
-    return {"path" : rest_of_path}
+    filepath = os.path.join(config.root, rest_of_path)
+    if os.path.exists(filepath):
+        return FileResponse(filepath)
+    else:
+        return JSONResponse(status_code=400, content={"message": "존재하지 않는 파일입니다."})
 
 ### 여기까지 메인기능 종료 ###
 
@@ -50,7 +61,7 @@ async def serveUploadFile(rest_of_path: str):
 #  S04P22D101-63	백엔드 RESTful API 프로토콜 / 최근 게시글들 조회(추천순 반영)
 @app.get("/api/v1/board", name="전체 게시글 조회(24시간 내, 추천순)")
 async def findAllBoardOnDay():
-    result = await db.findAllBoardOnDay();
+    result = await db.findAllBoardOnDay()
     # return JSONResponse(status_code=200, content={"items":result})
     if result is None:
         return JSONResponse(status_code=400, content={"message": "게시글 조회에 실패하였습니다."})

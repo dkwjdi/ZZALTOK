@@ -46,7 +46,7 @@ import utils.video
 
 
 def convertImageToVideo(uploadimage, outputPath):
-    print("딥페이크 작업중")
+    print("다메다메 밈 작업중")
     warnings.filterwarnings("ignore")
 
     source_image = imageio.imread(uploadimage)
@@ -83,26 +83,28 @@ def convertImageToVideo(uploadimage, outputPath):
     return outputPath
 
 
-def makeDamedame(uploadimagePath, output: str = os.path.join(config.video_path, 'original.mp4')):
-    convertImageToVideo(uploadimagePath,
-                        output)
+def makeDamedame(uploadimagePath, output: str = os.path.join(config.video_path, 'result.mp4')):
+
     [filename, ext] = os.path.splitext(output)
-    print("filename", filename)
-    print("ext", ext)
+    originPath = filename + "-origin" + ext
     subPath = filename + "-3x" + ext
-    resultPath = filename + "-complete" + ext
+
+    convertImageToVideo(uploadimagePath,
+                        originPath)
+
     # 3배 빠르기로 비디오 변경, 오디오 소스 추가
     print("영상 오디오 소스 추가 및 배속 변경 중")
-    video.convert3xFasterVideo(output, subPath)
+    video.convert3xFasterVideo(originPath, subPath)
     video.insertAudioOnVideo(subPath,
                              os.path.join(config.dame_path, "bakamitai_template.mp3"),
-                             resultPath)
+                             output)
 
-    if os.path.exists(output):
-        os.remove(output)
+    if os.path.exists(originPath):
+        os.remove(originPath)
+
     if os.path.exists(subPath):
         os.remove(subPath)
-    return resultPath
+    return output
 
 
 if __name__ == "__main__":
