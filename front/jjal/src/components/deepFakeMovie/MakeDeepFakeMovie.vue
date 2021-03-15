@@ -1,49 +1,74 @@
 <template>
   <div id="container">
-    <div class="videoContainer">
-      <my-video :sources="video.sources" :options="video.options"></my-video>
-    </div>
+    <v-container>
+      <v-container>
+        <div class="videoContainer" style="margin:auto">
+          <my-video
+            :sources="video.sources"
+            :options="video.options"
+          ></my-video>
+        </div>
+      </v-container>
 
-    <div>
-      <div v-if="!file">
-        <div
-          :class="['dropZone', dragging ? 'dropZone-over' : '']"
-          @dragenter="dragging = true"
-          @dragleave="dragging = false"
-        >
-          <div class="dropZone-info" @drag="onChange">
-            <span class="fa fa-cloud-upload dropZone-title"></span>
-            <span class="dropZone-title">다메다메밈 생성 사진 Drag&Drop</span>
-            <div class="dropZone-upload-limit-info">
-              <!-- <div>extension support: image</div> -->
-              <div>maximum file size: 5 MB</div>
+      <div>
+        <v-container>
+          <div v-if="!file" style="margin:auto; width:50%">
+            <div
+              :class="['dropZone', dragging ? 'dropZone-over' : '']"
+              @dragenter="dragging = true"
+              @dragleave="dragging = false"
+            >
+              <div class="dropZone-info" @drag="onChange">
+                <span class="fa fa-cloud-upload dropZone-title"></span>
+                <span class="dropZone-title"
+                  >다메다메밈 생성 사진 Drag&Drop</span
+                >
+                <div class="dropZone-upload-limit-info">
+                  <!-- <div>extension support: image</div> -->
+                  <div>maximum file size: 5 MB</div>
+                </div>
+              </div>
+              <input type="file" @change="onChange" />
             </div>
           </div>
-          <input type="file" @change="onChange" />
-        </div>
-      </div>
-      <div v-else class="dropZone-uploaded">
-        <div class="dropZone-uploaded-info">
-          <span class="dropZone-title">Uploaded</span>
-          <button
-            style="color:red; "
-            type="button"
-            class="btn btn-primary removeFile"
-            @click="removeFile"
-          >
-            파일삭제
-          </button>
-        </div>
-      </div>
 
-      <div class="uploadedFile-info">
-        <div>fileName: {{ file.name }}</div>
-        <div>fileZise(bytes): {{ file.size }}</div>
-        <div>extension：{{ extension }}</div>
-      </div>
-    </div>
+          <div v-else class="dropZone-uploaded" style="margin:auto; width:50%">
+            <div class="dropZone-uploaded-info">
+              <span class="dropZone-title">Uploaded</span>
+              <button
+                style="color:red; "
+                type="button"
+                class="btn btn-primary removeFile"
+                @click="removeFile"
+              >
+                파일삭제
+              </button>
+            </div>
+          </div>
+        </v-container>
 
-    <button @click="a" class="input-file-button">변환하기</button>
+        <!-- <div class="uploadedFile-info">
+          <div>fileName: {{ file.name }}</div>
+          <div>fileZise(bytes): {{ file.size }}</div>
+          <div>extension：{{ extension }}</div>
+        </div> -->
+      </div>
+      <v-row no-gutters justify="center">
+        <v-col cols="auto">
+          <div class="my-2">
+            <v-btn x-large color="primary" dark>변환하기</v-btn>
+          </div>
+          <v-btn>
+            <a
+              href="https://www.w3schools.com/tags/movie.mp4"
+              target="_blank"
+              download="file.mp4"
+              >Download</a
+            >
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
@@ -73,8 +98,14 @@ export default {
   },
 
   methods: {
-    a() {
-      console.log(this.file);
+    download() {
+      try {
+        let element = document.createElement('a');
+        element.setAttribute('href', '/download');
+        element.click();
+      } catch (error) {
+        console.log(error);
+      }
     },
     onChange(e) {
       var files = e.target.files || e.dataTransfer.files;
@@ -118,9 +149,8 @@ export default {
 <style scoped>
 .videoContainer {
   width: 50%;
-  min-width: 600px;
-
-  height: 100%;
+  /* min-width: 600px; */
+  height: 80%;
 }
 
 .input-file-button {
@@ -160,7 +190,7 @@ export default {
 
 /****/
 .dropZone {
-  width: 80%;
+  /* width: 50%; */
   height: 200px;
   position: relative;
   border: 2px dashed orange;
@@ -215,7 +245,7 @@ export default {
   width: 80%;
   height: 200px;
   position: relative;
-  border: 2px dashed #eee;
+  border: 2px dashed red;
 }
 
 .dropZone-uploaded-info {

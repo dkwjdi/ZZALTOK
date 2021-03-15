@@ -1,12 +1,18 @@
+import os
+import uuid
+
 from fastapi import FastAPI, File, UploadFile, Request
-from fastapi.responses import JSONResponse
-from utils import DBUtil
+from fastapi.responses import JSONResponse, FileResponse
+from utils import db, url
+from config import config
+from init import init
+from src import damedame as dame
+
+init()
 
 app = FastAPI()
 
-
 ### 여기부터 메인기능 시작 ###
-
 
 #  S04P22D101-54	백엔드 RESTful API 프로토콜 / 가짜 격언 생성 기능에서 얼굴 합성 딥페이크
 # input : origin위인 사진, target합성할 얼굴 사진
@@ -21,7 +27,15 @@ async def createDeepFakeImage(origin: UploadFile = File(...), target: UploadFile
 # output : 합성된 동영상
 @app.post("/api/v1/damedame", name="다메다메 짤 생성 서비스")
 async def createDameMemeVideo(image: UploadFile = File(...)):
-    pass
+        contents = await image.read()
+        image.filename = image.filename.replace(' ', '')
+        input = os.path.join(config.image_path, image.filename)
+        output = os.path.join(config.video_path, str(uuid.uuid4()).replace('-', '') + ".mp4")
+        with open(input, "wb") as fp:
+            fp.write(contents)
+        print("input:",input)
+        dame.makeDamedame(uploadimagePath=input, output=output)
+        return {"url": url.convertPathToURL(output, baseUrl="/api/v1/content/")}
 
 
 #  S04P22D101-56	백엔드 RESTful API 프로토콜 / 동영상 배경 삭제 및 배경 변경
@@ -31,6 +45,13 @@ async def createDameMemeVideo(image: UploadFile = File(...)):
 async def removeBackGroundOnVideo(video: UploadFile = File(...), image: UploadFile = File(...)):
     pass
 
+@app.get("/api/v1/content/{rest_of_path:path}", name="파일 가져오기")
+async def serveUploadFile(rest_of_path: str):
+    filepath = os.path.join(config.root, rest_of_path)
+    if os.path.exists(filepath):
+        return FileResponse(filepath)
+    else:
+        return JSONResponse(status_code=400, content={"message": "존재하지 않는 파일입니다."})
 
 ### 여기까지 메인기능 종료 ###
 
@@ -40,7 +61,7 @@ async def removeBackGroundOnVideo(video: UploadFile = File(...), image: UploadFi
 #  S04P22D101-63	백엔드 RESTful API 프로토콜 / 최근 게시글들 조회(추천순 반영)
 @app.get("/api/v1/board", name="전체 게시글 조회(24시간 내, 추천순)")
 async def findAllBoardOnDay():
-    result = await DBUtil.findAllBoardOnDay();
+    result = await db.findAllBoardOnDay()
     # return JSONResponse(status_code=200, content={"items":result})
     if result is None:
         return JSONResponse(status_code=400, content={"message": "게시글 조회에 실패하였습니다."})
@@ -50,7 +71,7 @@ async def findAllBoardOnDay():
 #  S04P22D101-64     백엔드 RESTful API 프로토콜 / 게시글 상세 조회
 @app.get("/api/v1/board/detail/{board_no}", name="게시글 상세 조회")
 async def findBoardDetailByBoardNo(board_no: int):
-    result = await DBUtil.findBoardDetailByBoardNo(board_no)
+    result = await db.findBoardDetailByBoardNo(board_no)
     if result is None:
         return JSONResponse(status_code=400, content={"message": "존재하지 않는 게시글입니다."})
     return result
@@ -72,7 +93,7 @@ async def writeBoard(
         "password": password,
         "ip": ip
     }
-    result = await DBUtil.writeBoard(board_info)
+    result = await db.writeBoard(board_info)
     if result is None:
         return JSONResponse(status_code=400, content={"message": "게시물 작성에 실패했습니다."})
     return result
@@ -97,7 +118,7 @@ async def editBoard(
     res_check = await checkBoard(board_no, password)
 
     if res_check['result']:
-        result = await DBUtil.editBoard(board_info)
+        result = await db.editBoard(board_info)
         if result is None:
             return JSONResponse(status_code=400, content={"message": "게시물 수정에 실패했습니다."})
         return result
@@ -115,7 +136,7 @@ async def deleteBoard(
 ):
     res_check = await checkBoard(board_no, password)
     if res_check['result']:
-        result = await DBUtil.deleteBoard(password, board_no)
+        result = await db.deleteBoard(password, board_no)
 
         if result is None:
             return JSONResponse(status_code=400, content={"message": "게시물 삭제에 실패했습니다."})
@@ -132,7 +153,7 @@ async def countUpThumbsUpOnBoard(
         board_no: int, request: Request
 ):
     ip = request.client.host
-    result = await DBUtil.countUpThumbsUpOnBoard(board_no, ip)
+    result = await db.countUpThumbsUpOnBoard(board_no, ip)
 
     if result is None:
         return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
@@ -149,7 +170,7 @@ async def countUpThumbsUpOnBoard(
 async def findCommentByBoardNo(
         board_no: int
 ):
-    result = await DBUtil.findCommentByBoardNo(board_no)
+    result = await db.findCommentByBoardNo(board_no)
 
     if result is None:
         return JSONResponse(status_code=400, content={"message": "댓글 조회에 실패했습니다."})
@@ -172,7 +193,7 @@ async def writeComment(
         "ip": ip,
     }
 
-    result = await DBUtil.writeComment(comment_info)
+    result = await db.writeComment(comment_info)
 
     if result is None:
         return JSONResponse(status_code=400, content={"message": "댓글 작성에 실패했습니다."})
@@ -188,7 +209,7 @@ async def deleteComment(
 ):
     res_check = await checkComment(comment_no, password)
     if res_check['result']:
-        result = await DBUtil.deleteComment(comment_no)
+        result = await db.deleteComment(comment_no)
 
         if result is None:
             return JSONResponse(status_code=400, content={"message": "댓글 삭제에 실패했습니다."})
@@ -214,7 +235,7 @@ async def editComment(
 
     res_check = await checkComment(comment_no, password)
     if res_check['result']:
-        result = await DBUtil.editComment(comment_info)
+        result = await db.editComment(comment_info)
 
         if result is None:
             return JSONResponse(status_code=400, content={"message": "댓글 수정에 실패했습니다."})
@@ -230,7 +251,7 @@ async def editComment(
 async def checkBoard(
         board_no: int, password: str
 ):
-    result = await DBUtil.checkPasswordOnBoard(password, board_no)
+    result = await db.checkPasswordOnBoard(password, board_no)
     return {"result": result}
 
 
@@ -241,7 +262,7 @@ async def checkBoard(
 async def checkComment(
         comment_no: int, password: str
 ):
-    result = await DBUtil.checkPasswordOnComment(password, comment_no)
+    result = await db.checkPasswordOnComment(password, comment_no)
     return {"result": result}
 
 
