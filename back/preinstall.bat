@@ -3,7 +3,7 @@
 setlocal enableextensions enabledelayedexpansion
 pushd %~dp0
 
-:: BatchGotAdmin
+:BatchGotAdmin
 :-------------------------------------
 REM  --> Check for permissions
 >nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
@@ -26,10 +26,18 @@ if '%errorlevel%' NEQ '0' (
     pushd "%CD%"
     CD /D "%~dp0"
 :--------------------------------------
-
-title JJAL Python SERVER
+title PREINSTALL REQUIREMENTS
 
 set root=C:\ProgramData\Miniconda3
 call %root%\Scripts\activate.bat %root%
+
+echo 해당 파일은 requirements만을 추가 설치하기 위해 만들어졌습니다.
 call conda activate AI
-call uvicorn main:app --reload --host=0.0.0.0 --port=8000
+
+echo .
+echo 라이브러리 및 모듈 설치 시작
+call pip install -r requirements.txt
+
+echo .
+echo 설치가 완료되었습니다. run.bat 파일로 서버를 실행하시면 됩니다.
+pause
