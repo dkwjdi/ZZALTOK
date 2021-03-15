@@ -25,13 +25,9 @@ if not os.path.isdir(config.dame_path):
         , filename=os.path.join(config.dame_path, "bakamitai_template.mp3"))
     os.remove(os.path.join(config.root, "damesource.zip"))
 
-# video 폴더 생성
-if not os.path.isdir(config.video_path):
-    os.makedirs(config.video_path, exist_ok=True)
-
-# 필요 없는 파일 삭제
-if os.path.isfile(os.path.join(config.root, "complete.mp4")):
-    os.remove(os.path.join(config.root, "complete.mp4"))
+# # 필요 없는 파일 삭제
+# if os.path.isfile(os.path.join(config.root, "complete.mp4")):
+#     os.remove(os.path.join(config.root, "complete.mp4"))
 
 # make damedane
 import sys

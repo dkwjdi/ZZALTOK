@@ -1,12 +1,14 @@
 from fastapi import FastAPI, File, UploadFile, Request
 from fastapi.responses import JSONResponse
 from utils import db
+from config import config
+from init import init
+
+init()
 
 app = FastAPI()
 
-
 ### 여기부터 메인기능 시작 ###
-
 
 #  S04P22D101-54	백엔드 RESTful API 프로토콜 / 가짜 격언 생성 기능에서 얼굴 합성 딥페이크
 # input : origin위인 사진, target합성할 얼굴 사진
@@ -21,7 +23,12 @@ async def createDeepFakeImage(origin: UploadFile = File(...), target: UploadFile
 # output : 합성된 동영상
 @app.post("/api/v1/damedame", name="다메다메 짤 생성 서비스")
 async def createDameMemeVideo(image: UploadFile = File(...)):
-    pass
+        contents = await image.read()
+        with open(os.path.join(config.image_path, image.filename), "wb") as fp:
+            fp.write(contents)
+        print(image.filename)
+
+        return {"filename": image.filename}
 
 
 #  S04P22D101-56	백엔드 RESTful API 프로토콜 / 동영상 배경 삭제 및 배경 변경
@@ -31,6 +38,9 @@ async def createDameMemeVideo(image: UploadFile = File(...)):
 async def removeBackGroundOnVideo(video: UploadFile = File(...), image: UploadFile = File(...)):
     pass
 
+@app.get("/api/v1/content/{rest_of_path:path}")
+async def serveUploadFile(rest_of_path: str):
+    return {"path" : rest_of_path}
 
 ### 여기까지 메인기능 종료 ###
 
