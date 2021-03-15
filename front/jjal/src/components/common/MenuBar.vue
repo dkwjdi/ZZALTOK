@@ -9,7 +9,7 @@
     <v-divider></v-divider>
 
     <v-list dense>
-      <v-list-item v-for="item in items" :key="item.title" link>
+      <v-list-item v-for="item in items" :key="item.title" link @click="movePage(item.name)">
         <v-list-item-icon>
           <v-icon>{{ item.icon }}</v-icon>
         </v-list-item-icon>
@@ -23,7 +23,7 @@
     </v-list>
 
     <!-- 배경누르면 창 꺼지게 -->
-    <button style="display:none" id="chagemenu" @click="OnOffMenu">ddd</button>
+    <button style="display: none" id="chagemenu" @click="OnOffMenu">ddd</button>
   </v-navigation-drawer>
 </template>
 
@@ -33,32 +33,36 @@ import $ from 'jquery';
 export default {
   computed: {
     getDrawer: {
-      get: function() {
+      get: function () {
         return this.$store.getters.isOnOffMenu;
       },
-      set: function() {},
+      set: function () {},
     },
   },
   data() {
     return {
       items: [
-        { title: '격언생성', icon: 'mdi-view-dashboard' },
-        { title: '다메다메', icon: 'mdi-forum' },
-        { title: '나만의 배경', icon: 'mdi-forum' },
+        { title: '격언생성', icon: 'mdi-view-dashboard', name: 'DeepFakeImage' },
+        { title: '다메다메', icon: 'mdi-forum', name: 'DeepFakeMovie' },
+        { title: '나만의 배경', icon: 'mdi-forum', name: 'RemoveBack' },
       ],
       nickname: '',
     };
   },
   updated() {
     // 바탕화면 누르면 vuex 값을 바꿔주기 위해
-    $(document).ready(function() {
-      $('.v-overlay').on('click', function() {
+    $(document).ready(function () {
+      $('.v-overlay').on('click', function () {
         $('#chagemenu').trigger('click');
       });
     });
   },
   methods: {
-    OnOffMenu: function() {
+    movePage: function (move) {
+      this.OnOffMenu();
+      this.$router.push({ name: move });
+    },
+    OnOffMenu: function () {
       this.$store.commit('SET_ON_OFF_MENU', false);
     },
   },
