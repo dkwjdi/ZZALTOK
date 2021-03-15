@@ -1,8 +1,8 @@
 <template>
   <v-app-bar app color="white" flat id="navbar" height="80vh">
     <img
-      :src="require('../../assets/logo2.png')"
-      class="nav-choice"
+      :src="require('../../assets/Nav_Logo.png')"
+      class="nav-choice ml-5"
       @click="movePage('Main')"
       style="height: 80px"
     />
@@ -36,7 +36,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style>
 #navbar {
   outline: 1px solid rgb(225, 225, 225);
 }
