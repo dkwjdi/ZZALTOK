@@ -61,6 +61,17 @@ def make_deep_face(args):
 
         cv2.destroyAllWindows()
 
+def makedeepface(uploadoriginimagePath, uploadtargetimagePath, output: str = os.path.join(config.face_swap_result_path, 'result.png')):
+    print("딥페이크 진행합니다.")
+    make_deep_face(Arguments(uploadoriginimagePath, uploadtargetimagePath, output))
+
+    if os.path.exists(uploadoriginimagePath):
+        os.remove(uploadoriginimagePath)
+
+    if os.path.exists(uploadtargetimagePath):
+        os.remove(uploadtargetimagePath)
+
+    return output
 
 if __name__ == "__main__":
     print("딥페이크 모듈 테스트 진행합니다.")
