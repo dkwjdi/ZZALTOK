@@ -6,12 +6,10 @@ from config import config
 
 if not os.path.isdir(config.face_swap_model_path):
     print("딥페이크 프로젝트 클론 중")
-    git.Repo.clone_from("https://github.com/wuhuikai/FaceSwap", config.face_swap_model_path)
+    git.Repo.clone_from("https://github.com/getCurrentThread/FaceSwap", config.face_swap_model_path)
 
 import sys
 sys.path.insert(1, config.face_swap_model_path)  # 딥페이크 프로젝트 레포지토리를 추가하여 import 가능하게 조치
-
-print(os.getcwd())
 
 from face_detection import select_face
 from face_swap import face_swap
