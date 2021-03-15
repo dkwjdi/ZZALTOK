@@ -2,7 +2,7 @@
   <v-navigation-drawer v-model="getDrawer" absolute temporary right width="30vh">
     <v-list-item>
       <v-list-item-content>
-        <v-list-item-title class="ml-2">페이지 이동 ? 로고?</div></v-list-item-title>
+        <v-list-item-title class="ml-2">페이지 이동 ? 로고?</v-list-item-title>
       </v-list-item-content>
     </v-list-item>
 

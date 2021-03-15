@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Main from '../views/main/Main.vue';
+import ShareDetail from '../views/main/ShareDetail.vue';
 import DeepFakeImage from '../views/deepFakeImage/DeepFakeImage.vue';
 import DeepFakeMovie from '../views/deepFakeMovie/DeepFakeMovie.vue';
 import RemoveBack from '../views/removeBack/RemoveBack.vue';
@@ -12,6 +13,11 @@ const routes = [
     path: '/',
     name: 'Main',
     component: Main,
+  },
+  {
+    path: '/shareDetail',
+    name: 'ShareDetail',
+    component: ShareDetail,
   },
   {
     path: '/deepFakeImage',
