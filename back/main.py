@@ -7,6 +7,7 @@ from utils import db, url
 from config import config
 from init import init
 from src import damedame as dame
+from src import startfaceswap as faceswap
 
 init()
 
@@ -19,7 +20,24 @@ app = FastAPI()
 # output : 합성된 사진 (위인 사진 기준)
 @app.post("/api/v1/deepfake", name="얼굴 합성 딥페이크 서비스")
 async def createDeepFakeImage(origin: UploadFile = File(...), target: UploadFile = File(...)):
-    pass
+    content_origin = await origin.read()
+    origin.filename = origin.filename.replace(' ', '')
+    content_target = await target.read()
+    target.filename = target.filename.replace(' ','')
+    origin_input = os.path.join(config.face_swap_img_path, origin.filename)
+    target_input = os.path.join(config.face_swap_img_path, target.filename)
+    output = os.path.join(config.face_swap_result_path, str(uuid.uuid4()).replace('-', '') + ".png")
+
+    with open(origin_input, "wb") as fp:
+        fp.write(content_origin)
+    with open(target_input, "wb") as fp:
+        fp.write(content_target)
+
+    print("origininput:", origin_input)
+    print("target_input:", target_input)
+
+    faceswap.makedeepface(uploadoriginimagePath=origin_input, uploadtargetimagePath=target_input, output=output)
+    return {"url": url.convertPathToURL(output, baseUrl="/api/v1/content/")}
 
 
 #  S04P22D101-55	백엔드 RESTful API 프로토콜 / 다메다메 짤 생성
