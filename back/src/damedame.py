@@ -10,12 +10,12 @@ from config import config
 from utils import video
 
 if not os.path.isdir(config.first_order_model_path):
-    print("다메다메 프로젝트 클론 중")
+    print("다메다메 프로젝트 클론 중", end=' ')
     git.Repo.clone_from("https://github.com/AliaksandrSiarohin/first-order-model", config.first_order_model_path)
     print("done")
 
 if not os.path.isdir(config.dame_path):
-    print("다메다메 학습 모델 및 템플릿 다운로드 중 - 오래 걸림")
+    print("다메다메 학습 모델 및 템플릿 다운로드 중 - 오래 걸림", end=' ')
     urllib.request.urlretrieve(
         "https://github.com/KeepSOBP/dame/releases/download/damesource/damesource.zip"
         , filename=os.path.join(config.root, "damesource.zip"))
@@ -25,7 +25,7 @@ if not os.path.isdir(config.dame_path):
     print("done")
 
 if not os.path.exists(os.path.join(config.dame_path, "bakamitai_template.mp3")):
-    print("다메다메 오디오 리소스 다운로드 중")
+    print("다메다메 오디오 리소스 다운로드 중", end=' ')
     urllib.request.urlretrieve(
         "https://github.com/KeepSOBP/dame/releases/download/damesource/bakamitai_template.mp3"
         , filename=os.path.join(config.dame_path, "bakamitai_template.mp3"))
@@ -48,7 +48,7 @@ import utils.video
 
 
 def convertImageToVideo(uploadimage, outputPath):
-    print("다메다메 밈 작업중")
+    print("다메다메 밈 작업중", end=' ')
     warnings.filterwarnings("ignore")
 
     source_image = imageio.imread(uploadimage)
@@ -79,9 +79,9 @@ def convertImageToVideo(uploadimage, outputPath):
         checkpoint_path=os.path.join(config.dame_path, 'vox-cpk.pth.tar'))
 
     # make video
-    print("영상 제작 진행 중")
     predictions = make_animation(source_image, driving_video, generator, kp_detector, relative=True)
     imageio.mimsave(outputPath, [img_as_ubyte(frame) for frame in predictions])
+    print('done')
     return outputPath
 
 
@@ -95,7 +95,7 @@ def makeDamedame(uploadimagePath, output: str = os.path.join(config.video_path, 
                         originPath)
 
     # 3배 빠르기로 비디오 변경, 오디오 소스 추가
-    print("영상 오디오 소스 추가 및 배속 변경 중")
+    print("영상 오디오 소스 추가 및 배속 변경 중", end=' ')
     video.convert3xFasterVideo(originPath, subPath)
     video.insertAudioOnVideo(subPath,
                              os.path.join(config.dame_path, "bakamitai_template.mp3"),
@@ -106,8 +106,11 @@ def makeDamedame(uploadimagePath, output: str = os.path.join(config.video_path, 
 
     if os.path.exists(subPath):
         os.remove(subPath)
+    print('done')
     return output
 
+
+# print(__file__, "모듈 리소스 로드 완료")
 
 if __name__ == "__main__":
     print("다메다메 모듈을 테스트 진행합니다.")

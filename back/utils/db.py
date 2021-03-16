@@ -10,7 +10,7 @@ mydb = connect(
     database="jjal"
 )
 cursor = mydb.cursor()
-print(mydb)
+# print(mydb)
 
 
 ### 여기부터 공용 기능 시작 ###

@@ -2,7 +2,7 @@ import os
 import uuid
 
 from fastapi import FastAPI, File, UploadFile, Request
-from fastapi.responses import JSONResponse, FileResponse
+from fastapi.responses import JSONResponse, FileResponse, StreamingResponse
 from utils import db, url
 from config import config
 from init import init
@@ -64,9 +64,11 @@ async def removeBackGroundOnVideo(video: UploadFile = File(...), image: UploadFi
     pass
 
 @app.get("/api/v1/content/{rest_of_path:path}", name="파일 가져오기")
-async def serveUploadFile(rest_of_path: str):
+async def serveUploadFile(rest_of_path: str, download: bool = False):
     filepath = os.path.join(config.root, rest_of_path)
     if os.path.exists(filepath):
+        if download:
+            return FileResponse(filepath, media_type="application/octet-stream")
         return FileResponse(filepath)
     else:
         return JSONResponse(status_code=400, content={"message": "존재하지 않는 파일입니다."})
