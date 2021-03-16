@@ -22,7 +22,7 @@ class Arguments:
     correct_color: bool
     no_debug_window: bool
 
-    def __init__(self, src, dst, out, warp_2d=True, correct_color=True, no_debug_window=False):
+    def __init__(self, src, dst, out, warp_2d=True, correct_color=True, no_debug_window=True):
         self.src = src
         self.dst = dst
         self.out = out

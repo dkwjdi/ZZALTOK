@@ -21,20 +21,24 @@ app = FastAPI()
 @app.post("/api/v1/deepfake", name="얼굴 합성 딥페이크 서비스")
 async def createDeepFakeImage(origin: UploadFile = File(...), target: UploadFile = File(...)):
     content_origin = await origin.read()
-    origin.filename = origin.filename.replace(' ', '')
+    ext = origin.filename[origin.filename.rfind('.'):]
+    origin.filename = str(uuid.uuid4()).replace('-', '') + ext
+
     content_target = await target.read()
-    target.filename = target.filename.replace(' ','')
+    ext = target.filename[target.filename.rfind('.'):]
+    target.filename = str(uuid.uuid4()).replace('-', '') + ext
+
     origin_input = os.path.join(config.face_swap_img_path, origin.filename)
     target_input = os.path.join(config.face_swap_img_path, target.filename)
     output = os.path.join(config.face_swap_result_path, str(uuid.uuid4()).replace('-', '') + ".png")
+
+    print("origininput:", origin_input)
+    print("target_input:", target_input)
 
     with open(origin_input, "wb") as fp:
         fp.write(content_origin)
     with open(target_input, "wb") as fp:
         fp.write(content_target)
-
-    print("origininput:", origin_input)
-    print("target_input:", target_input)
 
     faceswap.makedeepface(uploadoriginimagePath=origin_input, uploadtargetimagePath=target_input, output=output)
     return {"url": url.convertPathToURL(output, baseUrl="/api/v1/content/")}
