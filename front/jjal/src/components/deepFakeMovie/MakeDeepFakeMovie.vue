@@ -2,7 +2,7 @@
   <div id="container">
     <v-container>
       <v-container>
-        <div class="videoContainer" style="margin:auto">
+        <div class="videoContainer" style="margin: auto">
           <my-video
             :sources="video.sources"
             :options="video.options"
@@ -12,7 +12,7 @@
 
       <div>
         <v-container>
-          <div v-if="!file" style="margin:auto; width:50%">
+          <div v-if="!file" style="margin: auto; width: 50%">
             <div
               :class="['dropZone', dragging ? 'dropZone-over' : '']"
               @dragenter="dragging = true"
@@ -32,11 +32,15 @@
             </div>
           </div>
 
-          <div v-else class="dropZone-uploaded" style="margin:auto; width:50%">
+          <div
+            v-else
+            class="dropZone-uploaded"
+            style="margin: auto; width: 50%"
+          >
             <div class="dropZone-uploaded-info">
               <span class="dropZone-title">Uploaded</span>
               <button
-                style="color:red; "
+                style="color: red"
                 type="button"
                 class="btn btn-primary removeFile"
                 @click="removeFile"
@@ -47,22 +51,21 @@
           </div>
         </v-container>
 
-        <!-- <div class="uploadedFile-info">
+        <div class="uploadedFile-info">
           <div>fileName: {{ file.name }}</div>
           <div>fileZise(bytes): {{ file.size }}</div>
           <div>extension：{{ extension }}</div>
-        </div> -->
+        </div>
       </div>
       <v-row no-gutters justify="center">
         <v-col cols="auto">
           <div class="my-2">
-            <v-btn x-large color="primary" dark>변환하기</v-btn>
+            <v-btn @click="transfer" x-large color="primary" dark
+              >변환하기</v-btn
+            >
           </div>
           <v-btn>
-            <a
-              href="https://www.w3schools.com/tags/movie.mp4"
-              target="_blank"
-              download="file.mp4"
+            <a :href="downloadLink" target="_blank" download="file.mp4"
               >Download</a
             >
           </v-btn>
@@ -74,13 +77,14 @@
 
 <script>
 import myVideo from 'vue-video';
-
+import http from '@/util/http-common.js';
 export default {
   components: { myVideo },
   data() {
     return {
       file: '',
       dragging: false,
+      downloadLink: '',
       video: {
         sources: [
           {
@@ -98,6 +102,26 @@ export default {
   },
 
   methods: {
+    transfer() {
+      let formData = new FormData();
+      console.log(this.file);
+      formData.append('image', this.file);
+      http
+        .post('/v1/damedame', formData)
+        .then((response) => {
+          alert('변환완료');
+          this.downloadLink =
+            'http://localhost:8000' + response.data.url + '?download=true';
+          console.log('성공요');
+          console.log(this.downloadLink);
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log('에러요');
+          console.log(error);
+          console.log(error.response);
+        });
+    },
     download() {
       try {
         let element = document.createElement('a');
