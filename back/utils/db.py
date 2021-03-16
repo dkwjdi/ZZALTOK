@@ -32,7 +32,7 @@ async def checkPasswordOnBoard(
                 return False
 
     except Error as e:
-        return False
+        return None
 
 async def checkPasswordOnComment(
         password: str,
@@ -50,10 +50,62 @@ async def checkPasswordOnComment(
                 return False
 
     except Error as e:
-        return False
+        return None
+
+async def checkUserIpOnGoodList(
+        board_no: int,
+        IP: str
+):
+    # 좋아요를 눌렀는지 안눌렀는지 확인하기
+    sql = """
+            SELECT IP FROM goodlist 
+            WHERE board_no = %s AND IP = %s
+          """
+    try:
+        cursor.execute(sql, (board_no, IP))
+        res = cursor.fetchone()
+        if res is None:
+            return False
+        else:
+            return True
+
+    except Error as e:
+        return None
+
+async def insertUserIpOnGoodList(
+        board_no: int,
+        ip: str,
+):
+    sql = """
+            INSERT INTO goodlist (board_no, ip)
+            VALUES (%s, %s)
+          """
+    val = (board_no, ip)
+    try:
+        cursor.execute(sql, val)
+        mydb.commit()
+        return True
+
+    except Error as e:
+        return None
 
 
+async def deleteUserIpOnGoodList(
+        board_no: int,
+        ip: str,
+):
+    sql = """
+            DELETE FROM goodlist 
+            WHERE board_no = %s AND ip = %s;
+          """
+    val = (board_no, ip)
+    try:
+        cursor.execute(sql, val)
+        mydb.commit()
+        return True
 
+    except Error as e:
+        return None
 ### 여기까지 공용 기능 종료 ###
 
 
@@ -192,13 +244,13 @@ async def deleteBoard(
 
 #  S04P22D101-62	백엔드 RESTful API 프로토콜 / 게시글 추천(좋아요 기능)
 async def countUpThumbsUpOnBoard(
-        board_no: int, ip: str
+        board_no: int
 ):
     sql = """
                 UPDATE board 
                 SET good = good+1
                 WHERE board_no = %s
-              """
+          """
     val = (board_no, )
     try:
         cursor.execute(sql, val)
@@ -208,6 +260,23 @@ async def countUpThumbsUpOnBoard(
     except Error as e:
         return None
 
+#  S04P22D101-62	백엔드 RESTful API 프로토콜 / 게시글 추천(좋아요 기능)
+async def countDownThumbsUpOnBoard(
+        board_no: int
+):
+    sql = """
+                UPDATE board 
+                SET good = good-1
+                WHERE board_no = %s
+          """
+    val = (board_no, )
+    try:
+        cursor.execute(sql, val)
+        mydb.commit()
+        return True
+
+    except Error as e:
+        return None
 
 ### 여기까지 게시글 기능 종료 ###
 
