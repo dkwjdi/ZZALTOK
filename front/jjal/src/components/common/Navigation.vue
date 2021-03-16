@@ -26,8 +26,9 @@ export default {
   },
   created() {},
   methods: {
-    movePage: function(move) {
+    movePage: function (move) {
       this.$router.push({ name: move });
+      this.$store.commit('SET_ON_OFF_MENU', false);
     },
     OnOffMenu() {
       this.$store.commit('SET_ON_OFF_MENU', true);

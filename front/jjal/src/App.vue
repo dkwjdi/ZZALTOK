@@ -3,7 +3,7 @@
     <navigation />
     <menuBar />
 
-    <v-main>
+    <v-main class="main-back">
       <router-view />
     </v-main>
 
@@ -29,5 +29,9 @@ export default {
 
 .cur-point {
   cursor: pointer;
+}
+
+.main-back {
+  
 }
 </style>
