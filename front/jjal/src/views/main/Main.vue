@@ -74,6 +74,7 @@ export default {
   },
 
   created() {
+    window.scrollTo(0, 0);
     //axios하기
     this.items = 4;
   },

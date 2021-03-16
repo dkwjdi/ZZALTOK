@@ -17,7 +17,7 @@
             <span class="title-choice" @click="moveDetail()">제목</span>
           </div>
           <div class="mt-1">
-            <i class="far fa-heart mr-1"></i>58 <i class="far fa-eye ml-1"></i> 100
+            <v-icon small class="mr-1">mdi-thumb-up-outline</v-icon>50 <i class="far fa-eye ml-1"></i> 100
           </div>
         </div>
       </div>
