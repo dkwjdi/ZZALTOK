@@ -141,6 +141,9 @@ async def editBoard(
     }
     res_check = await checkBoard(board_no, password)
 
+    if res_check['result'] is None:
+        return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
+
     if res_check['result']:
         result = await db.editBoard(board_info)
         if result is None:
@@ -159,6 +162,10 @@ async def deleteBoard(
         board_no: int
 ):
     res_check = await checkBoard(board_no, password)
+
+    if res_check['result'] is None:
+        return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
+
     if res_check['result']:
         result = await db.deleteBoard(password, board_no)
 
@@ -177,11 +184,45 @@ async def countUpThumbsUpOnBoard(
         board_no: int, request: Request
 ):
     ip = request.client.host
-    result = await db.countUpThumbsUpOnBoard(board_no, ip)
+    res_check = await checkUserIpOnGoodList(board_no, ip)
 
-    if result is None:
+    if res_check['result'] is None:
         return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
-    return result
+
+    # 존재했으면 이미 누른 상태이므로 -1
+    if res_check['result']:
+        count_result = await db.countDownThumbsUpOnBoard(board_no)
+        if count_result is None:
+            return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
+
+        delete_result = await db.deleteUserIpOnGoodList(board_no, ip)
+        if delete_result is None:
+            await db.countUpThumbsUpOnBoard(board_no)
+            return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
+        return "좋아요 취소"
+
+    # 존재하지 않았음 좋아요+1
+    else:
+        count_result = await db.countUpThumbsUpOnBoard(board_no)
+        if count_result is None:
+            return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
+        insert_result = await db.insertUserIpOnGoodList(board_no, ip)
+
+        if insert_result is None:
+            await db.countDownThumbsUpOnBoard(board_no)
+            return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
+        return "좋아요!"
+
+
+# S04P22D101-105    추천 중복 방지
+# input : board_no(보드번호), ip(유저ip)
+# output : 좋아요 성공 유무 (중복 방지)
+async def checkUserIpOnGoodList(
+        board_no: int,
+        ip: str,
+):
+    result = await db.checkUserIpOnGoodList(board_no, ip)
+    return {"result": result}
 
 
 ### 여기까지 게시글 기능 종료 ###
@@ -232,6 +273,10 @@ async def deleteComment(
         comment_no: int, password: str
 ):
     res_check = await checkComment(comment_no, password)
+
+    if res_check['result'] is None:
+        return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
+
     if res_check['result']:
         result = await db.deleteComment(comment_no)
 
@@ -258,6 +303,10 @@ async def editComment(
     }
 
     res_check = await checkComment(comment_no, password)
+
+    if res_check['result'] is None:
+        return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
+
     if res_check['result']:
         result = await db.editComment(comment_info)
 
