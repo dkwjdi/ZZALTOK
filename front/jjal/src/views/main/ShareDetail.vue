@@ -41,8 +41,7 @@
                         <i class="fas fa-thumbs-up fa-lg"></i>
                       </v-btn>
                       <div class="mt-3">
-                        <i class="fas fa-thumbs-up mr-1"></i>50
-                        <i class="far fa-eye ml-1"></i> 100
+                        <i class="fas fa-thumbs-up mr-1"></i>50 <i class="far fa-eye ml-1"></i> 100
                         <i class="fas fa-comment"></i> 2
                       </div>
 
@@ -56,14 +55,14 @@
 
           <!-- 댓글 -->
           <v-container>
-            <v-sheet class="mt-10">
-              <comment-form :type="create" />
+            <v-sheet class="mt-10 mb-5">
+              <comment-form :type="'create'" />
 
               <v-divider></v-divider>
-              <comment-list/>
+
+              <comment-list />
             </v-sheet>
           </v-container>
-
         </div>
       </v-col>
       <v-col cols="1" md="2"></v-col>
@@ -72,13 +71,13 @@
 </template>
 
 <script>
-import CommentForm from "../../components/shareDetail/CommentForm.vue";
+import CommentForm from '../../components/shareDetail/CommentForm.vue';
 import CommentList from '../../components/shareDetail/CommentList.vue';
 export default {
   components: { CommentForm, CommentList },
-  created(){
+  created() {
     window.scrollTo(0, 0);
-  }
+  },
 };
 </script>
 
