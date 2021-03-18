@@ -30,6 +30,7 @@
         height="141px"
         ref="content"
         v-model="content"
+        style="color: red"
       ></v-textarea>
 
       <div class="mb-5" style="float: right">
