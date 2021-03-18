@@ -1,27 +1,54 @@
 <template>
   <v-app>
     <div>
-      {{ a }}
       <div>
         <v-container>
-          <v-row justify="center">
+          <v-row no-gutters justify="center" ref="printMe">
             <v-col></v-col>
-            <v-col cols="4" ref="printMe">
-              <v-textarea
-                hide-details
-                name=""
-                id=""
-                height="600"
-                full-width
-                :style="cssProps"
-              ></v-textarea>
+            <v-col>
+              <img :src="imgPath" alt="" style="width: 100%; height: 100%"
+            /></v-col>
+            <v-col
+              class="font-change"
+              style="background: black; text-align: center"
+            >
+              <div style="color: white"><p v-html="OutProverbContent"></p></div>
+              <div style="color: white"><p v-html="OutProverbName"></p></div>
             </v-col>
             <v-col></v-col>
           </v-row>
         </v-container>
-        <img style="display: none" :src="output" alt="" />
 
-        <!--  -->
+        <v-container>
+          <v-row no-gutters justify="center">
+            <v-col></v-col>
+            <v-col>
+              명언
+              <textarea
+                label="명언입력"
+                hide-details="auto"
+                v-model="proverb.proverbContent"
+                style="resize: none; width: 100%; border: 1px solid black"
+              ></textarea>
+            </v-col>
+
+            <v-col></v-col>
+          </v-row>
+          <v-row no-gutters justify="center">
+            <v-col></v-col>
+            <v-col>
+              이름
+              <textarea
+                style="resize: none; width: 100%; border: 1px solid black"
+                label="이름입력"
+                v-model="proverb.proverbName"
+              ></textarea>
+            </v-col>
+            <v-col></v-col>
+          </v-row>
+        </v-container>
+
+        <!-- <img :src="output" alt="" />  캔버스  -->
 
         <v-container>
           <div v-if="!file" style="margin: auto; width: 50%">
@@ -92,19 +119,30 @@
 
 <script>
 import http from '@/util/http-common.js';
+import { VueEditor } from 'vue2-editor';
 
 export default {
   data() {
     return {
+      proverb: {
+        proverbContent: '',
+        proverbName: '',
+      },
+      title: 'Working with vue2-editor',
+      editorContent: '<h1>This is dope!</h1>',
       a: 'a',
       file: '',
       dragging: false,
       output: null,
       downloadLink: '',
+      imgPath: require('@/assets/nineone.png'),
       cssProps: {
         backgroundImage: `url(${require('@/assets/nineone.png')})`,
       },
     };
+  },
+  components: {
+    VueEditor,
   },
   methods: {
     onChange(e) {
@@ -149,9 +187,9 @@ export default {
         type: 'dataURL',
       };
 
-      this.a = 'asdf';
-
       this.output = await this.$html2canvas(el, options); //canvas에 그려서 output이 가지고 있음
+      console.log('output');
+      console.log(this.output);
       const decodImg = atob(this.output.split(',')[1]);
 
       let array = [];
@@ -184,6 +222,16 @@ export default {
   computed: {
     extension() {
       return this.file ? this.file.name.split('.').pop() : '';
+    },
+    OutProverbContent() {
+      return this.proverb.proverbContent
+        .replace(/\n/g, '<br>')
+        .replace(/ /g, '&nbsp');
+    },
+    OutProverbName() {
+      return this.proverb.proverbName
+        .replace(/\n/g, '<br>')
+        .replace(/ /g, '&nbsp');
     },
   },
 };
@@ -299,5 +347,22 @@ export default {
 
 .removeFile {
   width: 200px;
+}
+.my-textarea {
+  color: white !important;
+}
+.text-green input {
+  color: red !important;
+}
+.v-app input.v-textfield {
+  color: red;
+}
+input[type='text'] {
+  font-size: 24px;
+}
+
+.font-change {
+  font-family: 'Yeon Sung', cursive;
+  font-size: 2rem;
 }
 </style>
