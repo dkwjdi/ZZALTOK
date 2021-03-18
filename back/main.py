@@ -1,5 +1,6 @@
 import os
 import uuid
+import re
 
 from fastapi import FastAPI, File, UploadFile, Request
 from fastapi.responses import JSONResponse, FileResponse, StreamingResponse
@@ -13,6 +14,7 @@ from PIL import Image
 init()
 
 app = FastAPI()
+
 
 ### 여기부터 메인기능 시작 ###
 
@@ -50,15 +52,15 @@ async def createDeepFakeImage(origin: UploadFile = File(...), target: UploadFile
 # output : 합성된 동영상
 @app.post("/api/v1/damedame", name="다메다메 짤 생성 서비스")
 async def createDameMemeVideo(image: UploadFile = File(...)):
-        contents = await image.read()
-        image.filename = image.filename.replace(' ', '')
-        input = os.path.join(config.image_path, image.filename)
-        output = os.path.join(config.video_path, str(uuid.uuid4()).replace('-', '') + ".mp4")
-        with open(input, "wb") as fp:
-            fp.write(contents)
-        print("input:",input)
-        dame.makeDamedame(uploadimagePath=input, output=output)
-        return {"url": url.convertPathToURL(output, baseUrl="/api/v1/content/")}
+    contents = await image.read()
+    image.filename = image.filename.replace(' ', '')
+    input = os.path.join(config.image_path, image.filename)
+    output = os.path.join(config.video_path, str(uuid.uuid4()).replace('-', '') + ".mp4")
+    with open(input, "wb") as fp:
+        fp.write(contents)
+    print("input:", input)
+    dame.makeDamedame(uploadimagePath=input, output=output)
+    return {"url": url.convertPathToURL(output, baseUrl="/api/v1/content/")}
 
 
 #  S04P22D101-56	백엔드 RESTful API 프로토콜 / 동영상 배경 삭제 및 배경 변경
@@ -79,40 +81,72 @@ async def serveUploadFile(rest_of_path: str, download: bool = False):
     else:
         return JSONResponse(status_code=400, content={"message": "존재하지 않는 파일입니다."})
 
+
 # S04P22D101-106     최근 게시글 조회에 필요한 썸네일 생성
 # input : 만들어진 output의 파일 경로, type(0 - 이미지, 1 - 동영상)
 # output : 썸네일(이름은 board_no.jpg)
+CONTENT_MATCH = re.compile("(?:content\/)(.*)(?:png|mp4)")
 @app.get("/api/v1/thumbnails/{rest_of_path:path}", name="썸네일 호출 및 만들기")
-async def makeThumbnails(
+async def serveThumbnails(
         rest_of_path: str,
-        board_no: int,
-        type: int,
+        # board_no: int,
+        # type: int,
 ):
     print("Thumbnails 제작 및 호출")
-    filepath = os.path.join(config.root, rest_of_path)
+    thumbnail_path = os.path.join(config.thumbnail_path, rest_of_path)
+
+    # 이미 해당 썸네일이 존재하는 경우. 해당 썸네일 반환
+    if (os.path.exists(thumbnail_path)):
+        return FileResponse(thumbnail_path)
+
+    path, ext = os.path.splitext(thumbnail_path)
+    board_no_str = os.path.basename(path)[-1]
+
+    if (board_no_str.isdigit() == False or ext != '.jpg'):
+        return JSONResponse(status_code=400, content={"message": "잘못된 파일이름 또는 잘못된 확장자를 호출하였습니다."})
+
+    board_no = int(board_no_str)
+
+    #DB select board by no
+    boardInfo = db.findBoardDetailByBoardNo(int(board_no))
+    if not boardInfo:
+        return JSONResponse(status_code=400, content={"message" : "존재하지 않는 게시글 입니다."})
+    global CONTENT_MATCH
+    data = CONTENT_MATCH.findall(boardInfo["content"])
+    if not data:
+        return JSONResponse(status_code=400, content={"message": "해당 게시글에 썸네일을 만들 수 있는 리소스가 존재치 않습니다."})
+
+    # create thumbnails
+    resource_path = os.path.join(config.root, mdata[0])
+    if not os.path.exists(resource_path):
+        return JSONResponse(status_code=500, content={"message": "서버 내에서 게시글에 있는 리소스 파일을 찾을 수 없습니다."})
+    ext = os.path.splitext(filepath)[-1]
+
     # Image
-    if type == 0:
+    if ext == '.png':
         try:
-            imagepath = os.path.join(config.thumbnail_path, str(board_no) + ".png")
-            print(imagepath)
-            if os.path.isfile(imagepath) is False:
-                image = Image.open(filepath)
-                image_resize = image.resize((240, 136))
-                image_resize.save(imagepath)
-            return FileResponse(imagepath)
-        except IOError:
-            return JSONResponse(status_code=400, content={"message": "썸네일 제작중 에러 발생"})
-
-    # Video
-    else:
-        output = os.path.join(config.thumbnail_path, str(board_no) + ".png")
-        if os.path.isfile(output) is False:
-            video.createVideoThumbnail(inputVideoPath=filepath, outputImagePath=output)
-            image = Image.open(output)
+            # if os.path.isfile(image_path) is False:
+            image = Image.open(resource_path)
             image_resize = image.resize((240, 136))
-            image_resize.save(output)
-
-        return FileResponse(output)
+            image_resize.save(thumbnail_path)
+            return FileResponse(thumbnail_path)
+        except IOError:
+            return JSONResponse(status_code=400, content={"message": "썸네일 제작중 에러가 발생했습니다."})
+    elif ext == '.mp4':
+        try:
+            path, ext = os.path.splitext(thumbnail_path)
+            mid_image = path + "-mid" + ext
+            # if os.path.isfile(output) is False:
+            video.createVideoThumbnail(inputVideoPath=filepath, outputImagePath=mid_image)
+            image = Image.open(mid_image)
+            image_resize = image.resize((240, 136))
+            image_resize.save(thumbnail_path)
+            os.remove(mid_image)
+            return FileResponse(thumbnail_path)
+        except IOError:
+            return JSONResponse(status_code=400, content={"message": "썸네일 제작중 에러가 발생했습니다."})
+    else:
+        return JSONResponse(status_code=400, content={"message": "게시글에 포함된 리소스가 썸네일을 생성할 수 없는 확장자를 가지고 있습니다."})
 
 
 ### 여기까지 메인기능 종료 ###
@@ -158,7 +192,6 @@ async def writeBoard(
     result = await db.writeBoard(board_info)
     if result is None:
         return JSONResponse(status_code=400, content={"message": "게시물 작성에 실패했습니다."})
-
 
     return result
 
