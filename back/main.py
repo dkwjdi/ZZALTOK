@@ -3,11 +3,12 @@ import uuid
 
 from fastapi import FastAPI, File, UploadFile, Request
 from fastapi.responses import JSONResponse, FileResponse, StreamingResponse
-from utils import db, url
+from utils import db, url, video
 from config import config
 from init import init
 from src import damedame as dame
 from src import startfaceswap as faceswap
+from PIL import Image
 
 init()
 
@@ -69,6 +70,7 @@ async def removeBackGroundOnVideo(video: UploadFile = File(...), image: UploadFi
 
 @app.get("/api/v1/content/{rest_of_path:path}", name="파일 가져오기")
 async def serveUploadFile(rest_of_path: str, download: bool = False):
+    print("다운로드")
     filepath = os.path.join(config.root, rest_of_path)
     if os.path.exists(filepath):
         if download:
@@ -76,6 +78,42 @@ async def serveUploadFile(rest_of_path: str, download: bool = False):
         return FileResponse(filepath)
     else:
         return JSONResponse(status_code=400, content={"message": "존재하지 않는 파일입니다."})
+
+# S04P22D101-106     최근 게시글 조회에 필요한 썸네일 생성
+# input : 만들어진 output의 파일 경로, type(0 - 이미지, 1 - 동영상)
+# output : 썸네일(이름은 board_no.jpg)
+@app.get("/api/v1/thumbnails/{rest_of_path:path}", name="썸네일 호출 및 만들기")
+async def makeThumbnails(
+        rest_of_path: str,
+        board_no: int,
+        type: int,
+):
+    print("Thumbnails 제작 및 호출")
+    filepath = os.path.join(config.root, rest_of_path)
+    # Image
+    if type == 0:
+        try:
+            imagepath = os.path.join(config.thumbnail_path, str(board_no) + ".png")
+            print(imagepath)
+            if os.path.isfile(imagepath) is False:
+                image = Image.open(filepath)
+                image_resize = image.resize((240, 136))
+                image_resize.save(imagepath)
+            return FileResponse(imagepath)
+        except IOError:
+            return JSONResponse(status_code=400, content={"message": "썸네일 제작중 에러 발생"})
+
+    # Video
+    else:
+        output = os.path.join(config.thumbnail_path, str(board_no) + ".png")
+        if os.path.isfile(output) is False:
+            video.createVideoThumbnail(inputVideoPath=filepath, outputImagePath=output)
+            image = Image.open(output)
+            image_resize = image.resize((240, 136))
+            image_resize.save(output)
+
+        return FileResponse(output)
+
 
 ### 여기까지 메인기능 종료 ###
 
@@ -120,6 +158,8 @@ async def writeBoard(
     result = await db.writeBoard(board_info)
     if result is None:
         return JSONResponse(status_code=400, content={"message": "게시물 작성에 실패했습니다."})
+
+
     return result
 
 

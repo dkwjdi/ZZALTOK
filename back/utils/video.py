@@ -47,7 +47,7 @@ def createVideoThumbnail(inputVideoPath, outputImagePath):
         raise Exception('Only png files are allowed for output')
     # !ffmpeg.exe -i twice.mp4 -vcodec png -vframes 1 -vf thumbnail=100 result.png
     cmd = "{} -i {} -vcodec png -vframes 1 -vf thumbnail=100 {}".format(
-        os.path.join(confuig.ffmpeg_path, 'ffmpeg'),
+        os.path.join(config.ffmpeg_path, 'ffmpeg'),
         inputVideoPath,
         outputImagePath
     )
