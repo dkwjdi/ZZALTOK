@@ -73,7 +73,7 @@ export default {
     },
     chackHandler() {
       //타입에 맞게 update, delete
-      if ((this.typeForm = '수정')) {
+      if (this.typeForm == '수정') {
         this.isCommentForm = true;
       }
     },

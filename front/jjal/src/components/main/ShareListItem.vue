@@ -1,23 +1,27 @@
 <template>
-  <v-row align="center" justify="center" class="ml-1 mr-1">
+  <v-row class="mt-4" align="center" justify="center">
     <v-col cols="12">
       <div data-aos="fade-up" data-aos-duration="1000">
         <div class="figure">
           <v-img
             :src="require('../../assets/example.png')"
-            aspect-ratio="1.5"
+            aspect-ratio="1.6"
             class="img cur-point"
             @click="moveDetail()"
           >
             <div class="img-text">더 보기</div>
           </v-img>
         </div>
-        <div class="ml-1 mt-3">
-          <div class="mt-1 font-weight-bold text-md-body-1">
-            <span class="title-choice" @click="moveDetail()">제목</span>
+        <div class="ml-1 mt-1">
+          <div class="font-weight-bold text-md-body-1">
+            <span class="title-choice" @click="moveDetail()"
+              >Life's not all gloom and despondency</span
+            >
           </div>
-          <div class="mt-1">
-            <v-icon small class="mr-1">mdi-thumb-up-outline</v-icon>50 <i class="far fa-eye ml-1"></i> 100
+          <div class="like-lookup mt-1">
+            <v-icon small class="mr-1" style="margin-top: -3px">mdi-thumb-up-outline</v-icon>
+            <span>50</span>
+            <i class="far fa-eye ml-1"></i> <span>100</span>
           </div>
         </div>
       </div>
@@ -51,7 +55,7 @@ export default {
   -webkit-transform: all 0.5s ease;
   transition: all 0.5s ease;
   overflow: hidden;
-  border-radius: 5px;
+  border-radius: 4px;
 }
 
 .img:hover {
@@ -76,5 +80,10 @@ export default {
 .title-choice:hover {
   cursor: pointer;
   border-bottom: 0.5px solid rgb(112, 108, 108);
+}
+
+.like-lookup {
+  font-size: 13px;
+  color: #888888;
 }
 </style>
