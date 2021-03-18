@@ -1,7 +1,7 @@
 import os
 import platform
 import subprocess
-import urllib
+import urllib.request
 import zipfile
 import stat
 

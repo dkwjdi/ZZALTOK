@@ -4,13 +4,13 @@ setlocal enableextensions enabledelayedexpansion
 pushd %~dp0
 
 echo 설치된 CUDA 모듈 확인
-nvcc --version | find "10.2"
+nvcc --version | find "10.1"
 if errorlevel 1 goto :exit
 goto :BatchGotAdmin
 :exit
-echo 해당 인스톨러는 "CUDA 10.2" 설치가 필요합니다
+echo 해당 인스톨러는 "CUDA 10.1" 설치가 필요합니다
 echo 하단 링크를 통해 설치를 하고, 인스톨러를 재실행하시기 바랍니다
-echo https://developer.nvidia.com/cuda-10.2-download-archive
+echo https://developer.nvidia.com/cuda-10.1-download-archive-base
 timeout /t 30 >nul
 exit
 
@@ -43,13 +43,10 @@ set root=C:\ProgramData\Miniconda3
 call %root%\Scripts\activate.bat %root%
 
 REM echo .
-REM echo 기존 설치된 라이브러리 및 모듈 초기화
+echo 기존 설치된 라이브러리 및 모듈 초기화
+call conda env remove -n AI
 REM call conda clean -a -y
 REM call conda install --revision 0 -y
-
-REM echo .
-REM echo 파이썬 3.7로 재설치
-REM call conda install python=3.7 -y
 
 echo .
 echo 가상환경 "AI"를 생성하고, 파이썬 3.8로 설치
@@ -68,8 +65,8 @@ call pip install -r requirements.txt
 echo .
 echo pytorch 설치 시작
 REM call conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch/
-REM call conda install pytorch torchvision torchaudio cudatoolkit=10.2 -c pytorch -y
-call conda install pytorch torchvision torchaudio cudatoolkit=10.2 -c pytorch -y --channel https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch/
+REM call conda install pytorch torchvision torchaudio cudatoolkit=11.2 -c pytorch -y
+call conda install pytorch torchvision torchaudio cudatoolkit=10.1 -c pytorch -y --channel https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch/
 
 echo .
 echo 설치가 완료되었습니다. run.bat 파일로 서버를 실행하시면 됩니다.
