@@ -1,9 +1,10 @@
 import os
 import platform
-import subprocess
+from collections import OrderedDict
+
 import urllib.request
 import zipfile
-import stat
+import ffmpy
 
 from config import config
 
@@ -16,39 +17,39 @@ if not os.path.isdir(config.ffmpeg_path):
         zip_ref.extractall(config.ffmpeg_path)
     if platform.system() == "Windows":  # 윈도우인 경우 linux 실행 파일을 삭제
         os.remove(os.path.join(config.ffmpeg_path, "ffmpeg"))
-    else:  # 리눅스인 경우 실행 권한 추가
+    else:  # 리눅스인 경우 윈도우 파일을 삭제하고, 실행 권한 추가
+        os.remove(os.path.join(config.ffmpeg_path, "ffmpeg.exe"))
         st = os.stat(os.path.join(config.ffmpeg_path, "ffmpeg"))
         os.chmod(os.path.join(config.ffmpeg_path, "ffmpeg"), st.st_mode | stat.S_IEXEC)
 
-if os.path.isfile(os.path.join(config.root, "ffmpeg.zip")):
-    os.remove(os.path.join(config.root, "ffmpeg.zip"))
+# ffmpeg를 환경변수 PATH에 추가
+os.environ["PATH"] += os.pathsep + config.ffmpeg_path
 
-def convert3xFasterVideo(inputPath:str, ouputPath:str):
+
+def convert3x_faster_video(input_path: str, ouput_path: str):
     # !ffmpeg -i original.mp4 -r 60 -vf "setpts=(PTS-STARTPTS)/3" 3x.mp4
-    cmd = '{} -i {} -r 60 -vf "setpts=(PTS-STARTPTS)/3" {} -y'.format(
-        os.path.join(config.ffmpeg_path, 'ffmpeg'),
-        inputPath,
-        ouputPath
-    )
-    subprocess.Popen(cmd).wait()
+    ffmpy.FFmpeg(
+        inputs={input_path: None},
+        outputs={ouput_path: '-r 60 -vf "setpts=(PTS-STARTPTS)/3"'},
+        global_options=['-y']
+    ).run()
 
-def insertAudioOnVideo(inputVideoPath: str, inputAudioPath: str, outputPath: str):
+
+def insert_audio_on_video(input_video_path: str, input_audio_path: str, output_path: str):
     # !ffmpeg -i 3x.mp4 -i bakamitai_template.mp3 -map 0:v -map 1:a -c:v copy -shortest complete.mp4
-    cmd = '{} -i {} -i {} -map 0:v -map 1:a -c:v copy -shortest {} -y'.format(
-        os.path.join(config.ffmpeg_path, 'ffmpeg'),
-        inputVideoPath,
-        inputAudioPath,
-        outputPath
-    )
-    subprocess.Popen(cmd).wait()
+    ffmpy.FFmpeg(
+        inputs=OrderedDict([(input_video_path, None), (input_audio_path, None)]),
+        outputs={output_path: '-map 0:v -map 1:a -c:v copy -shortest'},
+        global_options=['-y']
+    ).run()
 
-def createVideoThumbnail(inputVideoPath, outputImagePath):
-    if os.path.splitext(outputImagePath)[-1].lower() != '.png':
+
+def create_video_thumbnail(input_video_path, output_image_path):
+    if os.path.splitext(output_image_path)[-1].lower() != '.png':
         raise Exception('Only png files are allowed for output')
     # !ffmpeg.exe -i twice.mp4 -vcodec png -vframes 1 -vf thumbnail=100 result.png
-    cmd = "{} -i {} -vcodec png -vframes 1 -vf thumbnail=100 {}".format(
-        os.path.join(config.ffmpeg_path, 'ffmpeg'),
-        inputVideoPath,
-        outputImagePath
-    )
-    subprocess.Popen(cmd).wait()
+    ffmpy.FFmpeg(
+        inputs={input_video_path: None},
+        outputs={output_image_path: "-vcodec png -vframes 1 -vf thumbnail=100"},
+        global_options=['-y']
+    ).run()

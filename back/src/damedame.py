@@ -96,10 +96,10 @@ def makeDamedame(uploadimagePath, output: str = os.path.join(config.video_path, 
 
     # 3배 빠르기로 비디오 변경, 오디오 소스 추가
     print("영상 오디오 소스 추가 및 배속 변경 중", end=' ')
-    video.convert3xFasterVideo(originPath, subPath)
-    video.insertAudioOnVideo(subPath,
-                             os.path.join(config.dame_path, "bakamitai_template.mp3"),
-                             output)
+    video.convert3x_faster_video(originPath, subPath)
+    video.insert_audio_on_video(subPath,
+                                os.path.join(config.dame_path, "bakamitai_template.mp3"),
+                                output)
 
     if os.path.exists(originPath):
         os.remove(originPath)
