@@ -1,11 +1,7 @@
 import os
-import platform
-import subprocess
-import time
 import git
 import urllib.request
 import zipfile
-import stat
 from config import config
 from utils import video
 
@@ -41,13 +37,13 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from skimage.transform import resize
 import warnings
-from demo import load_checkpoints, make_animation
+from demo import load_checkpoints, make_animation  # noqa
 from skimage import img_as_ubyte
 
 import utils.video
 
 
-def convertImageToVideo(uploadimage, outputPath):
+def convert_image_to_video(uploadimage, outputPath):
     print("다메다메 밈 작업중", end=' ')
     warnings.filterwarnings("ignore")
 
@@ -62,8 +58,7 @@ def convertImageToVideo(uploadimage, outputPath):
 
         ims = []
         for i in range(len(driving)):
-            cols = [source]
-            cols.append(driving[i])
+            cols = [source, driving[i]]
             if generated is not None:
                 cols.append(generated[i])
             im = plt.imshow(np.concatenate(cols, axis=1), animated=True)
@@ -85,27 +80,26 @@ def convertImageToVideo(uploadimage, outputPath):
     return outputPath
 
 
-def makeDamedame(uploadimagePath, output: str = os.path.join(config.video_path, 'result.mp4')):
-
+def make_damedame(upload_image_path, output: str = os.path.join(config.video_path, 'result.mp4')):
     [filename, ext] = os.path.splitext(output)
-    originPath = filename + "-origin" + ext
-    subPath = filename + "-3x" + ext
+    origin_path = filename + "-origin" + ext
+    sub_path = filename + "-3x" + ext
 
-    convertImageToVideo(uploadimagePath,
-                        originPath)
+    convert_image_to_video(upload_image_path,
+                           origin_path)
 
     # 3배 빠르기로 비디오 변경, 오디오 소스 추가
     print("영상 오디오 소스 추가 및 배속 변경 중", end=' ')
-    video.convert3x_faster_video(originPath, subPath)
-    video.insert_audio_on_video(subPath,
+    video.convert3x_faster_video(origin_path, sub_path)
+    video.insert_audio_on_video(sub_path,
                                 os.path.join(config.dame_path, "bakamitai_template.mp3"),
                                 output)
 
-    if os.path.exists(originPath):
-        os.remove(originPath)
+    if os.path.exists(origin_path):
+        os.remove(origin_path)
 
-    if os.path.exists(subPath):
-        os.remove(subPath)
+    if os.path.exists(sub_path):
+        os.remove(sub_path)
     print('done')
     return output
 
@@ -118,5 +112,5 @@ if __name__ == "__main__":
     urllib.request.urlretrieve(
         "https://lab.ssafy.com/s04-ai-image-sub2/s04p22d101/uploads/95c86ac00bb9068fbaddfde923ea99f8/goo.jpg",
         r"C:\content\damesource\image.png")
-    path = makeDamedame(r"C:\content\damesource\image.png")
+    path = make_damedame(r"C:\content\damesource\image.png")
     print("최종 결과물", path)
