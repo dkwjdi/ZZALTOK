@@ -54,15 +54,15 @@ async def checkPasswordOnComment(
 
 async def checkUserIpOnGoodList(
         board_no: int,
-        IP: str
+        ip: str
 ):
     # 좋아요를 눌렀는지 안눌렀는지 확인하기
     sql = """
             SELECT IP FROM goodlist 
-            WHERE board_no = %s AND IP = %s
+            WHERE board_no = %s AND ip = %s
           """
     try:
-        cursor.execute(sql, (board_no, IP))
+        cursor.execute(sql, (board_no, ip))
         res = cursor.fetchone()
         if res is None:
             return False
