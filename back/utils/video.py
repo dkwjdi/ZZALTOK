@@ -9,29 +9,32 @@ import stat
 
 from config import config
 
+FFMPEG_FILENAME = "ffmpeg"
+FFMPEG_ZIP = FFMPEG_FILENAME + ".zip"
+
 # ffmpeg 파일 다운로드
 if not os.path.isdir(config.ffmpeg_path):
     urllib.request.urlretrieve(
-        "http://kumoh.synology.me/ffmpeg.zip"
-        , filename=os.path.join(config.root, "ffmpeg.zip"))
-    with zipfile.ZipFile(os.path.join(config.root, "ffmpeg.zip"), "r") as zip_ref:
+        "http://kumoh.synology.me/ffmpeg.zip",
+        filename=os.path.join(config.root, FFMPEG_ZIP))
+    with zipfile.ZipFile(os.path.join(config.root, FFMPEG_ZIP), "r") as zip_ref:
         zip_ref.extractall(config.ffmpeg_path)
     if platform.system() == "Windows":  # 윈도우인 경우 linux 실행 파일을 삭제
-        os.remove(os.path.join(config.ffmpeg_path, "ffmpeg"))
+        os.remove(os.path.join(config.ffmpeg_path, FFMPEG_FILENAME))
     else:  # 리눅스인 경우 윈도우 파일을 삭제하고, 실행 권한 추가
-        os.remove(os.path.join(config.ffmpeg_path, "ffmpeg.exe"))
-        st = os.stat(os.path.join(config.ffmpeg_path, "ffmpeg"))
-        os.chmod(os.path.join(config.ffmpeg_path, "ffmpeg"), st.st_mode | stat.S_IEXEC)
+        os.remove(os.path.join(config.ffmpeg_path, FFMPEG_FILENAME + ".exe"))
+        st = os.stat(os.path.join(config.ffmpeg_path, FFMPEG_FILENAME))
+        os.chmod(os.path.join(config.ffmpeg_path, FFMPEG_FILENAME), st.st_mode | stat.S_IEXEC)
 
 # ffmpeg를 환경변수 PATH에 추가
 os.environ["PATH"] += os.pathsep + config.ffmpeg_path
 
 
-def convert3x_faster_video(input_path: str, ouput_path: str):
+def convert3x_faster_video(input_path: str, output_path: str):
     # !ffmpeg -i original.mp4 -r 60 -vf "setpts=(PTS-STARTPTS)/3" 3x.mp4
     ffmpy.FFmpeg(
         inputs={input_path: None},
-        outputs={ouput_path: '-r 60 -vf "setpts=(PTS-STARTPTS)/3"'},
+        outputs={output_path: '-r 60 -vf "setpts=(PTS-STARTPTS)/3"'},
         global_options=['-y']
     ).run()
 

@@ -9,10 +9,12 @@ if not os.path.isdir(config.face_swap_model_path):
     git.Repo.clone_from("https://github.com/getCurrentThread/FaceSwap", config.face_swap_model_path)
 
 import sys
+
 sys.path.insert(1, config.face_swap_model_path)  # 딥페이크 프로젝트 레포지토리를 추가하여 import 가능하게 조치
 
-from face_detection import select_face
-from face_swap import face_swap
+from face_detection import select_face  # noqa
+from face_swap import face_swap  # noqa
+
 
 class Arguments:
     src: str
@@ -53,7 +55,7 @@ def make_deep_face(args):
 
     cv2.imwrite(args.out, output)
 
-    ##For debug
+    # For debug
     if not args.no_debug_window:
         cv2.imshow("From", dst_img)
         cv2.imshow("To", output)
@@ -61,17 +63,20 @@ def make_deep_face(args):
 
         cv2.destroyAllWindows()
 
-def makedeepface(uploadoriginimagePath, uploadtargetimagePath, output: str = os.path.join(config.face_swap_result_path, 'result.png')):
+
+def makedeepface(upload_origin_image_path, upload_target_image_path,
+                 output: str = os.path.join(config.face_swap_result_path, 'result.png')):
     print("딥페이크 진행합니다.")
-    make_deep_face(Arguments(uploadoriginimagePath, uploadtargetimagePath, output))
+    make_deep_face(Arguments(upload_origin_image_path, upload_target_image_path, output))
 
-    if os.path.exists(uploadoriginimagePath):
-        os.remove(uploadoriginimagePath)
+    if os.path.exists(upload_origin_image_path):
+        os.remove(upload_origin_image_path)
 
-    if os.path.exists(uploadtargetimagePath):
-        os.remove(uploadtargetimagePath)
+    if os.path.exists(upload_target_image_path):
+        os.remove(upload_target_image_path)
 
     return output
+
 
 if __name__ == "__main__":
     print("딥페이크 모듈 테스트 진행합니다.")

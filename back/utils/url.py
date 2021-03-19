@@ -1,13 +1,11 @@
-import os
 from config import config
 
+# def convert_url_to_path(url: str, base_path: str = config.root) -> str:
+#     idx = url.find(base_path)
+#     idx = (0 if idx == -1 else idx + len(base_path)) + 1
+#     pass
 
-def convertURLToPath(URL: str, basePath: str = config.root) -> str:
-    idx = URL.find(basePath)
-    idx = (0 if idx == -1 else idx + len(basePath)) + 1
-
-
-def convertPathToURL(path: str, baseUrl: str, basePath: str = config.root) -> str:
-    idx = path.find(basePath)
-    idx = (0 if idx == -1 else idx + len(basePath))
-    return (baseUrl if baseUrl.endswith('/') else baseUrl + '/') + path[idx:]
+def convert_path_to_url(path: str, base_url: str, base_path: str = config.root) -> str:
+    idx = path.find(base_path)
+    idx = (0 if idx == -1 else idx + len(base_path))
+    return (base_url if base_url.endswith('/') else base_url + '/') + path[idx:]
