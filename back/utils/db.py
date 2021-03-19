@@ -6,7 +6,7 @@ import datetime as dt
 database = connect(
     host="j4d101.p.ssafy.io",
     user="ssafy",
-    password="head101@",
+    password="head101@",  # NOSONAR
     database="jjal"
 )
 cursor = database.cursor()
