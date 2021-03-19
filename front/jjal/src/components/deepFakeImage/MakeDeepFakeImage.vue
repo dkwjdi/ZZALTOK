@@ -59,9 +59,7 @@
             >
               <div class="dropZone-info" @drag="onChange">
                 <span class="fa fa-cloud-upload dropZone-title"></span>
-                <span class="dropZone-title"
-                  >다메다메밈 생성 사진 Drag&Drop</span
-                >
+                <span class="dropZone-title">격언 생성 사진 Drag&Drop</span>
                 <div class="dropZone-upload-limit-info">
                   <!-- <div>extension support: image</div> -->
                   <div>maximum file size: 5 MB</div>
@@ -179,7 +177,7 @@ export default {
       console.log('down'); //사진 다운로드 할 때 쓰는데 일단은 사용  x
       const download = document.getElementById('downloadPhoto');
       console.log(download);
-      download.setAttribute('href', this.output); //파일생성
+      download.setAttribute('href', this.downloadLink); //파일생성
     },
     async print() {
       const el = this.$refs.printMe; //캔버스 들고와서
@@ -202,6 +200,8 @@ export default {
       let formData = new FormData(); //폼데이터 만들고
       formData.append('origin', this.file); // 삽입할 사진
       formData.append('target', target); // 합성 당할사진
+
+      this.removeFile(); //파일 자동삭제
 
       http
         .post('/v1/deepfake', formData)
