@@ -36,7 +36,7 @@ async def createDeepFakeImage(origin: UploadFile = File(...), target: UploadFile
     target_input = os.path.join(config.face_swap_img_path, target.filename)
     output = os.path.join(config.face_swap_result_path, str(uuid.uuid4()).replace('-', '') + ".png")
 
-    print("origininput:", origin_input)
+    print("origin_input:", origin_input)
     print("target_input:", target_input)
 
     with open(origin_input, "wb") as fp:
@@ -121,10 +121,10 @@ async def serveThumbnails(
         return JSONResponse(status_code=400, content={"message": "해당 게시글에 썸네일을 만들 수 있는 리소스가 존재치 않습니다."})
 
     # create thumbnails
-    resource_path = os.path.join(config.root, mdata[0])
+    resource_path = os.path.join(config.root, data[0])
     if not os.path.exists(resource_path):
         return JSONResponse(status_code=500, content={"message": "서버 내에서 게시글에 있는 리소스 파일을 찾을 수 없습니다."})
-    ext = os.path.splitext(filepath)[-1]
+    ext = os.path.splitext(resource_path)[-1]
 
     # Image
     if ext == '.png':
@@ -141,7 +141,7 @@ async def serveThumbnails(
             path, ext = os.path.splitext(thumbnail_path)
             mid_image = path + "-mid" + ext
             # if os.path.isfile(output) is False:
-            video.create_video_thumbnail(input_video_path=filepath, output_image_path=mid_image)
+            video.create_video_thumbnail(input_video_path=resource_path, output_image_path=mid_image)
             image = Image.open(mid_image)
             image_resize = image.resize((240, 136))
             image_resize.save(thumbnail_path)
@@ -233,7 +233,7 @@ async def editBoard(
         "ip": ip,
         "board_no": board_no
     }
-    res_check = await checkBoard(board_no, password)
+    res_check = await checkBoard(board_no, item.password)
 
     if res_check['result'] is None:
         return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
@@ -250,6 +250,8 @@ async def editBoard(
 #  S04P22D101-60	백엔드 RESTful API 프로토콜 / 게시글 삭제
 # input : board_no(보드번호), password(비밀번호)
 # output :  게시글 삭제 성공 유무
+class passwordRequest(BaseModel):
+    password: str
 
 @app.delete("/api/v1/board/{board_no}", name="게시글 삭제")
 async def deleteBoard(
@@ -433,10 +435,6 @@ async def checkBoard(
 #  S04P22D101-86     백엔드 RESTful API 프로토콜 / 댓글 비밀번호 체크
 # input : comment_no(댓글번호), password(비밀번호)
 # output : 비밀번호 매칭 유무
-class passwordRequest(BaseModel):
-    password: str
-
-
 @app.post("/api/v1/comment/check/{comment_no}", name="댓글 비밀번호 체크")
 async def checkComment(
         comment_no: int, item: passwordRequest
