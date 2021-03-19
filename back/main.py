@@ -137,7 +137,7 @@ async def serveThumbnails(
             path, ext = os.path.splitext(thumbnail_path)
             mid_image = path + "-mid" + ext
             # if os.path.isfile(output) is False:
-            video.createVideoThumbnail(inputVideoPath=filepath, outputImagePath=mid_image)
+            video.create_video_thumbnail(input_video_path=filepath, output_image_path=mid_image)
             image = Image.open(mid_image)
             image_resize = image.resize((240, 136))
             image_resize.save(thumbnail_path)

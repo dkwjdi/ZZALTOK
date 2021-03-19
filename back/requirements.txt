@@ -33,3 +33,4 @@ tqdm
 aiofiles
 uuid
 opencv-python
+ffmpy
