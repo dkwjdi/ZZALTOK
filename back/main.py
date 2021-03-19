@@ -4,6 +4,7 @@ import re
 
 from fastapi import FastAPI, File, UploadFile, Request
 from fastapi.responses import JSONResponse, FileResponse, StreamingResponse
+from pydantic import BaseModel
 from utils import db, url, video
 from config import config
 from init import init
@@ -70,6 +71,7 @@ async def createDameMemeVideo(image: UploadFile = File(...)):
 async def removeBackGroundOnVideo(video: UploadFile = File(...), image: UploadFile = File(...)):
     pass
 
+
 @app.get("/api/v1/content/{rest_of_path:path}", name="파일 가져오기")
 async def serveUploadFile(rest_of_path: str, download: bool = False):
     print("다운로드")
@@ -86,6 +88,8 @@ async def serveUploadFile(rest_of_path: str, download: bool = False):
 # input : 만들어진 output의 파일 경로, type(0 - 이미지, 1 - 동영상)
 # output : 썸네일(이름은 board_no.jpg)
 CONTENT_MATCH = re.compile("(?:content\/)(.*)(?:png|mp4)")
+
+
 @app.get("/api/v1/thumbnails/{rest_of_path:path}", name="썸네일 호출 및 만들기")
 async def serveThumbnails(
         rest_of_path: str,
@@ -102,15 +106,15 @@ async def serveThumbnails(
     path, ext = os.path.splitext(thumbnail_path)
     board_no_str = os.path.basename(path)[-1]
 
-    if (board_no_str.isdigit() == False or ext != '.jpg'):
+    if board_no_str.isdigit() is False or ext != '.jpg':
         return JSONResponse(status_code=400, content={"message": "잘못된 파일이름 또는 잘못된 확장자를 호출하였습니다."})
 
     board_no = int(board_no_str)
 
-    #DB select board by no
+    # DB select board by no
     boardInfo = db.findBoardDetailByBoardNo(int(board_no))
     if not boardInfo:
-        return JSONResponse(status_code=400, content={"message" : "존재하지 않는 게시글 입니다."})
+        return JSONResponse(status_code=400, content={"message": "존재하지 않는 게시글 입니다."})
     global CONTENT_MATCH
     data = CONTENT_MATCH.findall(boardInfo["content"])
     if not data:
@@ -176,17 +180,25 @@ async def findBoardDetailByBoardNo(board_no: int):
 #  S04P22D101-57	백엔드 RESTful API 프로토콜 / 게시글 작성(공유)
 # input : content(게시글 내용), content_type(게시글 내용 - 구분용), nickname(익명 닉네임), password(비밀번호)
 # output : 게시글 작성 성공 유무
+class BoardWriteInfoRequest(BaseModel):
+    title: str
+    content: str
+    content_type: str
+    nickname: str
+    password: str
+
+
 @app.post("/api/v1/board/write", name="게시글 작성")
 async def writeBoard(
-        title: str, content: str, content_type: str, nickname: str, password: str, request: Request
+        item: BoardWriteInfoRequest, request: Request
 ):
     ip = request.client.host
     board_info = {
-        "title": title,
-        "content": content,
-        "content_type": content_type,
-        "nickname": nickname,
-        "password": password,
+        "title": item.title,
+        "content": item.content,
+        "content_type": item.content_type,
+        "nickname": item.nickname,
+        "password": item.password,
         "ip": ip
     }
     result = await db.writeBoard(board_info)
@@ -198,17 +210,26 @@ async def writeBoard(
 
 #  S04P22D101-67     백엔드 RESTful API 프로토콜 / 게시글 수정
 # output : 게시글 수정 성공 유무
+class BoardEditInfoRequest(BaseModel):
+    board_no: int
+    title: str
+    content: str
+    content_type: str
+    nickname: str
+    password: str
+
+
 @app.post("/api/v1/board/{board_no}", name="게시글 수정")
 async def editBoard(
-        board_no: int, title: str, content: str, content_type: str, nickname: str, password: str, request: Request
+        board_no: int, item: BoardEditInfoRequest, request: Request
 ):
     ip = request.client.host
     board_info = {
-        "title": title,
-        "content": content,
-        "content_type": content_type,
-        "nickname": nickname,
-        "password": password,
+        "title": item.title,
+        "content": item.content,
+        "content_type": item.content_type,
+        "nickname": item.nickname,
+        "password": item.password,
         "ip": ip,
         "board_no": board_no
     }
@@ -229,18 +250,19 @@ async def editBoard(
 #  S04P22D101-60	백엔드 RESTful API 프로토콜 / 게시글 삭제
 # input : board_no(보드번호), password(비밀번호)
 # output :  게시글 삭제 성공 유무
+
 @app.delete("/api/v1/board/{board_no}", name="게시글 삭제")
 async def deleteBoard(
-        password: str,
-        board_no: int
+        board_no: int,
+        item: passwordRequest,
 ):
-    res_check = await checkBoard(board_no, password)
+    res_check = await checkBoard(board_no, item.password)
 
     if res_check['result'] is None:
         return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
 
     if res_check['result']:
-        result = await db.deleteBoard(password, board_no)
+        result = await db.deleteBoard(item.password, board_no)
 
         if result is None:
             return JSONResponse(status_code=400, content={"message": "게시물 삭제에 실패했습니다."})
@@ -318,16 +340,22 @@ async def findCommentByBoardNo(
 #  S04P22D101-59	백엔드 RESTful API 프로토콜 / 댓글 작성
 # input : board_no(보드번호), content(댓글 내용), nickname(닉네임), password(비밀번호)
 # output : 댓글 작성 성공 유무
+class CommentWriteInfoRequest(BaseModel):
+    content: str
+    nickname: str
+    password: str
+
+
 @app.post("/api/v1/comment/write/{board_no}", name="댓글 작성")
 async def writeComment(
-        board_no: int, content: str, nickname: str, password: str, request: Request
+        board_no: int, item: CommentWriteInfoRequest, request: Request
 ):
     ip = request.client.host
     comment_info = {
         "board_no": board_no,
-        "content": content,
-        "nickname": nickname,
-        "password": password,
+        "content": item.content,
+        "nickname": item.nickname,
+        "password": item.password,
         "ip": ip,
     }
 
@@ -341,11 +369,12 @@ async def writeComment(
 #  S04P22D101-61	백엔드 RESTful API 프로토콜 / 댓글 삭제
 # input : comment_no(댓글번호), password(비밀번호)
 # output : 댓글 삭제 성공 유무
+
 @app.delete("/api/v1/comment/{comment_no}", name="댓글 삭제")
 async def deleteComment(
-        comment_no: int, password: str
+        comment_no: int, item: passwordRequest
 ):
-    res_check = await checkComment(comment_no, password)
+    res_check = await checkComment(comment_no, item.password)
 
     if res_check['result'] is None:
         return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
@@ -395,20 +424,24 @@ async def editComment(
 # output : 비밀번호 매칭 유무
 @app.post("/api/v1/board/check/{board_no}", name="게시글 비밀번호 체크")
 async def checkBoard(
-        board_no: int, password: str
+        board_no: int, item: passwordRequest
 ):
-    result = await db.checkPasswordOnBoard(password, board_no)
+    result = await db.checkPasswordOnBoard(item.password, board_no)
     return {"result": result}
 
 
 #  S04P22D101-86     백엔드 RESTful API 프로토콜 / 댓글 비밀번호 체크
 # input : comment_no(댓글번호), password(비밀번호)
 # output : 비밀번호 매칭 유무
+class passwordRequest(BaseModel):
+    password: str
+
+
 @app.post("/api/v1/comment/check/{comment_no}", name="댓글 비밀번호 체크")
 async def checkComment(
-        comment_no: int, password: str
+        comment_no: int, item: passwordRequest
 ):
-    result = await db.checkPasswordOnComment(password, comment_no)
+    result = await db.checkPasswordOnComment(item.password, comment_no)
     return {"result": result}
 
 
