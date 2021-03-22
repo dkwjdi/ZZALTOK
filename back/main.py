@@ -452,6 +452,18 @@ async def check_comment(
 
 # 여기까지 댓글 기능 종료 ###
 
+# 업로드 기능
+@app.post("/api/v1/upload")
+async def create_upload_files(file: UploadFile = File(...)):
+    contents = await file.read()
+    ext: str = os.path.splitext(file.filename)[-1]
+    ext = ext if ext.startswith('.') else ''
+    filename = str(uuid.uuid4()).replace('-', '') + ext
+    path = os.path.join(config.upload_path, filename)
+    with open(path, "wb") as fp:
+        fp.write(contents)
+    return {"url": url.convert_path_to_url(path, base_url="/api/v1/content/")}
+
 
 # 데모 코드
 @app.get("/")
