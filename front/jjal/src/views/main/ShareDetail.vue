@@ -9,14 +9,19 @@
               <v-icon dark> mdi-account-circle </v-icon>
             </v-avatar>
             <div style="padding-top: -10px">
-              <div class="font-weight-bold title">제목</div>
-              <div class="subtitle-2">사용자</div>
+              <div class="font-weight-bold title">{{ getShareDetail.title }}</div>
+              <div class="subtitle-2">
+                <span>{{ getShareDetail.nickname }} </span>
+                <span style="font-size: 12px; color: #888888"
+                  >({{ getShareDetail.ip }})</span
+                >
+              </div>
             </div>
           </div>
 
           <v-img
-            :src="require('../../assets/example.png')"
-            aspect-ratio="1.5"
+            :src="getShareDetail.url"
+            aspect-ratio="1.6"
             @click="moveDetail()"
             class="detail-img mt-3"
           >
@@ -34,18 +39,20 @@
                 <v-row>
                   <v-col cols="1"></v-col>
                   <v-col cols="10">
-                    <div class="pt-5 pl-5">내용</div>
+                    <div class="pt-5 pl-5">내용 넣어주세요</div>
 
                     <div class="text-center mt-10">
                       <v-btn color="indigo" fab large dark>
                         <i class="fas fa-thumbs-up fa-lg"></i>
                       </v-btn>
                       <div class="mt-3">
-                        <i class="fas fa-thumbs-up mr-1"></i>50 <i class="far fa-eye ml-1"></i> 100
+                        <i class="fas fa-thumbs-up mr-1"></i
+                        >{{ getShareDetail.good }}
+                        <i class="far fa-eye ml-1"></i> 100
                         <i class="fas fa-comment"></i> 2
                       </div>
 
-                      <div class="mt-2">게시일 : 2021. 03. 16</div>
+                      <div class="mt-2">게시일 : {{ getShareDetail.regdate }}</div>
                     </div>
                   </v-col>
                 </v-row>
@@ -53,14 +60,10 @@
             </v-sheet>
           </div>
 
-          <!-- 댓글 -->
+                <!-- 댓글 -->
           <v-container>
             <v-sheet class="mt-10 mb-5">
-              <comment-form :type="'create'" />
-
-              <v-divider></v-divider>
-
-              <comment-list />
+              <comment-list/>
             </v-sheet>
           </v-container>
         </div>
@@ -71,19 +74,28 @@
 </template>
 
 <script>
-import CommentForm from '../../components/shareDetail/CommentForm.vue';
-import CommentList from '../../components/shareDetail/CommentList.vue';
+import CommentList from "../../components/shareDetail/CommentList.vue";
+import { mapGetters, mapActions } from "vuex";
+
 export default {
-  components: { CommentForm, CommentList },
+  components: { CommentList },
+  computed:{
+    ...mapGetters("mainStore", ["getShareDetail"]),
+  },
+  data: () => ({
+    shareItem: {},
+  }),
+  methods: {
+    ...mapActions("mainStore",["findShareDetail"])
+  },
   created() {
     window.scrollTo(0, 0);
+    this.findShareDetail(this.$route.query.no);
   },
 };
 </script>
 
 <style>
-CommentForm .text-main {
-}
 .detail-text {
   padding-bottom: 10px;
   border-bottom: 1px solid rgb(225, 225, 225);
