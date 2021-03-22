@@ -23,8 +23,17 @@
         </div>
       </v-col> -->
 
-      <v-col v-for="j in items" :key="`${n}${j}`" cols="12" sm="6" md="4" xl="3">
-        <share-list-item />
+      <v-col v-for="item in getShareItems" :key="item.board_no" cols="12" sm="6" md="4" xl="3">
+        <share-list-item 
+        :board_no="item.board_no"
+        :title="item.title"
+        :content="item.content"
+        :contentType="item.contentType"
+        :ip="item.ip"
+        :good="item.good"
+        :regdate="item.regdate"
+        :imageUrl="'http://localhost:8000'+JSON.parse(item.content).url" 
+        :video="'hi'"/>
       </v-col>
 
       <v-col cols="12">
@@ -41,9 +50,13 @@ import VueSlickCarousel from 'vue-slick-carousel';
 import 'vue-slick-carousel/dist/vue-slick-carousel.css';
 import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css';
 import ShareListItem from '../../components/main/ShareListItem.vue';
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   components: { VueSlickCarousel, ShareListItem },
+  computed:{
+    ...mapGetters("mainStore", ["getShareItems"]),
+  },
   data: () => ({
     drawer: null,
 
@@ -61,22 +74,22 @@ export default {
       ],
     },
 
-    items: 4,
+    items: {},
   }),
-  methods: {
+methods: {
+    ...mapActions("mainStore",["fetchShareList"]),
     movePage: function (move) {
       this.$router.push({ name: move });
     },
     more() {
       //객체로 추가
-      this.items += 4;
     },
   },
 
   created() {
     window.scrollTo(0, 0);
     //axios하기
-    this.items = 4;
+    this.fetchShareList();
   },
 };
 </script>
