@@ -3,6 +3,9 @@ from config import config
 
 
 def init():
+    # root 폴더 생성
+    if not os.path.isdir(config.root):
+        os.makedirs(config.root, exist_ok=True)
     # video 폴더 생성
     if not os.path.isdir(config.video_path):
         os.makedirs(config.video_path, exist_ok=True)
