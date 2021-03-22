@@ -143,7 +143,6 @@ def bgRemove(video_path: str, background_image_path: str, result_path: str, fps:
         modnet.load_state_dict(torch.load(pretrained_ckpt, map_location=torch.device('cpu')))
     modnet.eval()
 
-    result = os.path.splitext(video_path)[0] + '_{0}.mp4'.format("result")
     matting(video_path, background_image_path, result_path, fps)
     return result
 
