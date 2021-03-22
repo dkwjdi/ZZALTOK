@@ -8,7 +8,7 @@
         height="10px"
         class=""
         ref="nickName"
-        v-model="nickName"
+        v-model="item.nickname"
       ></v-text-field>
 
       <v-text-field
@@ -18,7 +18,7 @@
         height="10px"
         password
         ref="password"
-        v-model="password"
+        v-model="item.password"
       ></v-text-field>
     </v-col>
 
@@ -29,7 +29,7 @@
         auto-grow
         height="141px"
         ref="content"
-        v-model="content"
+        v-model="item.content"
         style="color: red"
       ></v-textarea>
 
@@ -43,43 +43,54 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   props: {
-    type: { Type: String },
-    propContent: { Type: String },
+    type : {Type :String},
     no: { Type: Number },
   },
   data() {
     return {
-      nickName: '',
-      password: '',
+      data: {},
+      item:{
+        content: '',
+        nickname: '',
+        password: '',
+      }
     };
   },
   methods: {
+    ...mapActions('mainStore',["createComment"]),
     checkHandler() {
       let err = true;
       let msg = '';
 
-      !this.nickName &&
+      !this.item.nickname &&
         ((msg = '작성자를 입력해주세요'), (err = false), this.$refs.nickName.focus());
       err &&
-        !this.password &&
+        !this.item.password &&
         ((msg = '비밀번호를 입력해주세요'), (err = false), this.$refs.password.focus());
       err &&
-        !this.content &&
+        !this.item.content &&
         ((msg = '내용을 입력해주세요'), (err = false), this.$refs.content.focus());
 
       if (!err) alert(msg);
       else this.type == 'create' ? this.createHandler() : this.updateHandler();
     },
 
-    createHandler() {},
+    createHandler() {
+      this.data.item = this.item;
+      this.data.no = this.no;
+      this.createComment(this.data);
+
+      //값 초기화
+      this.item.content = '';
+      this.item.nickname = '';
+      this.item.password = '';
+    },
 
     updateHandler() {},
-
-    change() {
-      this.$emit('CommentDown');
-    },
 
     created() {
       //update일때 값 담아주기
