@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import mainStore from "./modules/mainStore";
 
 Vue.use(Vuex);
 
@@ -18,6 +19,10 @@ export default new Vuex.Store({
       state.on_off_menu = check;
     }
   },
-  actions: {},
-  modules: {}
+  actions: {
+    
+  },
+  modules: {
+    mainStore : mainStore,
+  },
 });
