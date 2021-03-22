@@ -4,7 +4,7 @@
       <div data-aos="fade-up" data-aos-duration="1000">
         <div class="figure">
           <v-img
-            :src="require('../../assets/example.png')"
+            :src="imageUrl"
             aspect-ratio="1.6"
             class="img cur-point"
             @click="moveDetail()"
@@ -12,15 +12,15 @@
             <div class="img-text">더 보기</div>
           </v-img>
         </div>
+        
         <div class="ml-1 mt-1">
           <div class="font-weight-bold text-md-body-1">
             <span class="title-choice" @click="moveDetail()"
-              >Life's not all gloom and despondency</span
-            >
+              >{{title}}</span>
           </div>
           <div class="like-lookup mt-1">
             <v-icon small class="mr-1" style="margin-top: -3px">mdi-thumb-up-outline</v-icon>
-            <span>50</span>
+            <span>{{good}}</span>
             <i class="far fa-eye ml-1"></i> <span>100</span>
           </div>
         </div>
@@ -31,12 +31,21 @@
 
 <script>
 export default {
+  props:{
+        board_no : {Type : Number},
+        title : {Type : String},
+        content : {Type : String},
+        contentType : {Type : String},
+        ip : {Type : String},
+        good : {Type : Number},
+        regdate : {Type : String},
+        imageUrl : {Type : String},
+  },
   data: () => ({
-    no: 1,
   }),
   methods: {
     moveDetail() {
-      this.$router.push(`/shareDetail?no=${this.no}`);
+      this.$router.push(`/shareDetail?no=${this.board_no}`);
     },
   },
 };
