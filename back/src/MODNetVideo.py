@@ -54,7 +54,7 @@ torch_transforms = transforms.Compose(
 )
 
 
-def matting(video, background_path, result, alpha_matte=False, fps=30):
+def matting(video, background, result, fps=30):
     # video capture
     vc = cv2.VideoCapture(video)
 
@@ -78,10 +78,7 @@ def matting(video, background_path, result, alpha_matte=False, fps=30):
     rh = rh - rh % 32
     rw = rw - rw % 32
 
-    # video writer
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    video_writer = cv2.VideoWriter(result, fourcc, fps, (w, h))
-
+    # load background image
     def file_load(filename):
         im = cv2.imread(filename)
         if len(im.shape) == 2:
@@ -92,7 +89,12 @@ def matting(video, background_path, result, alpha_matte=False, fps=30):
             im = im[:, :, 0:3]
         return im
 
-    back_image = file_load(r"c:\Users\user\Downloads\background.png")
+    back_image = file_load(background)
+
+    # video writer
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    video_writer = cv2.VideoWriter(result, fourcc, fps, (w, h))
+
     print('Start matting...')
     with tqdm(range(int(num_frame)))as t:
         for c in t:
@@ -125,7 +127,25 @@ def matting(video, background_path, result, alpha_matte=False, fps=30):
     print('Save the result video to {0}'.format(result))
 
 
-def bgRemove(video_path: str, background_path: str, )
+def bgRemove(video_path: str, background_image_path: str, result_path: str, fps: int = 30):
+    print('Load pre-trained MODNet...')
+    pretrained_ckpt = PRETRAINED_CKPT_FILEPATH
+    modnet = MODNet(backbone_pretrained=False)
+    modnet = nn.DataParallel(modnet)
+
+    GPU = True if torch.cuda.device_count() > 0 else False
+    if GPU:
+        print('Use GPU...')
+        modnet = modnet.cuda()
+        modnet.load_state_dict(torch.load(pretrained_ckpt))
+    else:
+        print('Use CPU...')
+        modnet.load_state_dict(torch.load(pretrained_ckpt, map_location=torch.device('cpu')))
+    modnet.eval()
+
+    result = os.path.splitext(video_path)[0] + '_{0}.mp4'.format("result")
+    matting(video_path, background_image_path, result_path, fps)
+    return result
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -159,4 +179,4 @@ if __name__ == '__main__':
 
     result = os.path.splitext(args.video)[0] + '_{0}.mp4'.format(args.result_type)
     alpha_matte = True if args.result_type == 'matte' else False
-    matting(args.video, args.background_path, result, alpha_matte, args.fps)
+    matting(args.video, args.background_path, result, args.fps)
