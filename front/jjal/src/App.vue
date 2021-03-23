@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app id="app">
     <navigation />
     <menuBar />
 
@@ -23,6 +23,8 @@ export default {
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic+Coding&display=swap');
+
 .font-we {
   font-weight: 600;
 }
@@ -31,7 +33,8 @@ export default {
   cursor: pointer;
 }
 
-.main-back {
-  
+#app, span {
+  font-family: 'Nanum Gothic Coding', monospace;
 }
+
 </style>

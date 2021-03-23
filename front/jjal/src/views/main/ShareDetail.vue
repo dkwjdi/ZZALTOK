@@ -25,12 +25,12 @@
           </div>
 
           <div class="pt-3 pl-2">
-            <v-avatar color="indigo" size="53" style="float: left" class="mr-3">
+            <v-avatar color="indigo" size="53" style="float: left" class="mr-3 mt-1">
               <v-icon dark> mdi-account-circle </v-icon>
             </v-avatar>
             <div style="padding-top: -10px">
               <div class="font-weight-bold title">
-                {{ getShareDetail.title }}
+                <span>{{ getShareDetail.title }}</span>
               </div>
               <div class="subtitle-2">
                 <span>{{ getShareDetail.nickname }} </span>
