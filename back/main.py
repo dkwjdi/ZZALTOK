@@ -247,6 +247,7 @@ class BoardEditInfoRequest(BaseModel):
 async def edit_board(
         board_no: int, item: BoardEditInfoRequest, request: Request
 ):
+    print("게시판 수정")
     ip = request.client.host
     board_info = {
         "title": item.title,
@@ -348,6 +349,30 @@ async def check_user_ip_on_good_list(
 ):
     result = await db.check_user_ip_on_good_list(board_no, ip)
     return {"result": result}
+
+
+class ShareBoardWriteInfoRequest(BaseModel):
+    content: str
+    content_type: str
+
+
+@app.post("/api/v1/share/kakao", name="게시글 카카오 공유")
+async def share_board(
+        item: ShareBoardWriteInfoRequest, request: Request
+):
+    ip = request.client.host
+    print(item)
+    board_info = {
+        "content": item.content,
+        "content_type": item.content_type,
+        "nickname": "익명",
+        "ip": ip
+    }
+    result = await db.share_board(board_info)
+    if result is None:
+        return JSONResponse(status_code=400, content={"message": "게시물 작성에 실패했습니다."})
+
+    return result
 
 
 # 여기까지 게시글 기능 종료 ###
