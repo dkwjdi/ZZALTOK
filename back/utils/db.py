@@ -3,19 +3,21 @@ import datetime as dt
 
 # DB 연결
 
-mydb = connect(
+database = connect(
     host="j4d101.p.ssafy.io",
     user="ssafy",
-    password="head101@",
+    password="head101@",  # NOSONAR
     database="jjal"
 )
-cursor = mydb.cursor()
-print(mydb)
+cursor = database.cursor()
 
 
-### 여기부터 공용 기능 시작 ###
+# print(mydb)
 
-async def checkPasswordOnBoard(
+
+# 여기부터 공용 기능 시작 ###
+
+async def check_password_on_board(
         password: str,
         board_no: int
 ):
@@ -32,9 +34,11 @@ async def checkPasswordOnBoard(
                 return False
 
     except Error as e:
-        return False
+        print(e)
+        return None
 
-async def checkPasswordOnComment(
+
+async def check_password_on_comment(
         password: str,
         comment_no: int
 ):
@@ -50,18 +54,78 @@ async def checkPasswordOnComment(
                 return False
 
     except Error as e:
-        return False
+        print(e)
+        return None
 
 
+async def check_user_ip_on_good_list(
+        board_no: int,
+        ip: str
+):
+    # 좋아요를 눌렀는지 안눌렀는지 확인하기
+    sql = """
+            SELECT IP FROM goodlist 
+            WHERE board_no = %s AND ip = %s
+          """
+    try:
+        cursor.execute(sql, (board_no, ip))
+        res = cursor.fetchone()
+        if res is None:
+            return False
+        else:
+            return True
 
-### 여기까지 공용 기능 종료 ###
+    except Error as e:
+        print(e)
+        return None
 
 
-### 여기부터 게시글 기능 시작 ###
+async def insert_user_ip_on_good_list(
+        board_no: int,
+        ip: str,
+):
+    sql = """
+            INSERT INTO goodlist (board_no, ip)
+            VALUES (%s, %s)
+          """
+    val = (board_no, ip)
+    try:
+        cursor.execute(sql, val)
+        database.commit()
+        return True
+
+    except Error as e:
+        print(e)
+        return None
+
+
+async def delete_user_ip_on_good_list(
+        board_no: int,
+        ip: str,
+):
+    sql = """
+            DELETE FROM goodlist 
+            WHERE board_no = %s AND ip = %s;
+          """
+    val = (board_no, ip)
+    try:
+        cursor.execute(sql, val)
+        database.commit()
+        return True
+
+    except Error as e:
+        print(e)
+        return None
+
+
+# 여기까지 공용 기능 종료 ###
+
+
+# 여기부터 게시글 기능 시작 ###
 
 
 #  S04P22D101-63	백엔드 RESTful API 프로토콜 / 최근 게시글들 조회(추천순 반영)
-async def findAllBoardOnDay():
+async def find_all_board_on_day():
     try:
         cursor.execute("SELECT * FROM board")
         res = cursor.fetchall()
@@ -91,11 +155,12 @@ async def findAllBoardOnDay():
                            })
         return result
     except Error as e:
+        print(e)
         return None
 
 
 #  S04P22D101-64     백엔드 RESTful API 프로토콜 / 게시글 상세 조회
-async def findBoardDetailByBoardNo(
+async def find_board_detail_by_board_no(
         board_no: int
 ):
     sql = "SELECT * FROM board WHERE board_no = %s"
@@ -130,11 +195,12 @@ async def findBoardDetailByBoardNo(
                 'regdate': res[8]
                 }
     except Error as e:
+        print(e)
         return None
 
 
 #  S04P22D101-57	백엔드 RESTful API 프로토콜 / 게시글 작성(공유)
-async def writeBoard(
+async def write_board(
         board_info: dict
 ):
     print(board_info)
@@ -146,15 +212,16 @@ async def writeBoard(
            board_info['nickname'], board_info['password'], board_info['ip'], dt.datetime.now())
     try:
         cursor.execute(sql, val)
-        mydb.commit()
+        database.commit()
         return "게시물 작성에 성공했습니다."
 
     except Error as e:
+        print(e)
         return None
 
 
 #  S04P22D101-67     백엔드 RESTful API 프로토콜 / 게시글 수정
-async def editBoard(
+async def edit_board(
         board_info: dict
 ):
     # 비밀번호 ??
@@ -169,54 +236,77 @@ async def editBoard(
            board_info['ip'], board_info['board_no'])
     try:
         cursor.execute(sql, val)
-        mydb.commit()
+        database.commit()
         return "게시물 수정에 성공했습니다."
     except Error as e:
+        print(e)
         return None
 
 
 #  S04P22D101-60	백엔드 RESTful API 프로토콜 / 게시글 삭제
-async def deleteBoard(
+async def delete_board(
         board_no: int
 ):
     # 비밀번호 ??
     sql = "DELETE FROM board WHERE board_no = %s"
-    val = (board_no, )
+    val = (board_no,)
     try:
         cursor.execute(sql, val)
-        mydb.commit()
+        database.commit()
         return "게시물 삭제에 성공했습니다."
     except Error as e:
+        print(e)
         return None
 
 
 #  S04P22D101-62	백엔드 RESTful API 프로토콜 / 게시글 추천(좋아요 기능)
-async def countUpThumbsUpOnBoard(
-        board_no: int, ip: str
+async def count_up_thumbs_up_on_board(
+        board_no: int
 ):
     sql = """
                 UPDATE board 
                 SET good = good+1
                 WHERE board_no = %s
-              """
-    val = (board_no, )
+          """
+    val = (board_no,)
     try:
         cursor.execute(sql, val)
-        mydb.commit()
+        database.commit()
         return "좋아요!"
 
     except Error as e:
+        print(e)
         return None
 
 
-### 여기까지 게시글 기능 종료 ###
+#  S04P22D101-62	백엔드 RESTful API 프로토콜 / 게시글 추천(좋아요 기능)
+async def count_down_thumbs_up_on_board(
+        board_no: int
+):
+    sql = """
+                UPDATE board 
+                SET good = good-1
+                WHERE board_no = %s
+          """
+    val = (board_no,)
+    try:
+        cursor.execute(sql, val)
+        database.commit()
+        return True
+
+    except Error as e:
+        print(e)
+        return None
 
 
-### 여기부터 댓글 기능 시작 ###
+# 여기까지 게시글 기능 종료 ###
+
+
+# 여기부터 댓글 기능 시작 ###
 
 
 #  S04P22D101-65     백엔드 RESTful API 프로토콜 / 댓글 조회 (해당 게시글에 대해)
-async def findCommentByBoardNo(
+async def find_comment_by_board_no(
         board_no: int
 ):
     sql = """
@@ -224,7 +314,7 @@ async def findCommentByBoardNo(
               FROM comment 
              WHERE board_no = %s
           """
-    val = (board_no, )
+    val = (board_no,)
     try:
         cursor.execute(sql, val)
         res = cursor.fetchall()
@@ -254,11 +344,12 @@ async def findCommentByBoardNo(
         return result
 
     except Error as e:
+        print(e)
         return None
 
 
 #  S04P22D101-59	백엔드 RESTful API 프로토콜 / 댓글 작성
-async def writeComment(
+async def write_comment(
         comment_info: dict
 ):
     sql = """
@@ -270,15 +361,16 @@ async def writeComment(
            comment_info['ip'], dt.datetime.now())
     try:
         cursor.execute(sql, val)
-        mydb.commit()
+        database.commit()
         return "댓글 작성에 성공했습니다."
 
     except Error as e:
+        print(e)
         return None
 
 
 #  S04P22D101-61	백엔드 RESTful API 프로토콜 / 댓글 삭제
-async def deleteComment(
+async def delete_comment(
         comment_no: int
 ):
     # 비밀번호 ??
@@ -286,18 +378,19 @@ async def deleteComment(
             DELETE FROM comment 
             WHERE comment_no = %s
           """
-    val = (comment_no, )
+    val = (comment_no,)
     try:
         cursor.execute(sql, val)
-        mydb.commit()
+        database.commit()
         return "댓글 삭제에 성공했습니다."
 
     except Error as e:
+        print(e)
         return None
 
 
 #  S04P22D101-66     백엔드 RESTful API 프로토콜 / 댓글 수정
-async def editComment(
+async def edit_comment(
         comment_info: dict
 ):
     pass
@@ -311,11 +404,11 @@ async def editComment(
            comment_info['comment_no'])
     try:
         cursor.execute(sql, val)
-        mydb.commit()
+        database.commit()
         return "댓글 수정에 성공했습니다."
 
     except Error as e:
+        print(e)
         return None
 
-
-### 여기까지 댓글 기능 종료 ###
+# 여기까지 댓글 기능 종료 ###
