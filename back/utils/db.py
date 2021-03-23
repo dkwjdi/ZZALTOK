@@ -304,6 +304,28 @@ async def count_down_thumbs_up_on_board(
         return None
 
 
+#  S04P23D101-37 백엔드 RESTful API 프로토콜 / 게시글 공유
+async def share_board(
+        board_info: dict
+):
+    print("공유게시글:", board_info)
+    sql = """
+            INSERT INTO shareboard (content, content_type, nickname, ip, regdate)
+            VALUES (%s, %s, %s, %s, %s)
+          """
+    val = (board_info['content'], board_info['content_type'],
+           board_info['nickname'],board_info['ip'], dt.datetime.now())
+    try:
+        cursor.execute(sql, val)
+        database.commit()
+        return "공유 게시물 작성에 성공했습니다."
+
+    except Error as e:
+        print(e)
+        return None
+
+
+
 # 여기까지 게시글 기능 종료 ###
 
 
