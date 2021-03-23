@@ -263,9 +263,11 @@ class PasswordRequest(BaseModel):
 @app.delete("/api/v1/board/{board_no}", name="게시글 삭제")
 async def delete_board(
         board_no: int,
-        item: PasswordRequest,
+        password: str,
 ):
-    res_check = await check_board(board_no, item)
+    pass_req = PasswordRequest()
+    pass_req.password = password
+    res_check = await check_board(board_no, pass_req)
 
     if res_check['result'] is None:
         return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
@@ -381,9 +383,12 @@ async def write_comment(
 
 @app.delete("/api/v1/comment/{comment_no}", name="댓글 삭제")
 async def delete_comment(
-        comment_no: int, item: PasswordRequest
+        comment_no: int,
+        password: str
 ):
-    res_check = await check_comment(comment_no, item)
+    pass_req = PasswordRequest()
+    pass_req.password = password
+    res_check = await check_comment(comment_no, pass_req)
 
     if res_check['result'] is None:
         return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
