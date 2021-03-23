@@ -138,11 +138,18 @@ export default {
       http
         .post('/v1/deepfake', formData)
         .then((response) => {
-          alert('변환완료');
           this.downloadLink = 'http://localhost:8000' + response.data.url + '?download=true'; //바로 다운받을 수 있게 downloadLink에다가 url넣어줌
           console.log(this.downloadLink);
           console.log('성공 + 다운로드링크');
           console.log(this.downloadLink);
+          this.$fire({
+            title: 'Sweet!',
+            text: 'Modal with a custom image.',
+            imageUrl: this.downloadLink,
+            imageWidth: 400,
+            imageHeight: 200,
+            imageAlt: 'Custom image',
+          });
         })
         .catch((error) => {
           console.log('에러 + 에러내용');
@@ -151,7 +158,9 @@ export default {
         });
 
       //파일 삭제 하기
+      // this.$swal('Heading', 'this is a Heading', 'OK');
       this.remove = true;
+      console.log('스윗얼럿');
     },
   },
   computed: {
