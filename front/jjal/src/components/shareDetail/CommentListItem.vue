@@ -11,7 +11,7 @@
       </v-avatar>
       <div style="padding-top: -10px">
         <div class="font-weight-bold subtitle-1">
-          {{ nickname }} {{ comment_no}}
+          <span>{{ nickname }} </span>
           <span style="color: #a9a9a9; font-size: 13px">({{ ip }})</span>
           &middot;
           <span style="color: #a9a9a9; font-size: 13px">{{
@@ -44,30 +44,9 @@
             </v-btn>
           </div>
         </div>
-        <div class="subtitle-2">{{ content }}</div>
+        <div class="subtitle-2"><span>{{ content }}</span></div>
       </div>
     </div>
-
-    <!-- 비밀번호 
-    <v-dialog v-model="isPwdDialog" persistent max-width="290">
-      <v-card>
-        <v-card-title class="subtitle-1 text-center">
-          {{ dialogTitle }}
-        </v-card-title>
-        <v-card-text>{{ dialogContent }}</v-card-text>
-        <v-text-field outlined class="ml-5 mr-5" v-model="pwd"></v-text-field>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="green darken-1" text @click="chackHandler()">
-            확인
-          </v-btn>
-
-          <v-btn color="green darken-1" text @click="isPwdDialog = false">
-            취소
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog> -->
   </div>
 </template>
 
