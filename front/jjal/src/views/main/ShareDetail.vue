@@ -4,12 +4,34 @@
       <v-col cols="1" md="2"></v-col>
       <v-col cols="12" md="8">
         <div class="box-shadow">
+          <!-- 메뉴 -->
+          <div class="hidden-md-and-up" style="float: right">
+            <v-menu bottom left>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon v-bind="attrs" v-on="on" class="mt-5 mr-1">
+                  <v-icon>mdi-dots-vertical</v-icon>
+                </v-btn>
+              </template>
+
+              <v-list>
+                <v-list-item
+                  v-for="(item, i) in listItem"
+                  :key="i"
+                >
+                  <v-list-item-title class="menu-choice">{{ item.title }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </div>
+
           <div class="pt-3 pl-2">
             <v-avatar color="indigo" size="53" style="float: left" class="mr-3">
               <v-icon dark> mdi-account-circle </v-icon>
             </v-avatar>
             <div style="padding-top: -10px">
-              <div class="font-weight-bold title">{{ getShareDetail.title }}</div>
+              <div class="font-weight-bold title">
+                {{ getShareDetail.title }}
+              </div>
               <div class="subtitle-2">
                 <span>{{ getShareDetail.nickname }} </span>
                 <span style="font-size: 12px; color: #888888"
@@ -42,17 +64,25 @@
                     <div class="pt-5 pl-5">내용 넣어주세요</div>
 
                     <div class="text-center mt-10">
-                      <v-btn color="indigo" fab large dark>
+                      <v-btn
+                        color="indigo"
+                        fab
+                        large
+                        dark
+                        @click="updateDetailLike(getShareDetail.board_no)"
+                      >
                         <i class="fas fa-thumbs-up fa-lg"></i>
                       </v-btn>
                       <div class="mt-3">
                         <i class="fas fa-thumbs-up mr-1"></i
                         >{{ getShareDetail.good }}
                         <i class="far fa-eye ml-1"></i> 100
-                        <i class="fas fa-comment"></i> 2
+                        <i class="fas fa-comment"></i> {{getCommentSize}}
                       </div>
 
-                      <div class="mt-2">게시일 : {{ getShareDetail.regdate }}</div>
+                      <div class="mt-2">
+                        게시일 : {{ getShareDetail.regdate }}
+                      </div>
                     </div>
                   </v-col>
                 </v-row>
@@ -60,15 +90,38 @@
             </v-sheet>
           </div>
 
-                <!-- 댓글 -->
+          <!-- 댓글 -->
           <v-container>
             <v-sheet class="mt-10 mb-5">
-              <comment-list/>
+              <comment-list />
             </v-sheet>
           </v-container>
         </div>
       </v-col>
-      <v-col cols="1" md="2"></v-col>
+      <v-col cols="1" md="2">
+        <div class="v-btn--example" style="float: left">
+          <div class="mt-3">
+            <v-btn color="indigo" dark fab>
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
+          </div>
+          <div class="mt-3">
+            <v-btn color="error" fab dark>
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </div>
+          <div class="mt-3">
+            <v-btn color="green" fab dark>
+              <v-icon>mdi-download</v-icon>
+            </v-btn>
+          </div>
+          <div class="mt-3">
+            <v-btn color="warning" fab dark>
+              <v-icon>mdi-share-variant</v-icon>
+            </v-btn>
+          </div>
+        </div>
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -79,14 +132,15 @@ import { mapGetters, mapActions } from "vuex";
 
 export default {
   components: { CommentList },
-  computed:{
-    ...mapGetters("mainStore", ["getShareDetail"]),
+  computed: {
+    ...mapGetters("mainStore", ["getShareDetail", "getCommentSize"]),
   },
   data: () => ({
     shareItem: {},
+    listItem: [{ title: '수정' }, { title: '삭제' }, { title: '공유' }, {title : 'Download'}],
   }),
   methods: {
-    ...mapActions("mainStore",["findShareDetail"])
+    ...mapActions("mainStore", ["findShareDetail", "updateDetailLike"]),
   },
   created() {
     window.scrollTo(0, 0);
@@ -112,5 +166,14 @@ export default {
 
 .box-shadow {
   box-shadow: 5px 5px 5px 5px gray;
+}
+
+.v-btn--example {
+  position: fixed;
+}
+
+.menu-choice:hover {
+  cursor: pointer;
+  color: #3395f4;
 }
 </style>
