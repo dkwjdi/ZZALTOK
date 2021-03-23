@@ -9,10 +9,12 @@ from pydantic import BaseModel
 from utils import db, url, video
 from config import config
 from init import init
-from src import damedame as dame
-from src import startfaceswap as faceswap
-from src import MODNetVideo
 from PIL import Image
+
+if not config.IS_AWS_SERVER:
+    from src import damedame as dame
+    from src import startfaceswap as faceswap
+    from src import MODNetVideo
 
 init()
 

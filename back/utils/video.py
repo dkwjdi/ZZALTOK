@@ -18,6 +18,7 @@ if not os.path.isdir(config.ffmpeg_path):
         "http://kumoh.synology.me/ffmpeg.zip",
         filename=os.path.join(config.root, FFMPEG_ZIP))
     with zipfile.ZipFile(os.path.join(config.root, FFMPEG_ZIP), "r") as zip_ref:
+        os.makedirs(config.ffmpeg_path, exist_ok=True)
         zip_ref.extractall(config.ffmpeg_path)
     if platform.system() == "Windows":  # 윈도우인 경우 linux 실행 파일을 삭제
         os.remove(os.path.join(config.ffmpeg_path, FFMPEG_FILENAME))
