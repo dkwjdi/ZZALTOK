@@ -1,9 +1,15 @@
-FROM tiangolo/uvicorn-gunicorn-fastapi:python3.7
+FROM tiangolo/uvicorn-gunicorn-fastapi
+
+WORKDIR /app
 
 COPY requirements.txt /app/
+
+RUN python -m pip install --upgrade pip
+
+RUN pip install cmake
 
 RUN pip install -r /app/requirements.txt
 
 COPY . /app
 
-CMD ["python", "/app/main.py"]
+CMD ["uvicorn", "main:app", "--reload", "--host=0.0.0.0", "--port=5000"]
