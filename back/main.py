@@ -9,10 +9,12 @@ from pydantic import BaseModel
 from utils import db, url, video
 from config import config
 from init import init
-from src import damedame as dame
-from src import startfaceswap as faceswap
-from src import MODNetVideo
 from PIL import Image
+
+if not config.IS_AWS_SERVER:
+    from src import damedame as dame
+    from src import startfaceswap as faceswap
+    from src import MODNetVideo
 
 init()
 
@@ -257,14 +259,12 @@ async def edit_board(
         "ip": ip,
         "board_no": board_no
     }
-    pass_req = PasswordRequest()
-    pass_req.password = item.password
-    res_check = await check_board(board_no, pass_req)
+    res_check = await db.check_password_on_board(item.password, board_no)
 
-    if res_check['result'] is None:
-        return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
+    # if res_check['result'] is None:
+    #     return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
 
-    if res_check['result']:
+    if res_check:
         result = await db.edit_board(board_info)
         if result is None:
             return JSONResponse(status_code=400, content={"message": "게시물 수정에 실패했습니다."})
@@ -288,14 +288,12 @@ async def delete_board(
         board_no: int,
         password: str,
 ):
-    pass_req = PasswordRequest()
-    pass_req.password = password
-    res_check = await check_board(board_no, pass_req)
+    res_check = await db.check_password_on_board(password, board_no)
 
-    if res_check['result'] is None:
-        return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
+    # if res_check['result'] is None:
+    #     return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
 
-    if res_check['result']:
+    if res_check:
         result = await db.delete_board(board_no)
 
         if result is None:
@@ -409,14 +407,12 @@ async def delete_comment(
         comment_no: int,
         password: str
 ):
-    pass_req = PasswordRequest()
-    pass_req.password = password
-    res_check = await check_comment(comment_no, pass_req)
+    res_check = await db.check_password_on_comment(password, comment_no)
 
-    if res_check['result'] is None:
-        return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
+    # if res_check['result'] is None:
+    #     return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
 
-    if res_check['result']:
+    if res_check:
         result = await db.delete_comment(comment_no)
 
         if result is None:
@@ -440,15 +436,13 @@ async def edit_comment(
         "password": password,
         "ip": ip
     }
-    pass_req = PasswordRequest()
-    pass_req.password = password
 
-    res_check = await check_comment(comment_no, pass_req)
+    res_check = await db.check_password_on_comment(password, comment_no)
 
-    if res_check['result'] is None:
-        return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
+    # if res_check is None:
+    #     return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
 
-    if res_check['result']:
+    if res_check:
         result = await db.edit_comment(comment_info)
 
         if result is None:

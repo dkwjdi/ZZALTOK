@@ -54,7 +54,7 @@ torch_transforms = transforms.Compose(
 )
 
 
-def matting(video, background, result, fps=30):
+def matting(modnet, video, background, result, fps=30):
     # video capture
     vc = cv2.VideoCapture(video)
 
@@ -144,8 +144,8 @@ def bgRemove(video_path: str, background_image_path: str, result_path: str, fps:
         modnet.load_state_dict(torch.load(pretrained_ckpt, map_location=torch.device('cpu')))
     modnet.eval()
 
-    matting(video_path, background_image_path, result_path, fps)
-    return result
+    matting(modnet, video_path, background_image_path, result_path, fps)
+    return result_path
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
