@@ -124,10 +124,15 @@ async def delete_user_ip_on_good_list(
 # 여기부터 게시글 기능 시작 ###
 
 
-#  S04P22D101-63	백엔드 RESTful API 프로토콜 / 최근 게시글들 조회(추천순 반영)
+#  S04P22D101-63	백엔드 RESTful API 프로토콜 / 최근 게시글들 조회(추천순 반영 상위 12개)
 async def find_all_board_on_day():
     try:
-        cursor.execute("SELECT * FROM board")
+        cursor.execute("""
+                        SELECT * 
+                          FROM board b
+                      ORDER BY good DESC
+                         LIMIT 12;
+                       """)
         res = cursor.fetchall()
         result = []
         for item in res:
