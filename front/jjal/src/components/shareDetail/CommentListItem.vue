@@ -1,7 +1,6 @@
 <template>
   <div>
     <div
-      v-if="!isCommentForm"
       class="mt-5 mb-5 pt-3 pl-2"
       @mouseover="isMenu = true"
       @mouseleave="isMenu = false"
@@ -12,43 +11,80 @@
       </v-avatar>
       <div style="padding-top: -10px">
         <div class="font-weight-bold subtitle-1">
-          사용자<span style="color: #a9a9a9; font-size: 13px">(ip)</span> &middot;
-          <span style="color: #a9a9a9; font-size: 13px">날짜</span>
+          {{ nickname }} {{ comment_no}}
+          <span style="color: #a9a9a9; font-size: 13px">({{ ip }})</span>
+          &middot;
+          <span style="color: #a9a9a9; font-size: 13px">{{
+            regdate.replace("T", " ")
+          }}</span>
 
           <div style="float: right" v-if="isMenu">
-            <div v-if="!isUpdate">
-              <!-- 수정 -->
-              <v-btn icon x-small color="primary" fab dark @click="chageInput('수정')">
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
+            <!-- 수정 -->
+            <v-btn
+              icon
+              x-small
+              color="primary"
+              fab
+              dark
+              @click="pwdDialog('update')"
+            >
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
 
-              <!-- 삭제 -->
-              <v-btn icon x-small color="primary" fab dark @click="chageInput('삭제')">
-                <v-icon>mdi-delete</v-icon>
-              </v-btn>
-            </div>
-
-            <div class="menu-input" v-if="isUpdate">
-              <input type="text" placeholder="password" />
-              <v-btn text dark @click="chackHandler()">{{ typeForm }}</v-btn>
-              <v-btn icon color="white" @click="isUpdate = false"><v-icon>mdi-close</v-icon></v-btn>
-            </div>
+            <!-- 삭제 -->
+            <v-btn
+              icon
+              x-small
+              color="error"
+              fab
+              dark
+              @click="pwdDialog('delete')"
+            >
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
           </div>
         </div>
-        <div class="subtitle-2">내용</div>
+        <div class="subtitle-2">{{ content }}</div>
       </div>
     </div>
 
-    <!-- 수정창 -->
-    <div class="update-form" v-if="isCommentForm">
-      <comment-form :type="'update'" v-on:CommentDown="checkMenu()" />
-    </div>
+    <!-- 비밀번호 
+    <v-dialog v-model="isPwdDialog" persistent max-width="290">
+      <v-card>
+        <v-card-title class="subtitle-1 text-center">
+          {{ dialogTitle }}
+        </v-card-title>
+        <v-card-text>{{ dialogContent }}</v-card-text>
+        <v-text-field outlined class="ml-5 mr-5" v-model="pwd"></v-text-field>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green darken-1" text @click="chackHandler()">
+            확인
+          </v-btn>
+
+          <v-btn color="green darken-1" text @click="isPwdDialog = false">
+            취소
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog> -->
   </div>
 </template>
 
 <script>
-import CommentForm from './CommentForm.vue';
+import CommentForm from "./CommentForm.vue";
+import http from "@/util/http-common.js";
+import { mapActions } from "vuex";
+import Swal from "sweetalert2";
+
 export default {
+  props: {
+    comment_no: { Type: Number },
+    content: { Type: String },
+    ip: { Type: String },
+    nickname: { Type: String },
+    regdate: { Type: String },
+  },
   components: { CommentForm },
   data() {
     return {
@@ -56,31 +92,85 @@ export default {
       menu2: false,
 
       isMenu: false,
-      isCommentForm: false,
-      isUpdate: false,
-      typeForm: '',
+      isPwdDialog: false,
+
+      //dialog부분
+      dialogTitle: "",
+      dialogContent: "",
+
+      pwd: "",
     };
   },
 
   methods: {
-    checkMenu() {
-      this.isCommentForm = false;
-      this.isUpdate = false;
+    ...mapActions("mainStore", ["deleteComment", "updateComment"]),
+    pwdDialog(str) {
+      Swal.fire({
+        title: "비밀번호를 입력해주세요",
+        input: "password",
+        width: 500,
+        inputAttributes: {
+          autocapitalize: "off",
+        },
+        showCancelButton: true,
+        confirmButtonText: "Ok",
+        showLoaderOnConfirm: true,
+        allowOutsideClick: () => !Swal.isLoading(),
+      }).then((result) => {
+        console.log(result);
+        if (result.isConfirmed) {
+          this.pwd = result.value;
+          this.findCommentPwd(str);
+        }
+      });
     },
-    chageInput(str) {
-      this.isUpdate = true;
-      this.typeForm = str;
+
+    findCommentPwd(str) {
+      let flag = false;
+      http
+        .post(`/v1/comment/check/${this.comment_no}`, { password: this.pwd })
+        .then((res) => {
+          console.log("댓글 비빌번호 성공 : " + res.data.result);
+
+          if (!res.data.result) {
+            Swal.fire({
+              icon: "error",
+              title: "비밀번호가 틀립니다.",
+            });
+            return;
+          }
+
+          // 댓글 등록 수정
+          if (str == "update") {
+            Swal.fire({
+              input: "textarea",
+              inputLabel: "Message",
+              inputPlaceholder: "댓글 내용을 등록해주세요",
+              inputValue: this.content,
+              showCancelButton: true,
+            }).then((result) => {
+              console.log(result);
+              if (result.isConfirmed) {
+                let data = {};
+                data.no = this.comment_no;
+                data.content = result.value;
+                data.nickname = this.nickname;
+                data.password = this.pwd;
+                this.updateComment(data);
+              }
+            });
+          } else {
+            this.deleteComment({ no: this.comment_no, password: this.pwd });
+          }
+
+        })
+        .catch((error) => {
+          console.log("에러", error);
+          console.log("에러내용", error.response);
+        });
+
+      return flag;
     },
-    chackHandler() {
-      //타입에 맞게 update, delete
-      if (this.typeForm == '수정') {
-        this.isCommentForm = true;
-      }
-    },
-    updateComment() {
-      //패스워드 맞는지 검사하고
-    },
-    deleteComment() {},
   },
 };
 </script>
