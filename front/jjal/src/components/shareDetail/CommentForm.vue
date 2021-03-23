@@ -35,7 +35,6 @@
 
       <div class="mb-5" style="float: right">
         <v-btn @click="checkHandler()">등록</v-btn>
-        <v-btn class="ml-2" v-if="type == 'update'" @click="change"> 취소</v-btn>
       </div>
     </v-col>
     <v-col cols="1" md="1"></v-col>
