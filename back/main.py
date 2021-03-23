@@ -1,10 +1,9 @@
 import os
 import uuid
 import re
-from typing import Any
 
 from fastapi import FastAPI, File, UploadFile, Request
-from fastapi.responses import JSONResponse, FileResponse, StreamingResponse
+from fastapi.responses import JSONResponse, FileResponse
 from pydantic import BaseModel
 
 from utils import db, url, video
@@ -235,7 +234,9 @@ async def edit_board(
         "ip": ip,
         "board_no": board_no
     }
-    res_check = await check_board(board_no, PasswordRequest(item.password))
+    pass_req = PasswordRequest()
+    pass_req.password = item.password
+    res_check = await check_board(board_no, pass_req)
 
     if res_check['result'] is None:
         return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
@@ -254,10 +255,9 @@ async def edit_board(
 # output :  게시글 삭제 성공 유무
 class PasswordRequest(BaseModel):
     password: str
-
-    def __init__(self, password, **data: Any):
-        super().__init__(**data)
-        self.password = password
+    # def __init__(self, password, **data: Any):
+    #     super().__init__(**data)
+    #     self.password = password
 
 
 @app.delete("/api/v1/board/{board_no}", name="게시글 삭제")
@@ -412,8 +412,10 @@ async def edit_comment(
         "password": password,
         "ip": ip
     }
+    pass_req = PasswordRequest()
+    pass_req.password = password
 
-    res_check = await check_comment(comment_no, PasswordRequest(password))
+    res_check = await check_comment(comment_no, pass_req)
 
     if res_check['result'] is None:
         return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
