@@ -145,7 +145,7 @@ def bgRemove(video_path: str, background_image_path: str, result_path: str, fps:
     modnet.eval()
 
     matting(modnet, video_path, background_image_path, result_path, fps)
-    return result
+    return result_path
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
