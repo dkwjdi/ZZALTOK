@@ -8,6 +8,7 @@ const mainStore = {
 
       //댓글
       commentItems:{},
+      commentSize:{},
   },
   getters: {
     getShareItems(state){
@@ -18,6 +19,9 @@ const mainStore = {
     },
     getCommentItems(state){
         return state.commentItems;
+    },
+    getCommentSize(state){
+      return state.commentSize;
     }
   },
   mutations: {
@@ -26,10 +30,12 @@ const mainStore = {
       },
       SET_SHARE_DETAIL(state, payload){
           state.shareDetail = payload;
+          state.shareDetail.regdate = state.shareDetail.regdate.replace("T", " ").substr(0,16);
           state.shareDetail.url = 'http://localhost:8000'+JSON.parse(state.shareDetail.content).url;
       },
       SET_COMMENT_ITEMS(state, payload){
         state.commentItems = payload;
+        state.commentSize = Object.keys(payload).length;
       }
   },
   actions: {
@@ -91,10 +97,24 @@ const mainStore = {
         });
     },
 
+    updateComment({dispatch, state}, data){
+      http
+        .put(`/v1/comment/${data.no}?content=${data.content}&nickname=${data.nickname}&password=${data.password}`)
+        .then((res) => {
+          console.log(res);
+          dispatch("fetchCommentList", state.shareDetail.board_no);
+        })
+        .catch((error) => {
+          console.log('에러',error);
+          console.log('에러내용',error.response);
+        });
+    },
+
     deleteComment({dispatch, state}, data) {
+        console.log(data.password);
         http
-          .delete(`/v1/board/detail/${data.no}`, data.item)
-          .then((res) => {
+          .delete(`/v1/comment/${data.no}`, {params:{ password: data.password }})
+          .then(() => {
             console.log("댓글 삭제 성공");
             dispatch("fetchCommentList", state.shareDetail.board_no);
           })
@@ -103,6 +123,20 @@ const mainStore = {
             console.log("에러내용", error.response);
           });
       },
+
+    //좋아요 기능
+    updateDetailLike({dispatch, state}, no){
+      http
+      .post(`/v1/board/like/${no}`)
+      .then((res) => {
+        console.log(res.data);
+        dispatch("findShareDetail", state.shareDetail.board_no);
+      })
+      .catch((error) => {
+        console.log("에러", error);
+        console.log("에러내용", error.response);
+      });
+    }
   },
 };
 
