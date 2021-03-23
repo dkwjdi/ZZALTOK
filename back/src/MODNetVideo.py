@@ -54,7 +54,7 @@ torch_transforms = transforms.Compose(
 )
 
 
-def matting(video, background, result, fps=30):
+def matting(modnet, video, background, result, fps=30):
     # video capture
     vc = cv2.VideoCapture(video)
 
@@ -94,6 +94,7 @@ def matting(video, background, result, fps=30):
     # video writer
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     video_writer = cv2.VideoWriter(result, fourcc, fps, (w, h))
+    GPU = True if torch.cuda.device_count() > 0 else False
 
     print('Start matting...')
     with tqdm(range(int(num_frame)))as t:
@@ -143,13 +144,13 @@ def bgRemove(video_path: str, background_image_path: str, result_path: str, fps:
         modnet.load_state_dict(torch.load(pretrained_ckpt, map_location=torch.device('cpu')))
     modnet.eval()
 
-    matting(video_path, background_image_path, result_path, fps)
-    return result
+    matting(modnet, video_path, background_image_path, result_path, fps)
+    return result_path
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--video', type=str, default=r"c:\Users\user\Downloads\asfbdabd.mp4", help='input video file')
-    parser.add_argument('--background-path', type=str, default=r"c:\Users\user\Downloads\background.png", help="input image file")
+    parser.add_argument('--video', type=str, default=r"C:\Users\YSM\Desktop\test\dance.mp4", help='input video file')
+    parser.add_argument('--background-path', type=str, default=r"C:\Users\YSM\Desktop\test\green.jpg", help="input image file")
     parser.add_argument('--result-type', type=str, default='fg', choices=['fg', 'matte'],
                         help='matte - save the alpha matte; fg - save the foreground')
     parser.add_argument('--fps', type=int, default=30, help='fps of the result video')

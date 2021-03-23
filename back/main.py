@@ -11,6 +11,7 @@ from config import config
 from init import init
 from src import damedame as dame
 from src import startfaceswap as faceswap
+from src import MODNetVideo
 from PIL import Image
 
 init()
@@ -69,8 +70,30 @@ async def create_dame_meme_video(image: UploadFile = File(...)):
 # input : 동영상, 배경사진
 # output : 합성된 동영상
 @app.post("/api/v1/removeBg", name="동영상 배경 변경 서비스")
-async def remove_back_ground_on_video(video: UploadFile = File(...), image: UploadFile = File(...)): # noqa
-    pass
+async def remove_back_ground_on_video(video: UploadFile = File(...), image: UploadFile = File(...)):
+    print("배경바꾸기 시작합니다")
+    image_contents = await image.read()
+    ext = image.filename[image.filename.rfind('.'):]
+    image.filename = str(uuid.uuid4()).replace('-', '') + ext
+    input_image_path = os.path.join(config.image_path, image.filename)
+
+    video_contents = await video.read()
+    ext = video.filename[video.filename.rfind('.'):]
+    video.filename = str(uuid.uuid4()).replace('-', '') + ext
+    input_video_path = os.path.join(config.video_path, video.filename)
+
+    output_path = os.path.join(config.video_path, str(uuid.uuid4()).replace('-', '') + ".mp4")
+
+    with open(input_image_path, "wb") as fp:
+        fp.write(image_contents)
+
+    with open(input_video_path, "wb") as fp:
+        fp.write(video_contents)
+
+    print("input_image:", input_image_path)
+    print("input_video:", input_video_path)
+    MODNetVideo.bgRemove(input_video_path, input_image_path, output_path)
+    return {"url": url.convert_path_to_url(output_path, base_url="/api/v1/content/")}
 
 
 @app.get("/api/v1/content/{rest_of_path:path}", name="파일 가져오기")
@@ -263,9 +286,11 @@ class PasswordRequest(BaseModel):
 @app.delete("/api/v1/board/{board_no}", name="게시글 삭제")
 async def delete_board(
         board_no: int,
-        item: PasswordRequest,
+        password: str,
 ):
-    res_check = await check_board(board_no, item)
+    pass_req = PasswordRequest()
+    pass_req.password = password
+    res_check = await check_board(board_no, pass_req)
 
     if res_check['result'] is None:
         return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
@@ -381,9 +406,12 @@ async def write_comment(
 
 @app.delete("/api/v1/comment/{comment_no}", name="댓글 삭제")
 async def delete_comment(
-        comment_no: int, item: PasswordRequest
+        comment_no: int,
+        password: str
 ):
-    res_check = await check_comment(comment_no, item)
+    pass_req = PasswordRequest()
+    pass_req.password = password
+    res_check = await check_comment(comment_no, pass_req)
 
     if res_check['result'] is None:
         return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
