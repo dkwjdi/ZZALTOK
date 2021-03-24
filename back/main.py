@@ -58,7 +58,7 @@ async def create_deep_fake_image(origin: UploadFile = File(...), target: UploadF
         async with httpx.AsyncClient() as client:
             files = {'origin': (origin.filename, content_origin, "application/octet-stream"),
                      'target': (target.filename, content_target, "application/octet-stream")}
-            r = await client.post(config.GPU_SERVER_DOMAIN + "/api/v1/deepfake", files=files)
+            r = await client.post(config.GPU_SERVER_DOMAIN + "/api/v1/deepfake", files=files, timeout=httpx.Timeout(60.0, connect=5.0))
             if r.status_code != httpx.codes.OK:
                 return JSONResponse(status_code=r.status_code, content={"message": "서버 내에서 위임 작업 중에 문제가 발생하였습니다. " + r.raise_for_status()})
             data = json.loads(r.text)
@@ -87,7 +87,7 @@ async def create_dame_meme_video(image: UploadFile = File(...)):
     if config.IS_AWS_SERVER:
         async with httpx.AsyncClient() as client:
             files = {'image': (image.filename, contents, "application/octet-stream")}
-            r = await client.post(config.GPU_SERVER_DOMAIN + "/api/v1/damedame", files=files)
+            r = await client.post(config.GPU_SERVER_DOMAIN + "/api/v1/damedame", files=files, timeout=httpx.Timeout(60.0, connect=5.0))
             if r.status_code != httpx.codes.OK:
                 return JSONResponse(status_code=r.status_code, content={"message": "서버 내에서 위임 작업 중에 문제가 발생하였습니다. " + r.raise_for_status()})
             data = json.loads(r.text)
@@ -130,7 +130,7 @@ async def remove_back_ground_on_video(video: UploadFile = File(...), image: Uplo
         async with httpx.AsyncClient() as client:
             files = {'video': (video.filename, video_contents, "application/octet-stream"),
                      'image': (image.filename, image_contents, "application/octet-stream")}
-            r = await client.post(config.GPU_SERVER_DOMAIN + "/api/v1/removeBg", files=files)
+            r = await client.post(config.GPU_SERVER_DOMAIN + "/api/v1/removeBg", files=files, timeout=httpx.Timeout(60.0, connect=5.0))
             if r.status_code != httpx.codes.OK:
                 return JSONResponse(status_code=r.status_code, content={"message": "서버 내에서 위임 작업 중에 문제가 발생하였습니다. " + r.raise_for_status()})
             data = json.loads(r.text)
