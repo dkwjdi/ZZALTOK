@@ -8,7 +8,7 @@ IS_AWS_SERVER: bool = 'ubuntu' == getpass.getuser() and platform.system() == "Li
 
 # 작업할 볼륨 또는 폴더 선정
 root: str = os.path.join(os.path.splitdrive(os.getcwd())[0], "/content/") \
-    if not IS_GPU_SERVER else os.path.abspath('content/')
+    if not IS_GPU_SERVER else os.path.join(os.path.expanduser("~"), 'content/')
 image_path: str = os.path.join(root, "images/")
 upload_path: str = os.path.join(root, "uploads/")
 thumbnail_path: str = os.path.join(root, "thumbnails/")
