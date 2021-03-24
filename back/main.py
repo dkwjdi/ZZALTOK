@@ -59,9 +59,11 @@ async def create_deep_fake_image(origin: UploadFile = File(...), target: UploadF
             files = {'origin': (origin.filename, content_origin, "application/octet-stream"),
                      'target': (target.filename, content_target, "application/octet-stream")}
             r = await client.post(config.GPU_SERVER_DOMAIN + "/api/v1/deepfake", files=files)
-            data = json.loads(r)
+            if r.status_code != httpx.codes.OK:
+                return JSONResponse(status_code=r.status_code, content={"message": "서버 내에서 위임 작업 중에 문제가 발생하였습니다. " + r.raise_for_status()})
+            data = json.loads(r.text)
             urllib.request.urlretrieve(
-                config.GPU_SERVER_DOMAIN + data['url'],
+                config.GPU_SERVER_DOMAIN + data["url"],
                 filename=output)
     else:
         faceswap.makedeepface(upload_origin_image_path=origin_input, upload_target_image_path=target_input,
