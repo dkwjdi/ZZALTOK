@@ -83,7 +83,19 @@ async def create_dame_meme_video(image: UploadFile = File(...)):
     with open(input_path, "wb") as fp:
         fp.write(contents)
     print("input:", input_path)
-    dame.make_damedame(upload_image_path=input_path, output=output_path)
+    # AWS 서버는 자체적으로 GPU 연산을 할 수 없기에 위임하여 이를 처리
+    if config.IS_AWS_SERVER:
+        async with httpx.AsyncClient() as client:
+            files = {'image': (image.filename, contents, "application/octet-stream")}
+            r = await client.post(config.GPU_SERVER_DOMAIN + "/api/v1/damedame", files=files)
+            if r.status_code != httpx.codes.OK:
+                return JSONResponse(status_code=r.status_code, content={"message": "서버 내에서 위임 작업 중에 문제가 발생하였습니다. " + r.raise_for_status()})
+            data = json.loads(r.text)
+            urllib.request.urlretrieve(
+                config.GPU_SERVER_DOMAIN + data["url"],
+                filename=output_path)
+    else:
+        dame.make_damedame(upload_image_path=input_path, output=output_path)
     return {"url": url.convert_path_to_url(output_path, base_url="/api/v1/content/")}
 
 
@@ -113,7 +125,20 @@ async def remove_back_ground_on_video(video: UploadFile = File(...), image: Uplo
 
     print("input_image:", input_image_path)
     print("input_video:", input_video_path)
-    MODNetVideo.bgRemove(input_video_path, input_image_path, output_path)
+    # AWS 서버는 자체적으로 GPU 연산을 할 수 없기에 위임하여 이를 처리
+    if config.IS_AWS_SERVER:
+        async with httpx.AsyncClient() as client:
+            files = {'video': (video.filename, video_contents, "application/octet-stream"),
+                     'image': (image.filename, image_contents, "application/octet-stream")}
+            r = await client.post(config.GPU_SERVER_DOMAIN + "/api/v1/removeBg", files=files)
+            if r.status_code != httpx.codes.OK:
+                return JSONResponse(status_code=r.status_code, content={"message": "서버 내에서 위임 작업 중에 문제가 발생하였습니다. " + r.raise_for_status()})
+            data = json.loads(r.text)
+            urllib.request.urlretrieve(
+                config.GPU_SERVER_DOMAIN + data["url"],
+                filename=output_path)
+    else:
+        MODNetVideo.bgRemove(input_video_path, input_image_path, output_path)
     return {"url": url.convert_path_to_url(output_path, base_url="/api/v1/content/")}
 
 
