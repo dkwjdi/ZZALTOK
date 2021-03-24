@@ -15,6 +15,8 @@ from config import config
 import urllib.request
 import git
 
+from utils import video
+
 if not os.path.isdir(config.MODNet_model_path):
     print("MODNet 프로젝트 클론 중")
     git.Repo.clone_from("https://github.com/ZHKKKe/MODNet", config.MODNet_model_path)
@@ -143,8 +145,10 @@ def bgRemove(video_path: str, background_image_path: str, result_path: str, fps:
         print('Use CPU...')
         modnet.load_state_dict(torch.load(pretrained_ckpt, map_location=torch.device('cpu')))
     modnet.eval()
-
-    matting(modnet, video_path, background_image_path, result_path, fps)
+    mid_path = os.path.splitext(result_path)
+    mid_path = mid_path[0] + '-mid' + mid_path[1]
+    matting(modnet, video_path, background_image_path, mid_path, fps)
+    video.insert_audio_on_video_fps30(mid_path, video_path, result_path)
     return result_path
 
 if __name__ == '__main__':

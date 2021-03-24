@@ -44,10 +44,17 @@ def insert_audio_on_video(input_video_path: str, input_audio_path: str, output_p
     # !ffmpeg -i 3x.mp4 -i bakamitai_template.mp3 -map 0:v -map 1:a -c:v copy -shortest complete.mp4
     ffmpy.FFmpeg(
         inputs=OrderedDict([(input_video_path, None), (input_audio_path, None)]),
-        outputs={output_path: '-map 0:v -map 1:a -c:v copy -shortest'},
+        outputs={output_path: '-map 0:v -map 1:a -c:v -shortest'},
         global_options=['-y']
     ).run()
 
+def insert_audio_on_video_fps30(input_video_path: str, input_audio_path: str, output_path: str):
+    # !ffmpeg -i 3x.mp4 -i bakamitai_template.mp3 -map 0:v -map 1:a -c:v copy -shortest complete.mp4
+    ffmpy.FFmpeg(
+        inputs=OrderedDict([(input_video_path, '-r 30'), (input_audio_path, None)]),
+        outputs={output_path: '-map 0:v -map 1:a -c:v libx264 -shortest'},
+        global_options=['-y']
+    ).run()
 
 def create_video_thumbnail(input_video_path, output_image_path):
     if os.path.splitext(output_image_path)[-1].lower() != '.png':
