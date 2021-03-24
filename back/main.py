@@ -1,11 +1,13 @@
 import os
 import uuid
 import re
+import json
 
 from fastapi import FastAPI, File, UploadFile, Request
 from fastapi.responses import JSONResponse, FileResponse
 from pydantic import BaseModel
 
+import urllib.request
 import httpx
 
 from init import init
@@ -54,9 +56,13 @@ async def create_deep_fake_image(origin: UploadFile = File(...), target: UploadF
     # AWS 서버는 자체적으로 GPU 연산을 할 수 없기에 위임하여 이를 처리
     if config.IS_AWS_SERVER:
         async with httpx.AsyncClient() as client:
-            r = await client.get(config.GPU_SERVER_DOMAIN)
-            print(r)
-            print(r.text)
+            files = {'origin': (origin.filename, content_origin, "application/octet-stream"),
+                     'target': (target.filename, content_target, "application/octet-stream")}
+            r = await client.post(config.GPU_SERVER_DOMAIN + "/api/v1/deepfake", files=files)
+            data = json.loads(r)
+            urllib.request.urlretrieve(
+                config.GPU_SERVER_DOMAIN + data['url'],
+                filename=output)
     else:
         faceswap.makedeepface(upload_origin_image_path=origin_input, upload_target_image_path=target_input,
                               output=output)
