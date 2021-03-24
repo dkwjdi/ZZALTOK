@@ -18,6 +18,7 @@ if not os.path.isdir(config.ffmpeg_path):
         "http://kumoh.synology.me/ffmpeg.zip",
         filename=os.path.join(config.root, FFMPEG_ZIP))
     with zipfile.ZipFile(os.path.join(config.root, FFMPEG_ZIP), "r") as zip_ref:
+        os.makedirs(config.ffmpeg_path, exist_ok=True)
         zip_ref.extractall(config.ffmpeg_path)
     if platform.system() == "Windows":  # 윈도우인 경우 linux 실행 파일을 삭제
         os.remove(os.path.join(config.ffmpeg_path, FFMPEG_FILENAME))
@@ -43,10 +44,17 @@ def insert_audio_on_video(input_video_path: str, input_audio_path: str, output_p
     # !ffmpeg -i 3x.mp4 -i bakamitai_template.mp3 -map 0:v -map 1:a -c:v copy -shortest complete.mp4
     ffmpy.FFmpeg(
         inputs=OrderedDict([(input_video_path, None), (input_audio_path, None)]),
-        outputs={output_path: '-map 0:v -map 1:a -c:v copy -shortest'},
+        outputs={output_path: '-map 0:v -map 1:a -c:v -shortest'},
         global_options=['-y']
     ).run()
 
+def insert_audio_on_video_fps30(input_video_path: str, input_audio_path: str, output_path: str):
+    # !ffmpeg -i 3x.mp4 -i bakamitai_template.mp3 -map 0:v -map 1:a -c:v copy -shortest complete.mp4
+    ffmpy.FFmpeg(
+        inputs=OrderedDict([(input_video_path, '-r 30'), (input_audio_path, None)]),
+        outputs={output_path: '-map 0:v -map 1:a -c:v libx264 -shortest'},
+        global_options=['-y']
+    ).run()
 
 def create_video_thumbnail(input_video_path, output_image_path):
     if os.path.splitext(output_image_path)[-1].lower() != '.png':

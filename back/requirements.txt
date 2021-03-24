@@ -35,3 +35,4 @@ tqdm
 uuid
 uvicorn==0.13.4
 pydantic
+httpx
