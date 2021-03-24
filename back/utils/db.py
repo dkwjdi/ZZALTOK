@@ -1,16 +1,21 @@
 from mysql.connector import connect, Error
 import datetime as dt
+from config import config
 
 # DB 연결
 
-database = connect(
-    host="j4d101.p.ssafy.io",
-    user="ssafy",
-    password="head101@",  # NOSONAR
-    database="jjal"
-)
-cursor = database.cursor()
-
+# GPU서버는 SQL서버와 통신이 불가하므로 예외처리
+if not config.IS_GPU_SERVER:
+    database = connect(
+        host="j4d101.p.ssafy.io",
+        user="ssafy",
+        password="head101@",  # NOSONAR
+        database="jjal"
+    )
+    cursor = database.cursor()
+else:
+    database = None
+    cursor = None
 
 # print(mydb)
 
