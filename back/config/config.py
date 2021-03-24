@@ -23,5 +23,4 @@ face_swap_img_path: str = os.path.join(root, "swapimgs/")
 face_swap_result_path: str = os.path.join(root, "faceswap_result/")
 
 # 일부 전역 변수 저장
-# GPU_SERVER_DOMAIN: str = "ssafy4th.ddns.net"
-GPU_SERVER_DOMAIN: str = "http://70.12.130.106:8000" # noqa
+GPU_SERVER_DOMAIN: str = "http://ssafy4th.ddns.net:8000" # noqa
