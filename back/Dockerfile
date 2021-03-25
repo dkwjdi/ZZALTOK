@@ -12,4 +12,4 @@ RUN pip install -r /app/requirements.txt
 
 COPY . /app
 
-CMD ["uvicorn", "main:app", "--reload", "--host=0.0.0.0", "--port=5000"]
+CMD ["uvicorn", "main:app", "--reload", "--host=0.0.0.0", "--port=8000"]
