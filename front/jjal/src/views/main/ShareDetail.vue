@@ -60,7 +60,7 @@
                 <v-row>
                   <v-col cols="1"></v-col>
                   <v-col cols="10">
-                    <div class="pt-5 pl-5">내용 넣어주세요</div>
+                    <div class="pt-5 pl-5">{{getShareDetail.content}}</div>
 
                     <div class="text-center mt-10">
                       <v-btn
@@ -98,28 +98,14 @@
         </div>
       </v-col>
       <v-col cols="1" md="2">
-        <div class="v-btn--example" style="float: left">
-          <div class="mt-3">
-            <v-btn color="indigo" dark fab>
-              <v-icon>mdi-pencil</v-icon>
-            </v-btn>
-          </div>
-          <div class="mt-3">
-            <v-btn color="error" fab dark>
-              <v-icon>mdi-delete</v-icon>
-            </v-btn>
-          </div>
-          <div class="mt-3">
-            <v-btn color="green" fab dark>
-              <v-icon>mdi-download</v-icon>
-            </v-btn>
-          </div>
-          <div class="mt-3">
-            <v-btn color="warning" fab dark>
-              <v-icon>mdi-share-variant</v-icon>
-            </v-btn>
-          </div>
-        </div>
+        <menu-btn 
+          :board_no="getShareDetail.board_no"
+          :title="getShareDetail.title"
+          :content="getShareDetail.content"
+          :url="getShareDetail.url"
+          :content_type="getShareDetail.content_type"
+          :nickname="getShareDetail.nickname"
+          />
       </v-col>
     </v-row>
   </v-container>
@@ -128,9 +114,10 @@
 <script>
 import CommentList from "../../components/shareDetail/CommentList.vue";
 import { mapGetters, mapActions } from "vuex";
+import MenuBtn from "../../components/shareDetail/MenuBtn.vue";
 
 export default {
-  components: { CommentList },
+  components: { CommentList, MenuBtn },
   computed: {
     ...mapGetters("mainStore", ["getShareDetail", "getCommentSize"]),
   },
