@@ -32,7 +32,7 @@ app = FastAPI()
 # input : origin위인 사진, target합성할 얼굴 사진
 # output : 합성된 사진 (위인 사진 기준)
 @app.post("/api/v1/deepfake", name="얼굴 합성 딥페이크 서비스")
-async def create_deep_fake_image(origin: UploadFile = File(...), target: UploadFile = File(...)):
+async def create_deep_fake_image(origin: UploadFile = File(...), target: UploadFile = File(...)): # noqa
     content_origin = await origin.read()
     ext = origin.filename[origin.filename.rfind('.'):]
     origin.filename = str(uuid.uuid4()).replace('-', '') + ext
@@ -75,7 +75,7 @@ async def create_deep_fake_image(origin: UploadFile = File(...), target: UploadF
 # input : 합성할 얼굴 사진
 # output : 합성된 동영상
 @app.post("/api/v1/damedame", name="다메다메 짤 생성 서비스")
-async def create_dame_meme_video(image: UploadFile = File(...)):
+async def create_dame_meme_video(image: UploadFile = File(...)): # noqa
     contents = await image.read()
     image.filename = image.filename.replace(' ', '')
     input_path = os.path.join(config.image_path, image.filename)
@@ -103,7 +103,7 @@ async def create_dame_meme_video(image: UploadFile = File(...)):
 # input : 동영상, 배경사진
 # output : 합성된 동영상
 @app.post("/api/v1/removeBg", name="동영상 배경 변경 서비스")
-async def remove_back_ground_on_video(video: UploadFile = File(...), image: UploadFile = File(...)):
+async def remove_back_ground_on_video(video: UploadFile = File(...), image: UploadFile = File(...)): # noqa
     print("배경바꾸기 시작합니다")
     image_contents = await image.read()
     ext = image.filename[image.filename.rfind('.'):]
