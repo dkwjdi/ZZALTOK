@@ -68,7 +68,7 @@ async def create_deep_fake_image(origin: UploadFile = File(...), target: UploadF
     else:
         faceswap.makedeepface(upload_origin_image_path=origin_input, upload_target_image_path=target_input,
                               output=output)
-    return {"url": url.convert_path_to_url(output, base_url="/api/v1/content/")}
+    return {"url": url.convert_path_to_url(output, base_url="/api/v1/content/")} # noqa
 
 
 #  S04P22D101-55	백엔드 RESTful API 프로토콜 / 다메다메 짤 생성
@@ -96,7 +96,7 @@ async def create_dame_meme_video(image: UploadFile = File(...)): # noqa
                 filename=output_path)
     else:
         dame.make_damedame(upload_image_path=input_path, output=output_path)
-    return {"url": url.convert_path_to_url(output_path, base_url="/api/v1/content/")}
+    return {"url": url.convert_path_to_url(output_path, base_url="/api/v1/content/")} # noqa
 
 
 #  S04P22D101-56	백엔드 RESTful API 프로토콜 / 동영상 배경 삭제 및 배경 변경
@@ -139,7 +139,7 @@ async def remove_back_ground_on_video(video: UploadFile = File(...), image: Uplo
                 filename=output_path)
     else:
         MODNetVideo.bgRemove(input_video_path, input_image_path, output_path)
-    return {"url": url.convert_path_to_url(output_path, base_url="/api/v1/content/")}
+    return {"url": url.convert_path_to_url(output_path, base_url="/api/v1/content/")} # noqa
 
 
 @app.get("/api/v1/content/{rest_of_path:path}", name="파일 가져오기")
@@ -232,7 +232,6 @@ async def serve_thumbnails(
 @app.get("/api/v1/board", name="전체 게시글 조회(24시간 내, 추천순)")
 async def find_all_board_on_day():
     result = await db.find_all_board_on_day()
-    # return JSONResponse(status_code=200, content={"items":result})
     if result is None:
         return JSONResponse(status_code=400, content={"message": "게시글 조회에 실패하였습니다."})
     return {"items": result}
@@ -306,16 +305,13 @@ async def edit_board(
     }
     res_check = await db.check_password_on_board(item.password, board_no)
 
-    # if res_check['result'] is None:
-    #     return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
-
     if res_check:
         result = await db.edit_board(board_info)
         if result is None:
             return JSONResponse(status_code=400, content={"message": "게시물 수정에 실패했습니다."})
         return result
     else:
-        return JSONResponse(status_code=400, content={"message": "비밀번호가 일치하지 않습니다."})
+        return JSONResponse(status_code=400, content={"message": "비밀번호가 일치하지 않습니다."}) # noqa
 
 
 #  S04P22D101-60	백엔드 RESTful API 프로토콜 / 게시글 삭제
@@ -323,9 +319,6 @@ async def edit_board(
 # output :  게시글 삭제 성공 유무
 class PasswordRequest(BaseModel):
     password: str
-    # def __init__(self, password, **data: Any):
-    #     super().__init__(**data)
-    #     self.password = password
 
 
 @app.delete("/api/v1/board/{board_no}", name="게시글 삭제")
@@ -334,10 +327,6 @@ async def delete_board(
         password: str,
 ):
     res_check = await db.check_password_on_board(password, board_no)
-
-    # if res_check['result'] is None:
-    #     return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
-
     if res_check:
         result = await db.delete_board(board_no)
 
@@ -345,7 +334,7 @@ async def delete_board(
             return JSONResponse(status_code=400, content={"message": "게시물 삭제에 실패했습니다."})
         return result
     else:
-        return JSONResponse(status_code=400, content={"message": "비밀번호가 일치하지 않습니다."})
+        return JSONResponse(status_code=400, content={"message": "비밀번호가 일치하지 않습니다."}) # noqa
 
 
 #  S04P22D101-62	백엔드 RESTful API 프로토콜 / 게시글 추천(좋아요 기능)
@@ -359,30 +348,30 @@ async def count_up_thumbs_up_on_board(
     res_check = await check_user_ip_on_good_list(board_no, ip)
 
     if res_check['result'] is None:
-        return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
+        return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."}) # noqa
 
     # 존재했으면 이미 누른 상태이므로 -1
     if res_check['result']:
         count_result = await db.count_down_thumbs_up_on_board(board_no)
         if count_result is None:
-            return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
+            return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."}) # noqa
 
         delete_result = await db.delete_user_ip_on_good_list(board_no, ip)
         if delete_result is None:
             await db.count_up_thumbs_up_on_board(board_no)
-            return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
+            return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."}) # noqa
         return "좋아요 취소"
 
     # 존재하지 않았음 좋아요+1
     else:
         count_result = await db.count_up_thumbs_up_on_board(board_no)
         if count_result is None:
-            return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
+            return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."}) # noqa
         insert_result = await db.insert_user_ip_on_good_list(board_no, ip)
 
         if insert_result is None:
             await db.count_down_thumbs_up_on_board(board_no)
-            return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
+            return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."}) # noqa
         return "좋아요!"
 
 
@@ -488,10 +477,6 @@ async def delete_comment(
         password: str
 ):
     res_check = await db.check_password_on_comment(password, comment_no)
-
-    # if res_check['result'] is None:
-    #     return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
-
     if res_check:
         result = await db.delete_comment(comment_no)
 
@@ -499,7 +484,7 @@ async def delete_comment(
             return JSONResponse(status_code=400, content={"message": "댓글 삭제에 실패했습니다."})
         return result
     else:
-        return JSONResponse(status_code=400, content={"message": "비밀번호가 일치하지 않습니다."})
+        return JSONResponse(status_code=400, content={"message": "비밀번호가 일치하지 않습니다."}) # noqa
 
 
 #  S04P22D101-66     백엔드 RESTful API 프로토콜 / 댓글 수정
@@ -518,10 +503,6 @@ async def edit_comment(
     }
 
     res_check = await db.check_password_on_comment(password, comment_no)
-
-    # if res_check is None:
-    #     return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})
-
     if res_check:
         result = await db.edit_comment(comment_info)
 
@@ -529,7 +510,7 @@ async def edit_comment(
             return JSONResponse(status_code=400, content={"message": "댓글 수정에 실패했습니다."})
         return result
     else:
-        return JSONResponse(status_code=400, content={"message": "비밀번호가 일치하지 않습니다."})
+        return JSONResponse(status_code=400, content={"message": "비밀번호가 일치하지 않습니다."}) # noqa
 
 
 #  S04P22D101-85     백엔드 RESTful API 프로토콜 / 게시글 비밀번호 체크
@@ -566,49 +547,11 @@ async def create_upload_files(file: UploadFile = File(...)):
     path = os.path.join(config.upload_path, filename)
     with open(path, "wb") as fp:
         fp.write(contents)
-    return {"url": url.convert_path_to_url(path, base_url="/api/v1/content/")}
+    return {"url": url.convert_path_to_url(path, base_url="/api/v1/content/")} # noqa
 
 
 # 데모 코드
 @app.get("/")
 async def read_root():
     return {"Hello": "World"}
-# @app.post("/files/")
-# async def create_file(
-#     file: bytes = File(...), fileb: UploadFile = File(...), token: str = Form(...)
-# ):
-#     return {
-#         "file_size": len(file),
-#         "token": token,
-#         "fileb_content_type": fileb.content_type,
-#     }
 
-
-#
-# @app.get("/items/{item_id}")
-# async def read_item(item_id: int, q: Optional[str] = None):
-#     return {"item_id": item_id, "q": q}
-#
-# @app.post("/files_old/")
-# async def create_file(
-#     file: UploadFile = File(...)
-# ):
-#     return {
-#         "file_name": file.filename,
-#         "file_size": len(file.file),
-#         "file_content_type": file.content_type,
-#     }
-#
-# @app.post("/files/")
-# async def create_files(files: List[bytes] = File(...)):
-#     return {"file_sizes": [len(file) for file in files]}
-#
-# @app.post("/uploadfiles")
-# async def create_upload_files(files: List[UploadFile] = File(...)):
-#     UPLOAD_DIRECTORY = "./"
-#     for file in files:
-#         contents = await file.read()
-#         with open(os.path.join(UPLOAD_DIRECTORY, file.filename), "wb") as fp:
-#             fp.write(contents)
-#         print(file.filename)
-#     return {"filenames": [file.filename for file in files]}

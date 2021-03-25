@@ -480,7 +480,6 @@ async def delete_comment(
 async def edit_comment(
         comment_info: dict
 ):
-    pass
     sql = """
             UPDATE comment 
             SET content = %s, nickname = %s, password = %s, ip = %s

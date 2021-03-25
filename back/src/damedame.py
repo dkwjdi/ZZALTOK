@@ -13,18 +13,18 @@ if not os.path.isdir(config.first_order_model_path):
 if not os.path.isdir(config.dame_path):
     print("다메다메 학습 모델 및 템플릿 다운로드 중 - 오래 걸림", end=' ')
     urllib.request.urlretrieve(
-        "https://github.com/KeepSOBP/dame/releases/download/damesource/damesource.zip"
-        , filename=os.path.join(config.root, "damesource.zip"))
-    with zipfile.ZipFile(os.path.join(config.root, "damesource.zip"), "r") as zip_ref:
+        "https://github.com/KeepSOBP/dame/releases/download/damesource/damesource.zip" # noqa
+        , filename=os.path.join(config.root, "damesource.zip"))  # noqa
+    with zipfile.ZipFile(os.path.join(config.root, "damesource.zip"), "r") as zip_ref:  # noqa
         zip_ref.extractall(config.dame_path)
-    os.remove(os.path.join(config.root, "damesource.zip"))
+    os.remove(os.path.join(config.root, "damesource.zip"))  # noqa
     print("done")
 
-if not os.path.exists(os.path.join(config.dame_path, "bakamitai_template.mp3")):
+if not os.path.exists(os.path.join(config.dame_path, "bakamitai_template.mp3")):  # noqa
     print("다메다메 오디오 리소스 다운로드 중", end=' ')
     urllib.request.urlretrieve(
         "https://github.com/KeepSOBP/dame/releases/download/damesource/bakamitai_template.mp3"
-        , filename=os.path.join(config.dame_path, "bakamitai_template.mp3"))
+        , filename=os.path.join(config.dame_path, "bakamitai_template.mp3"))  # noqa
     print("done")
 
 # make damedane
@@ -40,34 +40,16 @@ import warnings
 from demo import load_checkpoints, make_animation  # noqa
 from skimage import img_as_ubyte
 
-import utils.video
 
-
-def convert_image_to_video(uploadimage, outputPath):
+def convert_image_to_video(upload_image, output_path):
     print("다메다메 밈 작업중", end=' ')
     warnings.filterwarnings("ignore")
 
-    source_image = imageio.imread(uploadimage)
+    source_image = imageio.imread(upload_image)
     driving_video = imageio.mimread(os.path.join(config.dame_path, '04.mp4'))
 
     source_image = resize(source_image, (256, 256))[..., :3]
     driving_video = [resize(frame, (256, 256))[..., :3] for frame in driving_video]
-
-    def display(source, driving, generated=None):
-        fig = plt.figure(figsize=(8 + 4 * (generated is not None), 6))
-
-        ims = []
-        for i in range(len(driving)):
-            cols = [source, driving[i]]
-            if generated is not None:
-                cols.append(generated[i])
-            im = plt.imshow(np.concatenate(cols, axis=1), animated=True)
-            plt.axis('off')
-            ims.append([im])
-
-        ani = animation.ArtistAnimation(fig, ims, interval=50, repeat_delay=1000)
-        plt.close()
-        return ani
 
     generator, kp_detector = load_checkpoints(
         config_path=os.path.join(config.first_order_model_path, 'config/vox-256.yaml'),
@@ -75,9 +57,9 @@ def convert_image_to_video(uploadimage, outputPath):
 
     # make video
     predictions = make_animation(source_image, driving_video, generator, kp_detector, relative=True)
-    imageio.mimsave(outputPath, [img_as_ubyte(frame) for frame in predictions])
+    imageio.mimsave(output_path, [img_as_ubyte(frame) for frame in predictions])
     print('done')
-    return outputPath
+    return output_path
 
 
 def make_damedame(upload_image_path, output: str = os.path.join(config.video_path, 'result.mp4')):
@@ -92,7 +74,7 @@ def make_damedame(upload_image_path, output: str = os.path.join(config.video_pat
     print("영상 오디오 소스 추가 및 배속 변경 중", end=' ')
     video.convert3x_faster_video(origin_path, sub_path)
     video.insert_audio_on_video(sub_path,
-                                os.path.join(config.dame_path, "bakamitai_template.mp3"),
+                                os.path.join(config.dame_path, "bakamitai_template.mp3"),  # noqa
                                 output)
 
     if os.path.exists(origin_path):
