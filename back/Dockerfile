@@ -14,4 +14,4 @@ COPY . /app
 
 ENV AM_I_IN_A_DOCKER_CONTAINER Yes
 
-CMD ["uvicorn", "main:app", "--reload", "--host=0.0.0.0", "--port=8000", "--ws", "websockets"]
+CMD ["uvicorn", "main:app", "--reload", "--host=0.0.0.0", "--port=8000"]
