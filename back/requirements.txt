@@ -4,7 +4,6 @@ cloudpickle>=0.5.3
 cycler>=0.10.0
 dask>=0.18.2
 decorator>=4.3.0
-dlib
 fastapi
 ffmpy
 gitpython
