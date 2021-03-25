@@ -5,20 +5,22 @@
         <div :class="{ hide: isHide }">
           <v-container>
             <!-- <img :src="previewImgUrl" alt="" /> -->
-            <v-row no-gutters justify="center" ref="printMe">
-              <v-col></v-col>
-              <v-col> <img :src="previewImgUrl" alt="" style="width: 100%; height: 100%" /></v-col>
+            <v-row no-gutters justify="center" ref="printMe" style="margin-right: 50px; margin-left: 50px">
+              <v-col cols="3"></v-col>
+
+              <v-col> <img :src="previewImgUrl" alt="" style="width: 100%; height: 100%" /> </v-col>
               <v-col class="font-change" style="background: black; text-align: center">
                 <div style="color: white"><p v-html="OutProverbContent"></p></div>
                 <div style="color: white"><p v-html="OutProverbName"></p></div>
               </v-col>
-              <v-col></v-col>
+
+              <v-col cols="3"></v-col>
             </v-row>
           </v-container>
         </div>
 
-        <FileUpload type="image" v-on:fileUpload="originUpload" content="배경 사진" :remove="remove"></FileUpload>
-        <FileUpload type="image" v-on:fileUpload="targetUpload" content="합성 할 사진" :remove="remove"></FileUpload>
+        <FileUpload type="image" v-on:fileUpload="originUpload" content="배경 사진"></FileUpload>
+        <FileUpload type="image" v-on:fileUpload="targetUpload" content="합성 할 사진"></FileUpload>
 
         <v-container>
           <v-row no-gutters justify="center">
@@ -51,9 +53,11 @@
 
         <v-btn @click="print"> 변환하기</v-btn>
       </div>
-      <div>
+      <div style="text-align: center">
+        <ShareAndDownBtn :downloadLink="boardWritedownloadLink" contentType="image"></ShareAndDownBtn>
+
         <v-btn>
-          <a id="downloadPhoto" download="my-photo.jpg" class="button" role="button" @click="down"> Download </a>
+          <!-- <a id="downloadPhoto" download="my-photo.jpg" class="button" role="button" @click="down"> Download </a> -->
         </v-btn>
       </div>
       <!-- <v-img max-height="100%" max-width="100%" v-if="downloadLink" :src="downloadLink"></v-img> -->
@@ -64,13 +68,16 @@
 <script>
 import http from '@/util/http-common.js';
 import FileUpload from '@/components/common/FileUpload.vue';
+import ShareAndDownBtn from '@/components/common/ShareAndDownBtn.vue';
+import Swal from 'sweetalert2';
 
 export default {
   data() {
     return {
-      remove: false,
       isHide: true,
       previewImgUrl: '',
+      downloadLink: '',
+      boardWritedownloadLink: '',
       proverb: {
         //명언 내용, 이름
         proverbContent: '',
@@ -80,16 +87,13 @@ export default {
         origin: '',
         target: '',
       },
-      // dragging: false,
-      // output: null,
-      // downloadLink: '',
-      imgPath: require('@/assets/nineone.png'),
-      // cssProps: {
-      //   backgroundImage: `url(${require('@/assets/nineone.png')})`,
-      // },
+      // imgPath: require('@/assets/nineone.png'),
     };
   },
-  components: { FileUpload },
+  components: {
+    FileUpload,
+    ShareAndDownBtn,
+  },
   methods: {
     originUpload(file) {
       this.previewImgUrl = URL.createObjectURL(file);
@@ -105,12 +109,7 @@ export default {
       this.file.target = file;
       console.log(this.file.target);
     },
-    down() {
-      console.log('down'); //사진 다운로드 할 때 쓰는데 일단은 사용  x
-      const download = document.getElementById('downloadPhoto');
-      console.log(download);
-      download.setAttribute('href', this.downloadLink); //파일생성
-    },
+
     async print() {
       const el = this.$refs.printMe; //캔버스 들고와서
       const options = {
@@ -138,16 +137,19 @@ export default {
       http
         .post('/v1/deepfake', formData)
         .then((response) => {
-          this.downloadLink = 'http://localhost:8000' + response.data.url + '?download=true'; //바로 다운받을 수 있게 downloadLink에다가 url넣어줌
+          this.downloadLink = response.data.url + '?download=true'; //바로 다운받을 수 있게 downloadLink에다가 url넣어줌
+          this.boardWritedownloadLink = response.data.url;
           console.log(this.downloadLink);
           console.log('성공 + 다운로드링크');
           console.log(this.downloadLink);
-          this.$fire({
+          Swal.fire({
             title: 'Sweet!',
             text: 'Modal with a custom image.',
             imageUrl: this.downloadLink,
-            imageWidth: 400,
-            imageHeight: 200,
+            imageWidth: 2000,
+            imageHeight: 400,
+            width: 1000,
+
             imageAlt: 'Custom image',
           });
         })
@@ -159,8 +161,6 @@ export default {
 
       //파일 삭제 하기
       // this.$swal('Heading', 'this is a Heading', 'OK');
-      this.remove = true;
-      console.log('스윗얼럿');
     },
   },
   computed: {
@@ -184,5 +184,11 @@ export default {
 .font-change {
   font-family: 'Yeon Sung', cursive;
   font-size: 2rem;
+}
+.swal2-popup {
+  font-size: 1.6rem !important;
+}
+.swal-wide {
+  width: 850px !important;
 }
 </style>
