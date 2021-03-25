@@ -10,12 +10,13 @@ if not config.IS_GPU_SERVER:
         host="j4d101.p.ssafy.io",
         user="ssafy",
         password="head101@",  # NOSONAR
-        database="jjal"
+        database="jjal",
+        autocommit=True
     )
-    cursor = database.cursor()
+    # cursor = database.cursor()
 else:
     database = None
-    cursor = None
+    # cursor = None
 
 # print(mydb)
 
@@ -30,6 +31,7 @@ async def check_password_on_board(
     sql = "SELECT password FROM board WHERE board_no = %s"
 
     try:
+        cursor = database.cursor()
         cursor.execute(sql, (board_no,))
         res = cursor.fetchone()
         for pwd in res:
@@ -50,6 +52,7 @@ async def check_password_on_comment(
     # 해당 게시물 비밀번호 얻어오기
     sql = "SELECT password FROM comment WHERE comment_no = %s"
     try:
+        cursor = database.cursor()
         cursor.execute(sql, (comment_no,))
         res = cursor.fetchone()
         for pwd in res:
@@ -73,6 +76,7 @@ async def check_user_ip_on_good_list(
             WHERE board_no = %s AND ip = %s
           """
     try:
+        cursor = database.cursor()
         cursor.execute(sql, (board_no, ip))
         res = cursor.fetchone()
         if res is None:
@@ -95,6 +99,7 @@ async def insert_user_ip_on_good_list(
           """
     val = (board_no, ip)
     try:
+        cursor = database.cursor()
         cursor.execute(sql, val)
         database.commit()
         return True
@@ -114,6 +119,7 @@ async def delete_user_ip_on_good_list(
           """
     val = (board_no, ip)
     try:
+        cursor = database.cursor()
         cursor.execute(sql, val)
         database.commit()
         return True
@@ -132,6 +138,7 @@ async def delete_user_ip_on_good_list(
 #  S04P22D101-63	백엔드 RESTful API 프로토콜 / 최근 게시글들 조회(추천순 반영 상위 12개)
 async def find_all_board_on_day():
     try:
+        cursor = database.cursor()
         cursor.execute("""
                         SELECT * 
                           FROM board b
@@ -176,6 +183,7 @@ async def find_board_detail_by_board_no(
     sql = "SELECT * FROM board WHERE board_no = %s"
 
     try:
+        cursor = database.cursor()
         cursor.execute(sql, (board_no,))
         res = cursor.fetchone()
         if res is None:
@@ -221,6 +229,7 @@ async def write_board(
     val = (board_info['title'], board_info['content'], board_info['content_type'],
            board_info['nickname'], board_info['password'], board_info['ip'], dt.datetime.now())
     try:
+        cursor = database.cursor()
         cursor.execute(sql, val)
         database.commit()
         return "게시물 작성에 성공했습니다."
@@ -245,6 +254,7 @@ async def edit_board(
            board_info['nickname'], board_info['password'],
            board_info['ip'], board_info['board_no'])
     try:
+        cursor = database.cursor()
         cursor.execute(sql, val)
         database.commit()
         return "게시물 수정에 성공했습니다."
@@ -261,6 +271,7 @@ async def delete_board(
     sql = "DELETE FROM board WHERE board_no = %s"
     val = (board_no,)
     try:
+        cursor = database.cursor()
         cursor.execute(sql, val)
         database.commit()
         return "게시물 삭제에 성공했습니다."
@@ -280,6 +291,7 @@ async def count_up_thumbs_up_on_board(
           """
     val = (board_no,)
     try:
+        cursor = database.cursor()
         cursor.execute(sql, val)
         database.commit()
         return "좋아요!"
@@ -300,6 +312,7 @@ async def count_down_thumbs_up_on_board(
           """
     val = (board_no,)
     try:
+        cursor = database.cursor()
         cursor.execute(sql, val)
         database.commit()
         return True
@@ -321,6 +334,7 @@ async def share_board(
     val = (board_info['content'], board_info['content_type'],
            board_info['nickname'],board_info['ip'], dt.datetime.now())
     try:
+        cursor = database.cursor()
         cursor.execute(sql, val)
         database.commit()
         return "공유 게시물 작성에 성공했습니다."
@@ -328,7 +342,6 @@ async def share_board(
     except Error as e:
         print(e)
         return None
-
 
 
 # 여기까지 게시글 기능 종료 ###
@@ -348,6 +361,7 @@ async def find_comment_by_board_no(
           """
     val = (board_no,)
     try:
+        cursor = database.cursor()
         cursor.execute(sql, val)
         res = cursor.fetchall()
         result = []
@@ -392,6 +406,7 @@ async def write_comment(
            comment_info['nickname'], comment_info['password'],
            comment_info['ip'], dt.datetime.now())
     try:
+        cursor = database.cursor()
         cursor.execute(sql, val)
         database.commit()
         return "댓글 작성에 성공했습니다."
@@ -412,6 +427,7 @@ async def delete_comment(
           """
     val = (comment_no,)
     try:
+        cursor = database.cursor()
         cursor.execute(sql, val)
         database.commit()
         return "댓글 삭제에 성공했습니다."
@@ -435,6 +451,7 @@ async def edit_comment(
            comment_info['password'], comment_info['ip'],
            comment_info['comment_no'])
     try:
+        cursor = database.cursor()
         cursor.execute(sql, val)
         database.commit()
         return "댓글 수정에 성공했습니다."
