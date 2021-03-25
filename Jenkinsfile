@@ -5,8 +5,8 @@ pipeline {
         stage('Docker build') {
             agent any
             steps {
-                sh 'docker build -t backend:latest ./back'
-	    	    sh 'docker build -t frontend:latest ./front/jjal'
+                sh 'docker build -t base-pjt-back:latest ./back'
+	    	    sh 'docker build -t base-pjt-front:latest ./front/jjal'
             }
         }
         stage('Docker Container rm') {
