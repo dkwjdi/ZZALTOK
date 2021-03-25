@@ -50,6 +50,7 @@
 
 <script>
 import http from '@/util/http-common.js';
+
 export default {
   data() {
     return {
@@ -93,8 +94,16 @@ export default {
         });
     },
     down() {
-      console.log('Dsfsdfsdfsdfsd'); //사진 다운로드 할 때 쓰는데 일단은 사용  x
       const download = document.getElementById('downloadPhoto');
+
+      if (this.contentType == 'image') {
+        //이미지 일때
+        download.setAttribute('download', 'my-photo.jpg');
+      } else if (this.contentType == 'video') {
+        //비디오 일 때
+        download.setAttribute('download', 'my-video.mp4');
+      }
+
       console.log(download);
       download.setAttribute('href', this.downloadLink); //파일생성
     },
