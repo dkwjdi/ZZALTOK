@@ -230,8 +230,10 @@ async def serve_thumbnails(
 
 #  S04P22D101-63	백엔드 RESTful API 프로토콜 / 최근 게시글들 조회(추천순 반영)
 @app.get("/api/v1/board", name="전체 게시글 조회(24시간 내, 추천순)")
-async def find_all_board_on_day():
-    result = await db.find_all_board_on_day()
+async def find_all_board_on_day(
+        page_count: int
+):
+    result = await db.find_all_board_on_day(page_count)
     if result is None:
         return JSONResponse(status_code=400, content={"message": "게시글 조회에 실패하였습니다."})
     return {"items": result}
@@ -288,7 +290,7 @@ class BoardEditInfoRequest(BaseModel):
     password: str
 
 
-@app.post("/api/v1/board/{board_no}", name="게시글 수정")
+@app.put("/api/v1/board/{board_no}", name="게시글 수정")
 async def edit_board(
         board_no: int, item: BoardEditInfoRequest, request: Request
 ):
