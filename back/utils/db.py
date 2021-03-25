@@ -323,7 +323,7 @@ async def count_down_thumbs_up_on_board(
 
 
 #  S04P23D101-37 백엔드 RESTful API 프로토콜 / 게시글 공유
-async def share_board(
+async def write_share_board(
         board_info: dict
 ):
     print("공유게시글:", board_info)
@@ -332,13 +332,52 @@ async def share_board(
             VALUES (%s, %s, %s, %s, %s)
           """
     val = (board_info['content'], board_info['content_type'],
-           board_info['nickname'],board_info['ip'], dt.datetime.now())
+           board_info['nickname'], board_info['ip'], dt.datetime.now())
     try:
         cursor = database.cursor()
         cursor.execute(sql, val)
         database.commit()
-        return "공유 게시물 작성에 성공했습니다."
+        s_board_no = cursor.lastrowid
+        return {"message": "공유 게시물 작성에 성공했습니다.",
+                "s_board_no": s_board_no}
 
+    except Error as e:
+        print(e)
+        return None
+
+
+async def find_share_board_detail_by_board_no(
+        s_board_no: int
+):
+    sql = "SELECT * FROM shareboard WHERE s_board_no = %s"
+
+    try:
+        cursor = database.cursor()
+        cursor.execute(sql, (s_board_no,))
+        res = cursor.fetchone()
+        if res is None:
+            return None
+
+        spilited_ip = res[4].split('.')
+
+        idx = 0
+        spilited_ip[2] = 'x'
+        spilited_ip[3] = 'x'
+
+        ip = ''
+        for s in spilited_ip:
+            ip += s
+            idx = idx + 1
+            if idx != 4:
+                ip += '.'
+
+        return {'s_board_no': res[0],
+                'content': res[1],
+                'content_type': res[2],
+                'nickname': res[3],
+                'ip': ip,
+                'regdate': res[5]
+                }
     except Error as e:
         print(e)
         return None
