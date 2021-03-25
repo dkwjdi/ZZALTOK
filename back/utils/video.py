@@ -44,7 +44,7 @@ def insert_audio_on_video(input_video_path: str, input_audio_path: str, output_p
     # !ffmpeg -i 3x.mp4 -i bakamitai_template.mp3 -map 0:v -map 1:a -c:v copy -shortest complete.mp4
     ffmpy.FFmpeg(
         inputs=OrderedDict([(input_video_path, None), (input_audio_path, None)]),
-        outputs={output_path: '-map 0:v -map 1:a -c:v -shortest'},
+        outputs={output_path: '-map 0:v -map 1:a -c:v copy -shortest'},
         global_options=['-y']
     ).run()
 
