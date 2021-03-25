@@ -4,7 +4,7 @@ import getpass
 
 # GPU 서버여부 체크
 IS_GPU_SERVER: bool = 'gpu' in platform.node() and platform.system() == "Linux"
-IS_AWS_SERVER: bool = True  # 'ubuntu' == getpass.getuser() and platform.system() == "Linux"
+IS_AWS_SERVER: bool = 'ubuntu' == getpass.getuser() and platform.system() == "Linux"
 
 # 작업할 볼륨 또는 폴더 선정
 root: str = os.path.join(os.path.splitdrive(os.getcwd())[0], "/content/") \
