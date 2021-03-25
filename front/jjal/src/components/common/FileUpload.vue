@@ -70,7 +70,7 @@ export default {
 
       this.file = file;
       this.dragging = false;
-      this.$emit('fileUpload', this.file); //MakeDeepFakeImage로 파일보내줌!
+      this.$emit('fileUpload', this.file); //파일보내줌!
     },
     removeFile() {
       this.file = '';
