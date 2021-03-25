@@ -44,6 +44,9 @@ async def check_password_on_board(
         print(e)
         return None
 
+    finally:
+        cursor.close()
+
 
 async def check_password_on_comment(
         password: str,
@@ -64,6 +67,8 @@ async def check_password_on_comment(
     except Error as e:
         print(e)
         return None
+    finally:
+        cursor.close()
 
 
 async def check_user_ip_on_good_list(
@@ -87,6 +92,8 @@ async def check_user_ip_on_good_list(
     except Error as e:
         print(e)
         return None
+    finally:
+        cursor.close()
 
 
 async def insert_user_ip_on_good_list(
@@ -107,6 +114,8 @@ async def insert_user_ip_on_good_list(
     except Error as e:
         print(e)
         return None
+    finally:
+        cursor.close()
 
 
 async def delete_user_ip_on_good_list(
@@ -127,6 +136,8 @@ async def delete_user_ip_on_good_list(
     except Error as e:
         print(e)
         return None
+    finally:
+        cursor.close()
 
 
 # 여기까지 공용 기능 종료 ###
@@ -174,6 +185,8 @@ async def find_all_board_on_day():
     except Error as e:
         print(e)
         return None
+    finally:
+        cursor.close()
 
 
 #  S04P22D101-64     백엔드 RESTful API 프로토콜 / 게시글 상세 조회
@@ -215,6 +228,8 @@ async def find_board_detail_by_board_no(
     except Error as e:
         print(e)
         return None
+    finally:
+        cursor.close()
 
 
 #  S04P22D101-57	백엔드 RESTful API 프로토콜 / 게시글 작성(공유)
@@ -237,6 +252,8 @@ async def write_board(
     except Error as e:
         print(e)
         return None
+    finally:
+        cursor.close()
 
 
 #  S04P22D101-67     백엔드 RESTful API 프로토콜 / 게시글 수정
@@ -261,6 +278,8 @@ async def edit_board(
     except Error as e:
         print(e)
         return None
+    finally:
+        cursor.close()
 
 
 #  S04P22D101-60	백엔드 RESTful API 프로토콜 / 게시글 삭제
@@ -278,6 +297,8 @@ async def delete_board(
     except Error as e:
         print(e)
         return None
+    finally:
+        cursor.close()
 
 
 #  S04P22D101-62	백엔드 RESTful API 프로토콜 / 게시글 추천(좋아요 기능)
@@ -299,6 +320,8 @@ async def count_up_thumbs_up_on_board(
     except Error as e:
         print(e)
         return None
+    finally:
+        cursor.close()
 
 
 #  S04P22D101-62	백엔드 RESTful API 프로토콜 / 게시글 추천(좋아요 기능)
@@ -320,6 +343,8 @@ async def count_down_thumbs_up_on_board(
     except Error as e:
         print(e)
         return None
+    finally:
+        cursor.close()
 
 
 #  S04P23D101-37 백엔드 RESTful API 프로토콜 / 게시글 공유
@@ -344,6 +369,8 @@ async def write_share_board(
     except Error as e:
         print(e)
         return None
+    finally:
+        cursor.close()
 
 
 async def find_share_board_detail_by_board_no(
@@ -381,6 +408,8 @@ async def find_share_board_detail_by_board_no(
     except Error as e:
         print(e)
         return None
+    finally:
+        cursor.close()
 
 
 # 여기까지 게시글 기능 종료 ###
@@ -431,6 +460,8 @@ async def find_comment_by_board_no(
     except Error as e:
         print(e)
         return None
+    finally:
+        cursor.close()
 
 
 #  S04P22D101-59	백엔드 RESTful API 프로토콜 / 댓글 작성
@@ -453,6 +484,8 @@ async def write_comment(
     except Error as e:
         print(e)
         return None
+    finally:
+        cursor.close()
 
 
 #  S04P22D101-61	백엔드 RESTful API 프로토콜 / 댓글 삭제
@@ -474,6 +507,8 @@ async def delete_comment(
     except Error as e:
         print(e)
         return None
+    finally:
+        cursor.close()
 
 
 #  S04P22D101-66     백엔드 RESTful API 프로토콜 / 댓글 수정
@@ -497,5 +532,7 @@ async def edit_comment(
     except Error as e:
         print(e)
         return None
+    finally:
+        cursor.close()
 
 # 여기까지 댓글 기능 종료 ###
