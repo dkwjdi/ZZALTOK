@@ -171,7 +171,7 @@ async def increase_view_count(
 
 
 #  S04P22D101-63	백엔드 RESTful API 프로토콜 / 최근 게시글들 조회(추천순 반영 상위 12개)
-async def find_all_board_on_day(
+async def find_all_board_on_day_by_good(
     page_count: int
 ):
     try:
@@ -207,7 +207,56 @@ async def find_all_board_on_day(
                            # 'password' : item[5],
                            'ip': ip,
                            'good': item[7],
-                           'regdate': item[8]
+                           'regdate': item[8],
+                           'view_cnt': item[9]
+                           })
+        return result
+    except Error as e:
+        print(e)
+        return None
+    finally:
+        cursor.close()
+
+
+#  S04P22D101-63	백엔드 RESTful API 프로토콜 / 최근 게시글들 조회(추천순 반영 상위 12개)
+async def find_all_board_on_day_by_view(
+    page_count: int
+):
+    try:
+        cursor = database.cursor()
+        sql = """
+                SELECT * 
+                  FROM board b
+                 ORDER BY view_cnt DESC
+                 LIMIT %s, 12;
+               """
+        page_count = (page_count-1) * 12
+        cursor.execute(sql, (page_count,))
+        res = cursor.fetchall()
+        result = []
+        for item in res:
+            spilited_ip = item[6].split('.')
+
+            idx = 0
+            spilited_ip[2] = 'x'
+            spilited_ip[3] = 'x'
+
+            ip = ''
+            for s in spilited_ip:
+                ip += s
+                idx = idx + 1
+                if idx != 4:
+                    ip += '.'
+            result.append({'board_no': item[0],
+                           'title': item[1],
+                           'content': item[2],
+                           'content_type': item[3],
+                           'nickname': item[4],
+                           # 'password' : item[5],
+                           'ip': ip,
+                           'good': item[7],
+                           'regdate': item[8],
+                           'view_cnt': item[9]
                            })
         return result
     except Error as e:
@@ -251,7 +300,8 @@ async def find_board_detail_by_board_no(
                 # 'password' : res[5],
                 'ip': ip,
                 'good': res[7],
-                'regdate': res[8]
+                'regdate': res[8],
+                'view_cnt': res[9]
                 }
     except Error as e:
         print(e)
