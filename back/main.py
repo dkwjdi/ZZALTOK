@@ -56,11 +56,11 @@ async def create_deep_fake_image(origin: UploadFile = File(...), target: UploadF
     # AWS 서버는 자체적으로 GPU 연산을 할 수 없기에 위임하여 이를 처리
     if config.IS_AWS_SERVER:
         async with httpx.AsyncClient() as client:
-            files = {'origin': (origin.filename, content_origin, "application/octet-stream"),
-                     'target': (target.filename, content_target, "application/octet-stream")}
+            files = {'origin': (origin.filename, content_origin, "application/octet-stream"), # noqa
+                     'target': (target.filename, content_target, "application/octet-stream")} # noqa
             r = await client.post(config.GPU_SERVER_DOMAIN + "/api/v1/deepfake", files=files, timeout=httpx.Timeout(60.0, connect=5.0))
             if r.status_code != httpx.codes.OK:
-                return JSONResponse(status_code=r.status_code, content={"message": "서버 내에서 위임 작업 중에 문제가 발생하였습니다. " + r.raise_for_status()})
+                return JSONResponse(status_code=r.status_code, content={"message": "서버 내에서 위임 작업 중에 문제가 발생하였습니다. " + r.raise_for_status()}) # noqa
             data = json.loads(r.text)
             urllib.request.urlretrieve(
                 config.GPU_SERVER_DOMAIN + data["url"],
@@ -86,10 +86,10 @@ async def create_dame_meme_video(image: UploadFile = File(...)): # noqa
     # AWS 서버는 자체적으로 GPU 연산을 할 수 없기에 위임하여 이를 처리
     if config.IS_AWS_SERVER:
         async with httpx.AsyncClient() as client:
-            files = {'image': (image.filename, contents, "application/octet-stream")}
+            files = {'image': (image.filename, contents, "application/octet-stream")} # noqa
             r = await client.post(config.GPU_SERVER_DOMAIN + "/api/v1/damedame", files=files, timeout=httpx.Timeout(60.0, connect=5.0))
             if r.status_code != httpx.codes.OK:
-                return JSONResponse(status_code=r.status_code, content={"message": "서버 내에서 위임 작업 중에 문제가 발생하였습니다. " + r.raise_for_status()})
+                return JSONResponse(status_code=r.status_code, content={"message": "서버 내에서 위임 작업 중에 문제가 발생하였습니다. " + r.raise_for_status()}) # noqa
             data = json.loads(r.text)
             urllib.request.urlretrieve(
                 config.GPU_SERVER_DOMAIN + data["url"],
@@ -128,11 +128,11 @@ async def remove_back_ground_on_video(video: UploadFile = File(...), image: Uplo
     # AWS 서버는 자체적으로 GPU 연산을 할 수 없기에 위임하여 이를 처리
     if config.IS_AWS_SERVER:
         async with httpx.AsyncClient() as client:
-            files = {'video': (video.filename, video_contents, "application/octet-stream"),
-                     'image': (image.filename, image_contents, "application/octet-stream")}
+            files = {'video': (video.filename, video_contents, "application/octet-stream"), # noqa
+                     'image': (image.filename, image_contents, "application/octet-stream")} # noqa
             r = await client.post(config.GPU_SERVER_DOMAIN + "/api/v1/removeBg", files=files, timeout=httpx.Timeout(60.0, connect=5.0))
             if r.status_code != httpx.codes.OK:
-                return JSONResponse(status_code=r.status_code, content={"message": "서버 내에서 위임 작업 중에 문제가 발생하였습니다. " + r.raise_for_status()})
+                return JSONResponse(status_code=r.status_code, content={"message": "서버 내에서 위임 작업 중에 문제가 발생하였습니다. " + r.raise_for_status()}) # noqa
             data = json.loads(r.text)
             urllib.request.urlretrieve(
                 config.GPU_SERVER_DOMAIN + data["url"],
@@ -148,7 +148,7 @@ async def serve_upload_file(rest_of_path: str, download: bool = False):
     file_path = os.path.join(config.root, rest_of_path)
     if os.path.exists(file_path):
         if download:
-            return FileResponse(file_path, media_type="application/octet-stream")
+            return FileResponse(file_path, media_type="application/octet-stream") # noqa
         return FileResponse(file_path)
     else:
         return JSONResponse(status_code=400, content={"message": "존재하지 않는 파일입니다."})
@@ -421,7 +421,7 @@ async def share_board(
     return result
 
 
-@app.post("/api/v1/share/kakao/{s_board_no}", name="공유 게시글 번호로 조회")
+@app.get("/api/v1/share/kakao/{s_board_no}", name="공유 게시글 번호로 조회")
 async def find_share_board(
         s_board_no: int
 ):
