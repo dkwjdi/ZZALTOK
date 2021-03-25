@@ -48,6 +48,7 @@ def insert_audio_on_video(input_video_path: str, input_audio_path: str, output_p
         global_options=['-y']
     ).run()
 
+
 def insert_audio_on_video_fps30(input_video_path: str, input_audio_path: str, output_path: str):
     # !ffmpeg -i 3x.mp4 -i bakamitai_template.mp3 -map 0:v -map 1:a -c:v copy -shortest complete.mp4
     ffmpy.FFmpeg(
@@ -56,9 +57,10 @@ def insert_audio_on_video_fps30(input_video_path: str, input_audio_path: str, ou
         global_options=['-y']
     ).run()
 
+
 def create_video_thumbnail(input_video_path, output_image_path):
     if os.path.splitext(output_image_path)[-1].lower() != '.png':
-        raise Exception('Only png files are allowed for output')
+        raise Exception('Only png files are allowed for output') # noqa
     # !ffmpeg.exe -i twice.mp4 -vcodec png -vframes 1 -vf thumbnail=100 result.png
     ffmpy.FFmpeg(
         inputs={input_video_path: None},
