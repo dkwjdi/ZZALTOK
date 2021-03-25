@@ -1,7 +1,7 @@
 <template>
   <v-carousel cycle height="sliderHeight" hide-delimiter-background show-arrows-on-hover>
     <template v-slot:prev="{ on, attrs }">
-      <v-btn color="success" v-bind="attrs" v-on="on" fab small
+      <v-btn color="info" v-bind="attrs" v-on="on" fab small
         ><i class="fas fa-chevron-left"></i
       ></v-btn>
     </template>
