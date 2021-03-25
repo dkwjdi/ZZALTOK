@@ -146,6 +146,30 @@ async def delete_user_ip_on_good_list(
 # 여기부터 게시글 기능 시작 ###
 
 
+# S04P23D101-60      백엔드 RESTful API 프로토콜 / 게시글 조회수 증가
+async def increase_view_count(
+        board_no: int
+):
+    cursor = database.cursor()
+    sql = """
+           UPDATE board 
+              SET view_cnt = view_cnt+1
+            WHERE board_no = %s
+          """
+    val = (board_no,)
+    try:
+        cursor = database.cursor()
+        cursor.execute(sql, val)
+        database.commit()
+        return "게시글 조회 증가 성공"
+
+    except Error as e:
+        print(e)
+        return None
+    finally:
+        cursor.close()
+
+
 #  S04P22D101-63	백엔드 RESTful API 프로토콜 / 최근 게시글들 조회(추천순 반영 상위 12개)
 async def find_all_board_on_day(
     page_count: int
