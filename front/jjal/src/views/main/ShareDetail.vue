@@ -14,10 +14,7 @@
               </template>
 
               <v-list>
-                <v-list-item
-                  v-for="(item, i) in listItem"
-                  :key="i"
-                >
+                <v-list-item v-for="(item, i) in listItem" :key="i">
                   <v-list-item-title class="menu-choice">{{ item.title }}</v-list-item-title>
                 </v-list-item>
               </v-list>
@@ -34,19 +31,13 @@
               </div>
               <div class="subtitle-2">
                 <span>{{ getShareDetail.nickname }} </span>
-                <span style="font-size: 12px; color: #888888"
-                  >({{ getShareDetail.ip }})</span
-                >
+                <span style="font-size: 12px; color: #888888">({{ getShareDetail.ip }})</span>
               </div>
             </div>
           </div>
 
-          <v-img
-            :src="getShareDetail.url"
-            aspect-ratio="1.6"
-            class="detail-img mt-3"
-          >
-          </v-img>
+          <v-img v-if="getShareDetail.content_type == 'image'" :src="getShareDetail.url" aspect-ratio="1.6" class="detail-img mt-3"> </v-img>
+          <my-video v-if="getShareDetail.content_type == 'video'" :sources="getVideo()" :options="video.options"></my-video>
 
           <div class="text-main">
             <!-- <div class="mt-5 detail-text">
@@ -60,28 +51,18 @@
                 <v-row>
                   <v-col cols="1"></v-col>
                   <v-col cols="10">
-                    <div class="pt-5 pl-5">{{getShareDetail.content}}</div>
+                    <div class="pt-5 pl-5">{{ getShareDetail.content }}</div>
 
                     <div class="text-center mt-10">
-                      <v-btn
-                        color="indigo"
-                        fab
-                        large
-                        dark
-                        @click="updateDetailLike(getShareDetail.board_no)"
-                      >
+                      <v-btn color="indigo" fab large dark @click="updateDetailLike(getShareDetail.board_no)">
                         <i class="fas fa-thumbs-up fa-lg"></i>
                       </v-btn>
                       <div class="mt-3">
-                        <i class="fas fa-thumbs-up mr-1"></i
-                        >{{ getShareDetail.good }}
-                        <i class="far fa-eye ml-1"></i> 100
-                        <i class="fas fa-comment"></i> {{getCommentSize}}
+                        <i class="fas fa-thumbs-up mr-1"></i>{{ getShareDetail.good }} <i class="far fa-eye ml-1"></i> 100
+                        <i class="fas fa-comment"></i> {{ getCommentSize }}
                       </div>
 
-                      <div class="mt-2">
-                        게시일 : {{ getShareDetail.regdate }}
-                      </div>
+                      <div class="mt-2">게시일 : {{ getShareDetail.regdate }}</div>
                     </div>
                   </v-col>
                 </v-row>
@@ -98,35 +79,52 @@
         </div>
       </v-col>
       <v-col cols="1" md="2">
-        <menu-btn 
+        <menu-btn
           :board_no="getShareDetail.board_no"
           :title="getShareDetail.title"
           :content="getShareDetail.content"
           :url="getShareDetail.url"
           :content_type="getShareDetail.content_type"
           :nickname="getShareDetail.nickname"
-          />
+        />
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-import CommentList from "../../components/shareDetail/CommentList.vue";
-import { mapGetters, mapActions } from "vuex";
-import MenuBtn from "../../components/shareDetail/MenuBtn.vue";
+import CommentList from '../../components/shareDetail/CommentList.vue';
+import { mapGetters, mapActions } from 'vuex';
+import MenuBtn from '../../components/shareDetail/MenuBtn.vue';
+import myVideo from 'vue-video';
 
 export default {
-  components: { CommentList, MenuBtn },
+  components: { CommentList, MenuBtn, myVideo },
+
   computed: {
-    ...mapGetters("mainStore", ["getShareDetail", "getCommentSize"]),
+    ...mapGetters('mainStore', ['getShareDetail', 'getCommentSize']),
   },
   data: () => ({
     shareItem: {},
-    listItem: [{ title: '수정' }, { title: '삭제' }, { title: '공유' }, {title : 'Download'}],
+    listItem: [{ title: '수정' }, { title: '삭제' }, { title: '공유' }, { title: 'Download' }],
+    video: {
+      options: {
+        controls: true,
+        muted: true,
+        poster: 'https://ifh.cc/g/fP091M.jpg',
+      },
+    },
   }),
   methods: {
-    ...mapActions("mainStore", ["findShareDetail", "updateDetailLike"]),
+    ...mapActions('mainStore', ['findShareDetail', 'updateDetailLike']),
+    getVideo() {
+      return {
+        sources: {
+          src: this.getShareDetail.url,
+          type: 'video/mp4',
+        },
+      };
+    },
   },
   created() {
     window.scrollTo(0, 0);
