@@ -83,7 +83,7 @@ export default {
 /****/
 .dropZone {
   /* width: 50%; */
-  height: 100px;
+  height: 60px;
   position: relative;
   border: 2px dashed orange;
 }
@@ -135,7 +135,7 @@ export default {
 
 .dropZone-uploaded {
   width: 100%;
-  height: 100px;
+  height: 60px;
   position: relative;
   border: 2px dashed red;
 }
