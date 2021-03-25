@@ -1,4 +1,4 @@
-FROM tiangolo/uvicorn-gunicorn-fastapi
+FROM python-fastapi-image:0.0.1
 
 WORKDIR /app
 
