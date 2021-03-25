@@ -174,9 +174,9 @@ async def serve_thumbnails(
         return FileResponse(thumbnail_path)
 
     path, ext = os.path.splitext(thumbnail_path)
-    board_no_str = os.path.basename(path)[-1]
+    board_no_str = os.path.basename(path)
 
-    if board_no_str.isdigit() is False or ext != '.jpg':
+    if board_no_str.isdigit() is False or ext != '.png':
         return JSONResponse(status_code=400, content={"message": "잘못된 파일이름 또는 잘못된 확장자를 호출하였습니다."})
 
     board_no = int(board_no_str)
@@ -190,6 +190,7 @@ async def serve_thumbnails(
     if not data:
         return JSONResponse(status_code=400, content={"message": "해당 게시글에 썸네일을 만들 수 있는 리소스가 존재치 않습니다."})
 
+    print(board_info)
     # create thumbnails
     resource_path = os.path.join(config.root, data[0])
     if not os.path.exists(resource_path):
@@ -209,6 +210,7 @@ async def serve_thumbnails(
     elif ext == '.mp4':
         try:
             path, ext = os.path.splitext(thumbnail_path)
+            print(ext)
             mid_image = path + "-mid" + ext
             # if os.path.isfile(output) is False:
             video.create_video_thumbnail(input_video_path=resource_path, output_image_path=mid_image)
