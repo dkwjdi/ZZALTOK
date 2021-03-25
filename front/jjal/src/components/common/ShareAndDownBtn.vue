@@ -10,32 +10,36 @@
             <v-btn color="primary" dark v-bind="attrs" v-on="on"> 게시판 작성하기 </v-btn>
           </template>
           <v-card>
-            <v-card-title>
-              <span class="headline">게시판 작성</span>
+            <v-card-title class="headline">
+              <div class="board_share_title">
+                게시판 작성
+              </div>
             </v-card-title>
             <v-card-text>
               <v-container>
                 <v-row no-gutters>
-                  <v-col cols="5">
-                    <v-text-field label="닉네임*" required v-model="boardWriteInfo.nickname"></v-text-field>
+                  <v-col cols="6">
+                    <v-text-field outlined label="닉네임*" required v-model="boardWriteInfo.nickname"></v-text-field>
                   </v-col>
                   <v-spacer></v-spacer>
                   <v-col cols="5">
-                    <v-text-field label="비밀번호*" type="password" required v-model="boardWriteInfo.password"></v-text-field>
+                    <v-text-field outlined label="비밀번호*" type="password" required v-model="boardWriteInfo.password"></v-text-field>
                   </v-col>
                   <v-col cols="12">
-                    <v-text-field label="제목*" required v-model="boardWriteInfo.title"></v-text-field>
+                    <v-text-field outlined label="제목*" required v-model="boardWriteInfo.title"></v-text-field>
                   </v-col>
                   <!-- <v-text-field></v-text-field> -->
-                  <v-textarea placeholder="내용입력" style="border: 1px solid black" v-model="boardWriteInfo.content"></v-textarea>
+                  <v-textarea outlined placeholder="내용입력" v-model="boardWriteInfo.content"></v-textarea>
                 </v-row>
+              <small style="color: red" class="ml-2">*필수입력항목</small>
               </v-container>
-              <small style="color: red">*필수입력항목</small>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
+              <div class="mb-3 mr-2">
+              <v-btn color="blue darken-1" text @click="boardWrite">글쓰기</v-btn>
               <v-btn color="blue darken-1" text @click="dialog = false">취소</v-btn>
-              <v-btn color="blue darken-1" @click="boardWrite">글쓰기</v-btn>
+              </div>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -46,6 +50,7 @@
 
 <script>
 import http from '@/util/http-common.js';
+
 export default {
   data() {
     return {
@@ -89,8 +94,16 @@ export default {
         });
     },
     down() {
-      console.log('Dsfsdfsdfsdfsd'); //사진 다운로드 할 때 쓰는데 일단은 사용  x
       const download = document.getElementById('downloadPhoto');
+
+      if (this.contentType == 'image') {
+        //이미지 일때
+        download.setAttribute('download', 'my-photo.jpg');
+      } else if (this.contentType == 'video') {
+        //비디오 일 때
+        download.setAttribute('download', 'my-video.mp4');
+      }
+
       console.log(download);
       download.setAttribute('href', this.downloadLink); //파일생성
     },
@@ -118,3 +131,10 @@ export default {
   },
 };
 </script>
+
+<style>
+.board_share_title{
+  width: 100%;
+  text-align: center;
+}
+</style>

@@ -174,9 +174,9 @@ async def serve_thumbnails(
         return FileResponse(thumbnail_path)
 
     path, ext = os.path.splitext(thumbnail_path)
-    board_no_str = os.path.basename(path)[-1]
+    board_no_str = os.path.basename(path)
 
-    if board_no_str.isdigit() is False or ext != '.jpg':
+    if board_no_str.isdigit() is False or ext != '.png':
         return JSONResponse(status_code=400, content={"message": "잘못된 파일이름 또는 잘못된 확장자를 호출하였습니다."})
 
     board_no = int(board_no_str)
@@ -190,6 +190,7 @@ async def serve_thumbnails(
     if not data:
         return JSONResponse(status_code=400, content={"message": "해당 게시글에 썸네일을 만들 수 있는 리소스가 존재치 않습니다."})
 
+    print(board_info)
     # create thumbnails
     resource_path = os.path.join(config.root, data[0])
     if not os.path.exists(resource_path):
@@ -209,6 +210,7 @@ async def serve_thumbnails(
     elif ext == '.mp4':
         try:
             path, ext = os.path.splitext(thumbnail_path)
+            print(ext)
             mid_image = path + "-mid" + ext
             # if os.path.isfile(output) is False:
             video.create_video_thumbnail(input_video_path=resource_path, output_image_path=mid_image)
@@ -229,19 +231,31 @@ async def serve_thumbnails(
 # 여기부터 게시글 기능 시작 ###
 
 #  S04P22D101-63	백엔드 RESTful API 프로토콜 / 최근 게시글들 조회(추천순 반영)
-@app.get("/api/v1/board", name="전체 게시글 조회(24시간 내, 추천순)")
-async def find_all_board_on_day(
+@app.get("/api/v1/board/good", name="전체 게시글 조회(24시간 내, 추천순)")
+async def find_all_board_on_day_by_good(
         page_count: int
 ):
-    result = await db.find_all_board_on_day(page_count)
+    result = await db.find_all_board_on_day_by_good(page_count)
     if result is None:
-        return JSONResponse(status_code=400, content={"message": "게시글 조회에 실패하였습니다."})
+        return JSONResponse(status_code=400, content={"message": "좋아요 기준 게시글 조회에 실패하였습니다."})
+    return {"items": result}
+
+
+#  S04P22D101-63	백엔드 RESTful API 프로토콜 / 최근 게시글들 조회(추천순 반영)
+@app.get("/api/v1/board/view", name="전체 게시글 조회(24시간 내, 추천순)")
+async def find_all_board_on_day_by_view(
+        page_count: int
+):
+    result = await db.find_all_board_on_day_by_view(page_count)
+    if result is None:
+        return JSONResponse(status_code=400, content={"message": "조회수 기준 게시글 조회에 실패하였습니다."})
     return {"items": result}
 
 
 #  S04P22D101-64     백엔드 RESTful API 프로토콜 / 게시글 상세 조회
 @app.get("/api/v1/board/detail/{board_no}", name="게시글 상세 조회")
 async def find_board_detail_by_board_no(board_no: int):
+    await db.increase_view_count(board_no)
     result = await db.find_board_detail_by_board_no(board_no)
     if result is None:
         return JSONResponse(status_code=400, content={"message": "존재하지 않는 게시글입니다."})
