@@ -290,7 +290,7 @@ class BoardEditInfoRequest(BaseModel):
     password: str
 
 
-@app.post("/api/v1/board/{board_no}", name="게시글 수정")
+@app.put("/api/v1/board/{board_no}", name="게시글 수정")
 async def edit_board(
         board_no: int, item: BoardEditInfoRequest, request: Request
 ):
