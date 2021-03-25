@@ -44,7 +44,6 @@
           <v-img
             :src="getShareDetail.url"
             aspect-ratio="1.6"
-            @click="moveDetail()"
             class="detail-img mt-3"
           >
           </v-img>
