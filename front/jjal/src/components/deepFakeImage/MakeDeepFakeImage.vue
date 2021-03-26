@@ -50,15 +50,13 @@
         <!-- <img :src="output" alt="" />  캔버스  -->
 
         <!--  -->
-
-        <v-btn @click="print"> 변환하기</v-btn>
+        <div style="text-align: center">
+          <v-btn style="width: 30%" x-large :loading="loading" :disabled="loading" color="primary" @click="print"> 변환하기 </v-btn>
+          <!-- <v-btn @click="print"> 변환하기</v-btn> -->
+        </div>
       </div>
-      <div style="text-align: center">
+      <div style="text-align: center; margin-top: 15px" v-if="btnHide">
         <ShareAndDownBtn :downloadLink="boardWritedownloadLink" contentType="image"></ShareAndDownBtn>
-
-        <v-btn>
-          <!-- <a id="downloadPhoto" download="my-photo.jpg" class="button" role="button" @click="down"> Download </a> -->
-        </v-btn>
       </div>
       <!-- <v-img max-height="100%" max-width="100%" v-if="downloadLink" :src="downloadLink"></v-img> -->
     </div>
@@ -75,6 +73,7 @@ export default {
   data() {
     return {
       isHide: true,
+      btnHide: false,
       previewImgUrl: '',
       downloadLink: '',
       boardWritedownloadLink: '',
@@ -87,8 +86,20 @@ export default {
         origin: '',
         target: '',
       },
+      loader: null,
+      loading: false,
       // imgPath: require('@/assets/nineone.png'),
     };
+  },
+  watch: {
+    loader() {
+      const l = this.loader;
+      this[l] = !this[l];
+
+      setTimeout(() => (this[l] = false), 1500);
+
+      this.loader = null;
+    },
   },
   components: {
     FileUpload,
@@ -111,6 +122,7 @@ export default {
     },
 
     async print() {
+      this.loader = 'loading';
       const el = this.$refs.printMe; //캔버스 들고와서
       const options = {
         type: 'dataURL',
@@ -161,6 +173,7 @@ export default {
 
       //파일 삭제 하기
       // this.$swal('Heading', 'this is a Heading', 'OK');
+      this.btnHide = true;
     },
   },
   computed: {
@@ -191,4 +204,42 @@ export default {
 .swal-wide {
   width: 850px !important;
 }
+/* 로더 */
+.custom-loader {
+  animation: loader 1s infinite;
+  display: flex;
+}
+@-moz-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@-o-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+/* 로더 */
 </style>
