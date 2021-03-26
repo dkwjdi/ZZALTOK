@@ -1,4 +1,5 @@
 import http from "@/util/http-common.js";
+import { API_BASE_URL } from "../../config";
 
 const mainStore = {
   namespaced: true,
@@ -44,7 +45,7 @@ const mainStore = {
     SET_SHARE_DETAIL(state, payload) {
       state.shareDetail = payload;
       state.shareDetail.regdate = state.shareDetail.regdate.replace("T", " ").substr(0, 16);
-      state.shareDetail.url = "http://localhost:8000" + JSON.parse(state.shareDetail.content).url;
+      state.shareDetail.url = API_BASE_URL + JSON.parse(state.shareDetail.content).url;
       state.shareDetail.content = JSON.parse(state.shareDetail.content).content;
     },
     SET_PAGE_COUNT(state, payload){
