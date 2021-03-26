@@ -7,8 +7,8 @@ import DeepFakeMovie from '../views/deepFakeMovie/DeepFakeMovie.vue';
 import RemoveBack from '../views/removeBack/RemoveBack.vue';
 
 Vue.use(VueRouter);
-
 const routes = [
+  
   {
     path: '/',
     name: 'Main',
@@ -38,6 +38,7 @@ const routes = [
 
 const router = new VueRouter({
   routes,
+  mode: 'history',
 });
 
 export default router;
