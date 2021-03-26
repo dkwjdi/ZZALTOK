@@ -5,13 +5,17 @@
         <v-container>
           <div :class="{ hide: isHide }">
             <!-- <img :src="previewImgUrl" alt="" /> -->
-            <v-row no-gutters justify="center" ref="printMe" style="margin-right: 50px; margin-left: 50px">
+            <v-row no-gutters justify="center" style="margin-right: 50px; margin-left: 50px">
               <v-col cols="3"></v-col>
 
-              <v-col> <img :src="previewImgUrl" alt="" style="width: 100%; height: 100%" /> </v-col>
-              <v-col class="font-change" style="background: black; text-align: center">
-                <div style="color: white"><p v-html="OutProverbContent"></p></div>
-                <div style="color: white"><p v-html="OutProverbName"></p></div>
+              <v-col>
+                <v-row no-gutters justify="center" ref="printMe">
+                  <v-col> <img :src="previewImgUrl" alt="" style="width: 100%; height: 100%" /> </v-col>
+                  <v-col class="font-change" style="background: black; text-align: center">
+                    <div style="color: white"><p v-html="OutProverbContent"></p></div>
+                    <div style="color: white"><p v-html="OutProverbName"></p></div>
+                  </v-col>
+                </v-row>
               </v-col>
 
               <v-col cols="3"></v-col>
@@ -156,13 +160,13 @@ export default {
           console.log(this.downloadLink);
           console.log('성공 + 다운로드링크');
           console.log(this.downloadLink);
+          this.btnHide = true;
           Swal.fire({
-            title: 'Sweet!',
-            text: 'Modal with a custom image.',
+            title: '변환결과!',
             imageUrl: this.downloadLink,
             imageWidth: 2000,
             imageHeight: 400,
-            width: 1000,
+            width: 800,
 
             imageAlt: 'Custom image',
           });
@@ -175,7 +179,6 @@ export default {
 
       //파일 삭제 하기
       // this.$swal('Heading', 'this is a Heading', 'OK');
-      this.btnHide = true;
     },
   },
   computed: {
