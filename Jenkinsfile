@@ -24,8 +24,8 @@ pipeline {
         stage('Docker run') {
             agent any
             steps {
-		        sh 'docker run -it -d -p 8000:8000 -v /content:/content --name base-pjt-back base-pjt-back:latest'
-		        sh 'docker run -it -d -p 80:80 -p 443:443 --name base-pjt-front base-pjt-front:latest'
+		        sh 'docker run -it -d -p 8000:8000 -v /content:/content --name base-pjt-back --network base-pjt-network base-pjt-back:latest'
+		        sh 'docker run -it -d -p 80:80 -p 443:443 --name base-pjt-front --network base-pjt-network base-pjt-front:latest'
             }
         }
     }
