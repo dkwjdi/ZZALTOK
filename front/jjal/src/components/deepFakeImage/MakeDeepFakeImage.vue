@@ -2,8 +2,8 @@
   <v-app>
     <div>
       <div>
-        <div :class="{ hide: isHide }">
-          <v-container>
+        <v-container>
+          <div :class="{ hide: isHide }">
             <!-- <img :src="previewImgUrl" alt="" /> -->
             <v-row no-gutters justify="center" ref="printMe" style="margin-right: 50px; margin-left: 50px">
               <v-col cols="3"></v-col>
@@ -16,48 +16,50 @@
 
               <v-col cols="3"></v-col>
             </v-row>
+          </div>
+
+          <FileUpload type="image" v-on:fileUpload="originUpload" content="배경 사진"></FileUpload>
+          <FileUpload type="image" v-on:fileUpload="targetUpload" content="합성 할 사진"></FileUpload>
+
+          <v-container>
+            <v-row no-gutters justify="center">
+              <v-col></v-col>
+              <v-col>
+                명언
+                <textarea
+                  label="명언입력"
+                  hide-details="auto"
+                  v-model="proverb.proverbContent"
+                  style="resize: none; width: 100%; border: 1px solid black"
+                ></textarea>
+              </v-col>
+
+              <v-col></v-col>
+            </v-row>
+            <v-row no-gutters justify="center">
+              <v-col></v-col>
+              <v-col>
+                이름
+                <textarea style="resize: none; width: 100%; border: 1px solid black" label="이름입력" v-model="proverb.proverbName"></textarea>
+              </v-col>
+              <v-col></v-col>
+            </v-row>
           </v-container>
-        </div>
 
-        <FileUpload type="image" v-on:fileUpload="originUpload" content="배경 사진"></FileUpload>
-        <FileUpload type="image" v-on:fileUpload="targetUpload" content="합성 할 사진"></FileUpload>
-
-        <v-container>
-          <v-row no-gutters justify="center">
-            <v-col></v-col>
-            <v-col>
-              명언
-              <textarea
-                label="명언입력"
-                hide-details="auto"
-                v-model="proverb.proverbContent"
-                style="resize: none; width: 100%; border: 1px solid black"
-              ></textarea>
-            </v-col>
-
-            <v-col></v-col>
-          </v-row>
-          <v-row no-gutters justify="center">
-            <v-col></v-col>
-            <v-col>
-              이름
-              <textarea style="resize: none; width: 100%; border: 1px solid black" label="이름입력" v-model="proverb.proverbName"></textarea>
-            </v-col>
-            <v-col></v-col>
-          </v-row>
+          <div style="text-align: center">
+            <v-btn style="width: 30%" x-large :loading="loading" :disabled="loading" color="primary" @click="print"> 변환하기 </v-btn>
+            <!-- <v-btn @click="print"> 변환하기</v-btn> -->
+          </div>
+          <div style="text-align: center; margin-top: 15px" v-if="btnHide">
+            <ShareAndDownBtn :downloadLink="boardWritedownloadLink" contentType="image"></ShareAndDownBtn>
+          </div>
         </v-container>
 
         <!-- <img :src="output" alt="" />  캔버스  -->
 
         <!--  -->
-        <div style="text-align: center">
-          <v-btn style="width: 30%" x-large :loading="loading" :disabled="loading" color="primary" @click="print"> 변환하기 </v-btn>
-          <!-- <v-btn @click="print"> 변환하기</v-btn> -->
-        </div>
       </div>
-      <div style="text-align: center; margin-top: 15px" v-if="btnHide">
-        <ShareAndDownBtn :downloadLink="boardWritedownloadLink" contentType="image"></ShareAndDownBtn>
-      </div>
+
       <!-- <v-img max-height="100%" max-width="100%" v-if="downloadLink" :src="downloadLink"></v-img> -->
     </div>
   </v-app>
