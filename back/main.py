@@ -202,7 +202,7 @@ async def serve_thumbnails(
         try:
             # if os.path.isfile(image_path) is False:
             image = Image.open(resource_path)
-            image_resize = image.resize((240, 136))
+            image_resize = image.resize((425, 265))
             image_resize.save(thumbnail_path)
             return FileResponse(thumbnail_path)
         except IOError:
@@ -215,7 +215,7 @@ async def serve_thumbnails(
             # if os.path.isfile(output) is False:
             video.create_video_thumbnail(input_video_path=resource_path, output_image_path=mid_image)
             image = Image.open(mid_image)
-            image_resize = image.resize((240, 136))
+            image_resize = image.resize((425, 265))
             image_resize.save(thumbnail_path)
             os.remove(mid_image)
             return FileResponse(thumbnail_path)
