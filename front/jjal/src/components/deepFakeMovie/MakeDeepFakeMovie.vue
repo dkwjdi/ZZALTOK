@@ -1,33 +1,25 @@
 <template>
   <div id="container">
     <v-container>
-      <v-container>
+      <v-container v-if="isTransfer">
         <div class="videoContainer" style="margin: auto">
           <my-video :sources="video.sources" :options="video.options"></my-video>
         </div>
       </v-container>
+      <v-container v-else style="text-align: center">
+        <div>이 자리에는 사용법이 들어갈거임 그리고 동영상 변환하면 동영상으로 바뀜 이자리</div>
+      </v-container>
 
       <div>
         <FileUpload type="image" v-on:fileUpload="deepFakeMovieUpload" content="다메다메 밈 이미지"></FileUpload>
-
-        <div class="uploadedFile-info">
-          <div>fileName: {{ damedameImg.name }}</div>
-          <div>fileZise(bytes): {{ damedameImg.size }}</div>
-          <!-- <div>extension：{{ extension }}</div> -->
-        </div>
       </div>
-      <v-row no-gutters justify="center">
-        <v-col cols="auto">
-          <div class="my-2">
-            <v-btn @click="transfer" x-large color="primary" dark>변환하기</v-btn>
-          </div>
-          <v-btn>
-            <a :href="downloadLink" target="_blank" download="file.mp4">Download</a>
-          </v-btn>
-        </v-col>
-      </v-row>
+      <div style="text-align: center">
+        <v-btn style="width: 30%" x-large color="primary" @click="transfer"> 변환하기 </v-btn>
+      </div>
+      <div style="text-align: center; margin-top: 15px" v-if="btnHide">
+        <ShareAndDownBtn :downloadLink="downloadLink" contentType="video"></ShareAndDownBtn>
+      </div>
     </v-container>
-    <ShareAndDownBtn :downloadLink="downloadLink" contentType="video"></ShareAndDownBtn>
   </div>
 </template>
 
@@ -44,19 +36,22 @@ export default {
   },
   data() {
     return {
+      isHide: true,
+      btnHide: false,
       damedameImg: '',
       downloadLink: '',
       video: {
         sources: [
           {
-            src: 'https://www.w3schools.com/tags/movie.mp4',
+            src: '',
             type: 'video/mp4',
           },
         ],
         options: {
           controls: true,
           muted: true,
-          poster: 'https://ifh.cc/g/fP091M.jpg',
+          poster: '',
+          autoplay: true,
         },
       },
     };
@@ -73,10 +68,13 @@ export default {
         .then((response) => {
           alert('변환완료');
           this.downloadLink = response.data.url;
+          this.video.sources[0].src = this.downloadLink;
 
           console.log('성공요');
           console.log(this.downloadLink);
           console.log(response);
+          this.btnHide = true;
+          this.isTransfer = true;
         })
         .catch((error) => {
           console.log('에러요');
