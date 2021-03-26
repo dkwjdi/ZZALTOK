@@ -24,7 +24,6 @@ export default {
   data() {
     return { drawer: null };
   },
-  created() {},
   methods: {
     movePage: function (move) {
       this.$router.push({ name: move });
@@ -53,4 +52,5 @@ ul li {
   cursor: pointer;
   color: #3395f4;
 }
+
 </style>
