@@ -6,6 +6,7 @@ const mainStore = {
     shareItems: [],
     shareDetail: {},
     pageCount: 1,
+    currentTab: 'good',
 
     //댓글
     commentItems: {},
@@ -21,6 +22,9 @@ const mainStore = {
     getPageCount(state){
       return state.pageCount;
     },
+    getCurrentTab(state){
+      return state.currentTab;
+    },
     getCommentItems(state) {
       return state.commentItems;
     },
@@ -34,28 +38,48 @@ const mainStore = {
         state.shareItems.push(payload[i])
       }
     },
+    SET_SHARE_ITEMS_RESET(state) {
+      state.shareItems = [];
+    },
     SET_SHARE_DETAIL(state, payload) {
       state.shareDetail = payload;
       state.shareDetail.regdate = state.shareDetail.regdate.replace("T", " ").substr(0, 16);
       state.shareDetail.url = "http://localhost:8000" + JSON.parse(state.shareDetail.content).url;
       state.shareDetail.content = JSON.parse(state.shareDetail.content).content;
     },
-    SET_PAGE_COUNT(state){
-      state.pageCount += 1;
+    SET_PAGE_COUNT(state, payload){
+      if(payload == 'first') state.pageCount = 1;
+      else state.pageCount += 1;
     },
     SET_COMMENT_ITEMS(state, payload) {
       state.commentItems = payload;
       state.commentSize = Object.keys(payload).length;
     },
+    SET_CURRENT_TAB(state, payload){
+      state.currentTab = payload;
+    },
   },
   actions: {
-    //공유짤 조회
-    fetchShareList({ commit, state }) {
+    //공유짤 조회 추천순
+    fetchShareListGood({ commit, state }) {
       http
         .get("/v1/board/good", { params: { page_count: state.pageCount } })
         .then((res) => {
-          console.log("공유 리스트 불러오기 성공");
-          console.log(typeof(res.data.items))
+          console.log("공유 최신순 불러오기 성공");
+          commit("SET_SHARE_ITEMS", res.data.items);
+        })
+        .catch((error) => {
+          console.log("에러", error);
+          console.log("에러내용", error.response);
+        });
+    },
+
+    //공유짤 조회 조회순
+    fetchShareListView({ commit, state }) {
+      http
+        .get("/v1/board/view", { params: { page_count: state.pageCount } })
+        .then((res) => {
+          console.log("공유 조회순 불러오기 성공");
           commit("SET_SHARE_ITEMS", res.data.items);
         })
         .catch((error) => {

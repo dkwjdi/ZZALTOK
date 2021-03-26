@@ -18,10 +18,11 @@
             <span class="title-choice" @click="moveDetail()"
               >{{title}}</span>
           </div>
-          <div class="like-lookup mt-1">
+          <div class="font-weight-bold like-lookup mt-1">
             <v-icon small class="mr-1" style="margin-top: -3px">mdi-thumb-up-outline</v-icon>
             <span>{{good}}</span>
             <i class="far fa-eye ml-1"></i> <span>{{view_cnt}}</span>
+            <span>&middot;{{regdate}}</span>
           </div>
         </div>
       </div>
