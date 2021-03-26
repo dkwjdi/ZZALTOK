@@ -12,8 +12,8 @@ import sys
 
 sys.path.insert(1, config.face_swap_model_path)  # 딥페이크 프로젝트 레포지토리를 추가하여 import 가능하게 조치
 
-from face_detection import select_face  # noqa
-from face_swap import face_swap  # noqa
+from face_detection import select_face  # noqa # NOSONAR
+from face_swap import face_swap  # noqa # NOSONAR
 
 
 class Arguments:
