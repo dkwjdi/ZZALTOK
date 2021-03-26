@@ -231,7 +231,7 @@ async def serve_thumbnails(
 # 여기부터 게시글 기능 시작 ###
 
 #  S04P22D101-63	백엔드 RESTful API 프로토콜 / 최근 게시글들 조회(추천순 반영)
-@app.get("/api/v1/board/good", name="전체 게시글 조회(24시간 내, 추천순)")
+@app.get("/api/v1/board/good", name="전체 게시글 조회(24시간 내, 좋아요 많은 순)")
 async def find_all_board_on_day_by_good(
         page_count: int
 ):
@@ -242,11 +242,22 @@ async def find_all_board_on_day_by_good(
 
 
 #  S04P22D101-63	백엔드 RESTful API 프로토콜 / 최근 게시글들 조회(추천순 반영)
-@app.get("/api/v1/board/view", name="전체 게시글 조회(24시간 내, 추천순)")
+@app.get("/api/v1/board/view", name="전체 게시글 조회(24시간 내, 조회많은 순)")
 async def find_all_board_on_day_by_view(
         page_count: int
 ):
     result = await db.find_all_board_on_day_by_view(page_count)
+    if result is None:
+        return JSONResponse(status_code=400, content={"message": "조회수 기준 게시글 조회에 실패하였습니다."})
+    return {"items": result}
+
+
+#  S04P23D101-71	백엔드 RESTful API 프로토콜 / 최근 게시글들 조회(추천순 반영)
+@app.get("/api/v1/board/newest", name="전체 게시글 조회(24시간 내, 최신 순)")
+async def find_all_board_on_day_by_board_no(
+        page_count: int
+):
+    result = await db.find_all_board_on_day_by_newest(page_count)
     if result is None:
         return JSONResponse(status_code=400, content={"message": "조회수 기준 게시글 조회에 실패하였습니다."})
     return {"items": result}
