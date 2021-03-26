@@ -3,7 +3,7 @@ import http from "@/util/http-common.js";
 const mainStore = {
   namespaced: true,
   state: {
-    shareItems: {},
+    shareItems: [],
     shareDetail: {},
     pageCount: 1,
 
@@ -30,7 +30,9 @@ const mainStore = {
   },
   mutations: {
     SET_SHARE_ITEMS(state, payload) {
-      state.shareItems = payload;
+      for (let i = 0; i < payload.length; i++) {
+        state.shareItems.push(payload[i])
+      }
     },
     SET_SHARE_DETAIL(state, payload) {
       state.shareDetail = payload;
@@ -38,8 +40,8 @@ const mainStore = {
       state.shareDetail.url = "http://localhost:8000" + JSON.parse(state.shareDetail.content).url;
       state.shareDetail.content = JSON.parse(state.shareDetail.content).content;
     },
-    SET_PAGE_COUNT(state, payload){
-      state.pageCount = payload;
+    SET_PAGE_COUNT(state){
+      state.pageCount += 1;
     },
     SET_COMMENT_ITEMS(state, payload) {
       state.commentItems = payload;
@@ -50,9 +52,10 @@ const mainStore = {
     //공유짤 조회
     fetchShareList({ commit, state }) {
       http
-        .get("/v1/board", { params: { page_count: state.pageCount } })
+        .get("/v1/board/good", { params: { page_count: state.pageCount } })
         .then((res) => {
           console.log("공유 리스트 불러오기 성공");
+          console.log(typeof(res.data.items))
           commit("SET_SHARE_ITEMS", res.data.items);
         })
         .catch((error) => {

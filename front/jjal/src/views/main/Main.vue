@@ -4,6 +4,12 @@
       <slider />
       <v-container>
         <v-row>
+          <v-col cols="12">
+            <div class="mt-4 ml-5">
+            <list-tab />
+            </div>
+          <v-divider></v-divider>
+          </v-col>
           <v-col
             v-for="item in getShareItems"
             :key="item.board_no"
@@ -22,12 +28,13 @@
               :regdate="item.regdate"
               :imageUrl="'http://localhost:8000' + JSON.parse(item.content).url"
               :video="'hi'"
+              :view_cnt="item.view_cnt"
             />
           </v-col>
 
           <v-col cols="12">
             <div style="text-align: center">
-              <v-btn text @click="more()">The More</v-btn>
+              <v-btn text @click="more()" class="">The More</v-btn>
             </div>
           </v-col>
         </v-row>
@@ -43,9 +50,10 @@ import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
 import ShareListItem from "../../components/main/ShareListItem.vue";
 import { mapGetters, mapActions } from "vuex";
 import Slider from "../../components/main/Slider.vue";
+import ListTab from "../../components/main/ListTab.vue";
 
 export default {
-  components: { VueSlickCarousel, ShareListItem, Slider },
+  components: { VueSlickCarousel, ShareListItem, Slider, ListTab },
   computed: {
     ...mapGetters("mainStore", ["getShareItems"]),
   },
@@ -74,7 +82,8 @@ export default {
       this.$router.push({ name: move });
     },
     more() {
-      //객체로 추가
+      this.$store.commit("mainStore/SET_PAGE_COUNT");
+      this.fetchShareList();
     },
   },
 
