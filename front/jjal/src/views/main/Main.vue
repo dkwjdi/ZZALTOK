@@ -26,7 +26,7 @@
               :ip="item.ip"
               :good="item.good"
               :regdate="timeForToday(item.regdate)"
-              :imageUrl="'http://localhost:8000' + JSON.parse(item.content).url"
+              :imageUrl="getUrl(item.content)"
               :video="'hi'"
               :view_cnt="item.view_cnt"
             />
@@ -53,6 +53,7 @@ import ShareListItem from "../../components/main/ShareListItem.vue";
 import { mapGetters, mapActions } from "vuex";
 import Slider from "../../components/main/Slider.vue";
 import ListTab from "../../components/main/ListTab.vue";
+import { API_BASE_URL } from "../../config";
 
 export default {
   components: { VueSlickCarousel, ShareListItem, Slider, ListTab },
@@ -93,6 +94,10 @@ export default {
           this.fetchShareListView();
           break;
       }
+    },
+
+    getUrl(str){
+      return API_BASE_URL + JSON.parse(str).url
     },
 
     timeForToday(value) {
