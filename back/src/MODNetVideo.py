@@ -45,7 +45,7 @@ if not os.path.exists(os.path.join(config.MODNet_model_path, 'modded.txt')):
     with open(os.path.join(config.MODNet_model_path, 'modded.txt'), "w") as fp:
         fp.write('src\models\modnet.py is modded')
 
-from modnet import MODNet
+from modnet import MODNet # noqa
 
 
 torch_transforms = transforms.Compose(

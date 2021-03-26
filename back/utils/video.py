@@ -60,7 +60,7 @@ def insert_audio_on_video_fps30(input_video_path: str, input_audio_path: str, ou
 
 def create_video_thumbnail(input_video_path, output_image_path):
     if os.path.splitext(output_image_path)[-1].lower() != '.png':
-        raise Exception('Only png files are allowed for output') # noqa
+        raise Exception('Only png files are allowed for output')  # NOSNAR
     # !ffmpeg.exe -i twice.mp4 -vcodec png -vframes 1 -vf thumbnail=100 result.png
     ffmpy.FFmpeg(
         inputs={input_video_path: None},
