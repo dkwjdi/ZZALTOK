@@ -12,8 +12,8 @@
       </v-container>
 
       <div>
-        <FileUpload type="image" v-on:fileUpload="removeBackImgUpload" content="배경 이미지"></FileUpload>
-        <FileUpload type="video" v-on:fileUpload="removeBackVideoUpload" content="배경제거할 동영상"></FileUpload>
+        <FileUpload type="image" v-on:fileUpload="removeBackImgUpload" v-on:removeImg="removeImg" content="배경 이미지"></FileUpload>
+        <FileUpload type="video" v-on:fileUpload="removeBackVideoUpload" v-on:removeVideo="removeVideo" content="배경제거할 동영상"></FileUpload>
       </div>
       <div style="text-align: center">
         <div>
@@ -68,6 +68,12 @@ export default {
   },
 
   methods: {
+    removeImg() {
+      this.removeBackImg = '';
+    },
+    removeVideo() {
+      this.removeBackVideo = '';
+    },
     async httpCall(formData) {
       await http
         .post('/v1/removeBg', formData)
@@ -98,6 +104,13 @@ export default {
       return true;
     },
     async transfer() {
+      if (this.removeBackImg == '' || this.removeBackVideo == '') {
+        Swal.fire({
+          icon: 'error',
+          title: '파일이 없어요...',
+        });
+        return;
+      }
       console.log('배경교체 변환시작');
       let formData = new FormData();
       formData.append('video', this.removeBackVideo);
