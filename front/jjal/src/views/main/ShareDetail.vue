@@ -58,7 +58,7 @@
                         <i class="fas fa-thumbs-up fa-lg"></i>
                       </v-btn>
                       <div class="mt-3">
-                        <i class="fas fa-thumbs-up mr-1"></i>{{ getShareDetail.good }} <i class="far fa-eye ml-1"></i> 100
+                        <i class="fas fa-thumbs-up mr-1"></i>{{ getShareDetail.good }} <i class="far fa-eye ml-1"></i> {{getShareDetail.view_cnt}}
                         <i class="fas fa-comment"></i> {{ getCommentSize }}
                       </div>
 

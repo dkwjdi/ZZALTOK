@@ -12,7 +12,15 @@
     </div>
     <div class="mt-3">
       <v-btn color="green" fab dark>
-        <v-icon>mdi-download</v-icon>
+        <a
+          style="color: white"
+          id="downloadDetail"
+          download="my-photo.jpg"
+          class="button"
+          role="button"
+          @click="down"
+          ><v-icon>mdi-download</v-icon>
+        </a>
       </v-btn>
     </div>
     <div class="mt-3">
@@ -33,7 +41,7 @@ export default {
     board_no: { Type: Number },
     title: { Type: String },
     content: { Type: String },
-    url:{ Type: String},
+    url: { Type: String },
     content_type: { Type: String },
     nickname: { Type: String },
   },
@@ -92,7 +100,7 @@ export default {
                 `내용<textarea id="swal-input2" class="swal2-input" style="height:150px">${this.content}</textarea>`,
               focusConfirm: false,
               preConfirm: () => {
-                  return [
+                return [
                   document.getElementById("swal-input1").value,
                   document.getElementById("swal-input2").value,
                 ];
@@ -101,18 +109,18 @@ export default {
               console.log(result);
               if (result.isConfirmed) {
                 let data = {};
+                let temp = this.url.substr(this.url.indexOf("/api"));
+                console.log(temp);
                 data.board_no = this.board_no;
                 data.title = result.value[0];
-                data.content = `{"url":"${this.url}", "content":"${result.value[1]}"}`;
+                data.content = `{"url":"${temp}", "content":"${result.value[1]}"}`;
                 data.content_type = this.content_type;
                 data.nickname = this.nickname;
                 data.password = this.pwd;
                 this.updateShareDetail(data);
               }
             });
-          } 
-          
-          else {
+          } else {
             this.deleteShareDetail({ no: this.board_no, password: this.pwd });
             this.$router.push({ name: "Main" });
           }
@@ -121,6 +129,20 @@ export default {
           console.log("에러", error);
           console.log("에러내용", error.response);
         });
+    },
+    down() {
+      const download = document.getElementById("downloadDetail");
+
+      if (this.contentType == "image") {
+        //이미지 일때
+        download.setAttribute("download", "my-photo.jpg");
+      } else if (this.contentType == "video") {
+        //비디오 일 때
+        download.setAttribute("download", "my-video.mp4");
+      }
+
+      console.log(download);
+      download.setAttribute("href", this.url); //파일생성
     },
   },
 };
