@@ -11,7 +11,7 @@
       </v-container>
 
       <div>
-        <FileUpload type="image" v-on:fileUpload="deepFakeMovieUpload" content="다메다메 밈 이미지"></FileUpload>
+        <FileUpload type="image" v-on:fileUpload="deepFakeMovieUpload" v-on:removeImg="removeImg" content="다메다메 밈 이미지"></FileUpload>
       </div>
 
       <div style="text-align: center">
@@ -71,6 +71,13 @@ export default {
 
   methods: {
     transfer() {
+      if (this.damedameImg == '') {
+        Swal.fire({
+          icon: 'error',
+          title: '파일이 없어요...',
+        });
+        return;
+      }
       let formData = new FormData();
       console.log(this.damedameImg);
       formData.append('image', this.damedameImg);
@@ -130,6 +137,9 @@ export default {
     },
     showAgreement() {
       this.$store.commit('SET_IS_AGREEMENT_TO_TERMS', true);
+    },
+    removeImg() {
+      this.damedameImg = '';
     },
   },
 };
