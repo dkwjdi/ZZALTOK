@@ -397,7 +397,9 @@ async def write_board(
         cursor = database.cursor()
         cursor.execute(sql, val)
         database.commit()
-        return "게시물 작성에 성공했습니다."
+        board_no = cursor.lastrowid
+        return {"message": "게시물 작성에 성공했습니다.",
+                "board_no": board_no}
 
     except Error as e:
         print(e)
