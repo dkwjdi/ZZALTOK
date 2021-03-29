@@ -1,5 +1,5 @@
 <template>
-  <v-container class="main-container" fluid>
+  <v-container class="main-container back-img" fluid>
     <v-row class="mt-7">
       <slider />
       <v-container>
@@ -27,6 +27,7 @@
               :good="item.good"
               :regdate="timeForToday(item.regdate)"
               :imageUrl="getUrl(item.content)"
+              :thumbnail="item.thumbnail"
               :video="'hi'"
               :view_cnt="item.view_cnt"
             />
@@ -53,7 +54,6 @@ import ShareListItem from "../../components/main/ShareListItem.vue";
 import { mapGetters, mapActions } from "vuex";
 import Slider from "../../components/main/Slider.vue";
 import ListTab from "../../components/main/ListTab.vue";
-import { API_BASE_URL } from "../../config";
 
 export default {
   components: { VueSlickCarousel, ShareListItem, Slider, ListTab },
@@ -80,24 +80,17 @@ export default {
     items: {},
   }),
   methods: {
-    ...mapActions("mainStore", ["fetchShareListGood", "fetchShareListView"]),
+    ...mapActions("mainStore", ["fetchShareList"]),
     movePage: function (move) {
       this.$router.push({ name: move });
     },
     more() {
       this.$store.commit("mainStore/SET_PAGE_COUNT", "more");
-      switch (this.getCurrentTab) {
-        case "good":
-          this.fetchShareListGood();
-          break;
-        case "view":
-          this.fetchShareListView();
-          break;
-      }
+      this.fetchShareList(this.getCurrentTab);
     },
 
     getUrl(str){
-      return API_BASE_URL + JSON.parse(str).url
+      return JSON.parse(str).url
     },
 
     timeForToday(value) {
@@ -127,7 +120,9 @@ export default {
   created() {
     window.scrollTo(0, 0);
     //axios하기
-    this.fetchShareListGood();
+    this.$store.commit("mainStore/SET_PAGE_COUNT", "first");
+    this.$store.commit("mainStore/SET_SHARE_ITEMS_RESET");
+    this.fetchShareList('good');
   },
 };
 </script>
@@ -135,5 +130,9 @@ export default {
 <style>
 .main-container {
   margin-top: -40px;
+}
+
+.back-img {
+  background-color: rgb(249, 249, 249);
 }
 </style>
