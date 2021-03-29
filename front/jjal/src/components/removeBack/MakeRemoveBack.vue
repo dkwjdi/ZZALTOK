@@ -4,81 +4,115 @@
       <v-container v-if="isTransfer">
         {{ video.sources.src }}
         <div class="videoContainer" style="margin: auto">
-          <my-video :sources="video.sources" :options="video.options"></my-video>
+          <my-video
+            :sources="video.sources"
+            :options="video.options"
+          ></my-video>
         </div>
       </v-container>
       <v-container v-else style="text-align: center">
-        <div>이 자리에는 사용법이 들어갈거임 그리고 동영상 변환하면 동영상으로 바뀜 이자리</div>
+        <div>
+          이 자리에는 사용법이 들어갈거임 그리고 동영상 변환하면 동영상으로 바뀜
+          이자리
+        </div>
       </v-container>
 
       <div>
-        <FileUpload type="image" v-on:fileUpload="removeBackImgUpload" content="배경 이미지"></FileUpload>
-        <FileUpload type="video" v-on:fileUpload="removeBackVideoUpload" content="배경제거할 동영상"></FileUpload>
+        <FileUpload
+          type="image"
+          v-on:fileUpload="removeBackImgUpload"
+          content="배경 이미지"
+        ></FileUpload>
+        <FileUpload
+          type="video"
+          v-on:fileUpload="removeBackVideoUpload"
+          content="배경제거할 동영상"
+        ></FileUpload>
       </div>
       <div style="text-align: center">
-        <v-btn style="width: 30%" x-large color="primary" @click="transfer"> 변환하기 </v-btn>
+        <div>
+          <input
+            type="checkbox"
+            name="success"
+            value="success"
+            v-model="checkbox"
+            class="mt-2 mb-5"
+          />
+          <span class="agreement-terms ml-2" @click="showAgreement">약관</span
+          >에 동의하십니까?
+          <agreement-to-terms />
+        </div>
+        <v-btn style="width: 30%" x-large color="primary" @click="transfer" :disabled="!checkbox">
+          변환하기
+        </v-btn>
       </div>
       <div style="text-align: center; margin-top: 15px" v-if="btnHide">
-        <ShareAndDownBtn :downloadLink="downloadLink" contentType="video"></ShareAndDownBtn>
+        <ShareAndDownBtn
+          :downloadLink="downloadLink"
+          contentType="video"
+        ></ShareAndDownBtn>
       </div>
     </v-container>
   </div>
 </template>
 
 <script>
-import myVideo from 'vue-video';
-import FileUpload from '@/components/common/FileUpload.vue';
-import ShareAndDownBtn from '@/components/common/ShareAndDownBtn.vue';
-import http from '@/util/http-common.js';
+import myVideo from "vue-video";
+import FileUpload from "@/components/common/FileUpload.vue";
+import ShareAndDownBtn from "@/components/common/ShareAndDownBtn.vue";
+import http from "@/util/http-common.js";
+import AgreementToTerms from "../common/AgreementToTerms.vue";
 
 export default {
-  components: { myVideo, FileUpload, ShareAndDownBtn },
+  components: { myVideo, FileUpload, ShareAndDownBtn, AgreementToTerms },
   data() {
     return {
       isHide: true,
       btnHide: false,
-      removeBackImg: '',
-      removeBackVideo: '',
-      downloadLink: '',
+      removeBackImg: "",
+      removeBackVideo: "",
+      downloadLink: "",
       btnHide: false,
       video: {
         sources: [
           {
-            src: '',
-            type: 'video/mp4',
+            src: "",
+            type: "video/mp4",
           },
         ],
         options: {
           controls: true,
           muted: true,
-          poster: '',
+          poster: "",
           autoplay: true,
         },
       },
+
+      checkbox : false,
     };
   },
 
   methods: {
     async transfer() {
-      console.log('배경교체 변환시작');
+      console.log("배경교체 변환시작");
       let formData = new FormData();
-      formData.append('video', this.removeBackVideo);
-      formData.append('image', this.removeBackImg);
+      formData.append("video", this.removeBackVideo);
+      formData.append("image", this.removeBackImg);
       await http
-        .post('/v1/removeBg', formData)
+        .post("/v1/removeBg", formData)
         .then((response) => {
-          alert('변환완료');
+          alert("변환완료");
           this.downloadLink = response.data.url;
           this.video.sources[0].src = this.downloadLink;
 
-          console.log('성공요');
+          console.log("성공요");
           console.log(this.downloadLink);
           console.log(response);
           this.btnHide = true;
           this.isTransfer = true;
         })
         .catch((error) => {
-          console.log('에러요');
+          console.log("에러요");
           console.log(error);
           console.log(error.response);
         });
@@ -90,6 +124,9 @@ export default {
     removeBackVideoUpload(file) {
       this.removeBackVideo = file;
       console.log(file);
+    },
+    showAgreement() {
+      this.$store.commit("SET_IS_AGREEMENT_TO_TERMS", true);
     },
   },
   computed: {},

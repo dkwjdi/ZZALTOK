@@ -50,8 +50,12 @@
             </v-row>
           </v-container>
 
-          <div style="text-align: center">
-            <v-btn style="width: 30%" x-large :loading="loading" :disabled="loading" color="primary" @click="print"> 변환하기 </v-btn>
+          <div class="text-center">
+            <div>
+              <input type='checkbox' name='success' value='success' v-model="checkbox" class="mt-2 mb-5"/> <span class="agreement-terms" @click="showAgreement">약관</span>에 동의하십니까?
+              <agreement-to-terms/>
+            </div>
+            <v-btn style="width: 30%" x-large :loading="loading" :disabled="!checkbox" color="primary" @click="print"> 변환하기 </v-btn>
             <!-- <v-btn @click="print"> 변환하기</v-btn> -->
           </div>
           <div style="text-align: center; margin-top: 15px" v-if="btnHide">
@@ -74,6 +78,7 @@ import http from '@/util/http-common.js';
 import FileUpload from '@/components/common/FileUpload.vue';
 import ShareAndDownBtn from '@/components/common/ShareAndDownBtn.vue';
 import Swal from 'sweetalert2';
+import AgreementToTerms from '../common/AgreementToTerms.vue';
 
 export default {
   data() {
@@ -95,6 +100,8 @@ export default {
       loader: null,
       loading: false,
       // imgPath: require('@/assets/nineone.png'),
+
+      checkbox : false,
     };
   },
   watch: {
@@ -110,6 +117,7 @@ export default {
   components: {
     FileUpload,
     ShareAndDownBtn,
+    AgreementToTerms,
   },
   methods: {
     originUpload(file) {
@@ -180,6 +188,10 @@ export default {
       //파일 삭제 하기
       // this.$swal('Heading', 'this is a Heading', 'OK');
     },
+
+    showAgreement(){
+      this.$store.commit('SET_IS_AGREEMENT_TO_TERMS', true);
+    },
   },
   computed: {
     extension() {
@@ -195,7 +207,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .hide {
   display: none;
 }
@@ -245,6 +257,11 @@ export default {
   to {
     transform: rotate(360deg);
   }
+}
+
+.agreement-terms {
+  color: blue;
+  cursor: pointer;
 }
 /* 로더 */
 </style>
