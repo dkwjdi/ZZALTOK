@@ -383,6 +383,7 @@ async def count_up_thumbs_up_on_board(
         board_no: int, request: Request
 ):
     ip = request.client.host
+    await db.decrease_view_count(board_no)
     res_check = await check_user_ip_on_good_list(board_no, ip)
 
     if res_check['result'] is None:
