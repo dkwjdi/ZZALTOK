@@ -168,6 +168,7 @@ async def serve_thumbnails(
 ):
     print("Thumbnails 제작 및 호출")
     thumbnail_path: str = os.path.join(config.thumbnail_path, rest_of_path)
+    no_image_path: str = os.path.join(config.image_path, "no_image.png")
 
     # 이미 해당 썸네일이 존재하는 경우. 해당 썸네일 반환
     if os.path.exists(thumbnail_path):
@@ -188,13 +189,15 @@ async def serve_thumbnails(
     global CONTENT_MATCH
     data = CONTENT_MATCH.findall(board_info["content"])
     if not data:
-        return JSONResponse(status_code=400, content={"message": "해당 게시글에 썸네일을 만들 수 있는 리소스가 존재치 않습니다."})
+        return FileResponse(no_image_path)
+        #return JSONResponse(status_code=400, content={"message": "해당 게시글에 썸네일을 만들 수 있는 리소스가 존재치 않습니다."})
 
     print(board_info)
     # create thumbnails
     resource_path = os.path.join(config.root, data[0])
     if not os.path.exists(resource_path):
-        return JSONResponse(status_code=500, content={"message": "서버 내에서 게시글에 있는 리소스 파일을 찾을 수 없습니다."})
+        return FileResponse(no_image_path)
+        #return JSONResponse(status_code=500, content={"message": "서버 내에서 게시글에 있는 리소스 파일을 찾을 수 없습니다."})
     ext = os.path.splitext(resource_path)[-1]
 
     # Image
