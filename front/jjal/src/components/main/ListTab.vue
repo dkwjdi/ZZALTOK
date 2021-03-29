@@ -1,12 +1,12 @@
 <template>
-  <v-tabs>
-    <v-tab style="color: #337ab7" @click="changeTeb('good')">
+  <v-tabs background-color="rgb(249, 249, 249)">
+    <v-tab style="color: #8e8e8e" @click="changeTeb('good')">
       <i class="fas fa-thumbs-up mr-2"></i>추천순</v-tab
     >
-    <v-tab style="color: #337ab7" @click="changeTeb('view')">
+    <v-tab style="color: #8e8e8e" @click="changeTeb('view')">
       <i class="fas fa-eye mr-2"></i>조회순</v-tab
     >
-    <v-tab style="color: #337ab7" @click="changeTeb('new')">
+    <v-tab style="color: #8e8e8e" @click="changeTeb('newest')">
       <i class="fas fa-upload mr-2"></i>최신순</v-tab
     >
   </v-tabs>
@@ -18,20 +18,15 @@ import { mapActions } from "vuex";
 export default {
   data: () => ({}),
   methods: {
-    ...mapActions("mainStore", ["fetchShareListGood", "fetchShareListView"]),
+    ...mapActions("mainStore", [
+      "fetchShareList",
+    ]),
     changeTeb(str) {
       this.$store.commit("mainStore/SET_PAGE_COUNT", "first");
       this.$store.commit("mainStore/SET_CURRENT_TAB", str);
       this.$store.commit("mainStore/SET_SHARE_ITEMS_RESET");
 
-      switch (str) {
-        case "good":
-          this.fetchShareListGood();
-          break;
-        case "view":
-          this.fetchShareListView();
-          break;
-      }
+      this.fetchShareList(str);
     },
   },
 };
