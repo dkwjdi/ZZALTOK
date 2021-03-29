@@ -170,6 +170,30 @@ async def increase_view_count(
         cursor.close()
 
 
+# S04P23D101-91      백엔드 RESTful API 프로토콜 / 게시글 조회수 감소
+async def decrease_view_count(
+        board_no: int
+):
+    cursor = database.cursor()
+    sql = """
+           UPDATE board 
+              SET view_cnt = view_cnt-1
+            WHERE board_no = %s
+          """
+    val = (board_no,)
+    try:
+        cursor = database.cursor()
+        cursor.execute(sql, val)
+        database.commit()
+        return "게시글 조회 감소 성공"
+
+    except Error as e:
+        print(e)
+        return None
+    finally:
+        cursor.close()
+
+
 #  S04P23D101-71        백엔드 RESTful API 프로토콜 / 최근 게시글들 조회(추천순 반영 상위 12개)
 async def find_all_board_on_day_by_newest(
     page_count: int
