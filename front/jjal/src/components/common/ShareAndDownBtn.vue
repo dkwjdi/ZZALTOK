@@ -132,8 +132,8 @@ export default {
       // test , sdf
       http
         .post('/v1/board/write', this.boardWriteInfo)
-        .then((response) => {
-          console.log(response);
+        .then((res) => {
+          this.$router.push(`/shareDetail?no=${res.data.board_no}`);
         })
         .catch((error) => {
           console.log('에러 + 에러내용');
