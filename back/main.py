@@ -445,6 +445,7 @@ async def share_board(
     if result is None:
         return JSONResponse(status_code=400, content={"message": "게시물 작성에 실패했습니다."})
 
+    result["url"] = "/api/v1/share/kakao/" + result["s_board_no"]
     return result
 
 
@@ -454,7 +455,7 @@ async def find_share_board(
 ):
     result = await db.find_share_board_detail_by_board_no(s_board_no)
     if result is None:
-        return JSONResponse(status_code=400, content={"message": "게시물 작성에 실패했습니다."})
+        return JSONResponse(status_code=400, content={"message": "게시물 조회에 실패했습니다."})
 
     return result
 
