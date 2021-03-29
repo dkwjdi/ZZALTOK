@@ -153,4 +153,8 @@ export default {
 #preview img {
   max-width: 100%;
 }
+
+.__cov-contrl-content {
+  z-index: 1;
+}
 </style>
