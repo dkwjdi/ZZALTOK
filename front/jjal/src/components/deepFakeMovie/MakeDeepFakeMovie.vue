@@ -3,7 +3,7 @@
     <v-container>
       <v-container v-if="isTransfer">
         <div class="videoContainer" style="margin: auto">
-          <my-video :sources="video.sources" :options="video.options"></my-video>
+          <my-video style="z-index: -1" :sources="video.sources" :options="video.options"></my-video>
         </div>
       </v-container>
       <v-container v-else style="text-align: center">
