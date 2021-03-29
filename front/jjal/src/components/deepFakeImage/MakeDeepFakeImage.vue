@@ -22,8 +22,8 @@
             </v-row>
           </div>
 
-          <FileUpload type="image" v-on:fileUpload="originUpload" content="배경 사진"></FileUpload>
-          <FileUpload type="image" v-on:fileUpload="targetUpload" content="합성 할 사진"></FileUpload>
+          <FileUpload type="image" v-on:fileUpload="originUpload" v-on:removeImg="removeOriginImg" content="배경 사진"></FileUpload>
+          <FileUpload type="image" v-on:fileUpload="targetUpload" v-on:removeImg="removeTargetImg" content="합성 할 사진"></FileUpload>
 
           <v-container>
             <v-row no-gutters justify="center">
@@ -52,8 +52,9 @@
 
           <div class="text-center">
             <div>
-              <input type='checkbox' name='success' value='success' v-model="checkbox" class="mt-2 mb-5"/> <span class="agreement-terms" @click="showAgreement">약관</span>에 동의하십니까?
-              <agreement-to-terms/>
+              <input type="checkbox" name="success" value="success" v-model="checkbox" class="mt-2 mb-5" />
+              <span class="agreement-terms" @click="showAgreement">약관</span>에 동의하십니까?
+              <agreement-to-terms />
             </div>
             <v-btn style="width: 30%" x-large :loading="loading" :disabled="!checkbox" color="primary" @click="print"> 변환하기 </v-btn>
             <!-- <v-btn @click="print"> 변환하기</v-btn> -->
@@ -101,7 +102,7 @@ export default {
       loading: false,
       // imgPath: require('@/assets/nineone.png'),
 
-      checkbox : false,
+      checkbox: false,
     };
   },
   watch: {
@@ -120,6 +121,12 @@ export default {
     AgreementToTerms,
   },
   methods: {
+    removeOriginImg() {
+      this.file.origin = '';
+    },
+    removeTargetImg() {
+      this.file.target = '';
+    },
     originUpload(file) {
       this.previewImgUrl = URL.createObjectURL(file);
       this.isHide = false;
@@ -136,6 +143,13 @@ export default {
     },
 
     async print() {
+      if (this.file.target == '' || this.file.origin == '') {
+        Swal.fire({
+          icon: 'error',
+          title: '파일이 없어요...',
+        });
+        return;
+      }
       this.loader = 'loading';
       const el = this.$refs.printMe; //캔버스 들고와서
       const options = {
@@ -189,7 +203,7 @@ export default {
       // this.$swal('Heading', 'this is a Heading', 'OK');
     },
 
-    showAgreement(){
+    showAgreement() {
       this.$store.commit('SET_IS_AGREEMENT_TO_TERMS', true);
     },
   },
