@@ -36,7 +36,6 @@ export default {
   props: {
     type: { Type: String }, //image 인지 mp4 인지
     content: { Type: String }, // 박스안에 들어갈 내용 적을 때 사용
-    remove: { Type: Boolean }, //변환하기 누르면 파일 삭제
   },
   methods: {
     // watch: {
@@ -74,6 +73,13 @@ export default {
     },
     removeFile() {
       this.file = '';
+      if (this.type == 'image') {
+        console.log('removeiMG 에밋호출');
+        this.$emit('removeImg'); //파일보내줌!
+      } else if (this.type == 'video') {
+        console.log('removeVideo 에밋호출');
+        this.$emit('removeVideo');
+      }
     },
   },
 };
