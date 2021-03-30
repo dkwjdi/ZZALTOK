@@ -45,7 +45,7 @@ def make_deep_face(args):
 
     if src_points is None or dst_points is None:
         print('Detect 0 Face !!!')
-        exit(-1)
+        # exit(-1)
 
     output = face_swap(src_face, dst_face, src_points, dst_points, dst_shape, dst_img, args)
 
