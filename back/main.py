@@ -23,6 +23,8 @@ if not config.IS_AWS_SERVER:
     from src import startfaceswap as faceswap
     from src import MODNetVideo
 
+import urllib.request as req
+
 app = FastAPI()
 
 
@@ -173,6 +175,11 @@ async def serve_thumbnails(
     # 이미 해당 썸네일이 존재하는 경우. 해당 썸네일 반환
     if os.path.exists(thumbnail_path):
         return FileResponse(thumbnail_path)
+
+    # no_image 파일이 없는 경우 다운로드
+    no_image_url = ""
+    if not os.path.exists(no_image_path):
+        req.urlretrieve(no_image_url, no_image_path)
 
     path, ext = os.path.splitext(thumbnail_path)
     board_no_str = os.path.basename(path)
