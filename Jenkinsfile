@@ -8,7 +8,7 @@ pipeline {
 				script{
 					mattermostSend (
 									color: "#2A42EE", 
-									message: "Build STARTED: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)"
+									message: "빌드 시작: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)"
 					)
 				}
 				sh 'docker build -t base-pjt-back:latest ./back'
@@ -41,7 +41,7 @@ pipeline {
 			script{
 				mattermostSend (
 					color: "good", 
-					message: "Build SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)"
+					message: "빌드 성공: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)"
 				)
 			}
         }
@@ -49,7 +49,7 @@ pipeline {
 			script{
 				mattermostSend (
 					color: "danger", 
-					message: "Build FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)"
+					message: "빌드 실패: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)"
 				)
 			}
         }
