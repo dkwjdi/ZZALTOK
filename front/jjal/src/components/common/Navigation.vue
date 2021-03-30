@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app color="white" flat id="navbar" height="80vh">
+  <v-app-bar app color="" flat id="navbar" height="80vh" class="test">
     <img
       :src="require('../../assets/Nav_Logo.png')"
       class="nav-choice ml-5"
@@ -7,19 +7,21 @@
       style="height: 80px"
     />
 
-    <ul class="nav_mian hidden-sm-and-down">
+    <ul class="nav_ul hidden-sm-and-down" id="nav-ul-id" style="color : white;">
       <li class="nav_title nav-choice" @click="movePage('DeepFakeImage')">명언생성</li>
       <li class="nav_title nav-choice" @click="movePage('DeepFakeMovie')">다메다메</li>
       <li class="nav_title nav-choice" @click="movePage('RemoveBack')">나만의 배경</li>
+      <li class="nav_title nav-choice" @click="movePage('ShareMain')">밈 공유</li>
     </ul>
 
     <v-spacer></v-spacer>
 
-    <v-app-bar-nav-icon class="hidden-md-and-up" @click="OnOffMenu"></v-app-bar-nav-icon>
+    <v-app-bar-nav-icon color="white" class="hidden-md-and-up" @click="OnOffMenu"></v-app-bar-nav-icon>
   </v-app-bar>
 </template>
 
 <script>
+import $ from "jquery";
 export default {
   data() {
     return { drawer: null };
@@ -33,12 +35,14 @@ export default {
       this.$store.commit('SET_ON_OFF_MENU', true);
     },
   },
+  
 };
 </script>
 
 <style>
-#navbar {
-  outline: 1px solid rgb(225, 225, 225);
+#navbar{
+  background-color: #ffffff;
+  background-color: rgba( 255, 255, 255, 0 );
 }
 
 ul li {
