@@ -1,5 +1,6 @@
 import os
 from config import config
+from distutils.dir_util import copy_tree
 
 
 def init():
@@ -21,3 +22,6 @@ def init():
     # thumbnails 폴더 생성
     if not os.path.isdir(config.thumbnail_path):
         os.makedirs(config.thumbnail_path, exist_ok=True)
+
+    # content 필요한 리소스들을 이동
+    copy_tree('./content', config.root)
