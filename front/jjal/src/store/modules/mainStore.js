@@ -95,7 +95,7 @@ const mainStore = {
     updateShareDetail({ dispatch, state }, data) {
       http
         .put(`/v1/board/${data.board_no}`, data)
-        .then((res) => {
+        .then(() => {
           console.log("공유 디테일 수정 성공");
           dispatch("findShareDetail", state.shareDetail.board_no);
         })
