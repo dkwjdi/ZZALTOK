@@ -1,17 +1,15 @@
 <template>
   <div id="container">
+    <div><v-img src="@/assets/banner2.png" alt="" max-width="100%" max-height="300px" /></div>
     <v-container>
       <v-container v-if="isTransfer">
         <div class="videoContainer" style="margin: auto">
           <my-video style="z-index: -1" :sources="video.sources" :options="video.options"></my-video>
         </div>
       </v-container>
-      <v-container v-else style="text-align: center">
-        <div>이 자리에는 사용법이 들어갈거임 그리고 동영상 변환하면 동영상으로 바뀜 이자리</div>
-      </v-container>
 
       <div>
-        <FileUpload type="image" v-on:fileUpload="deepFakeMovieUpload" v-on:removeImg="removeImg" content="다메다메 밈 이미지"></FileUpload>
+        <FileUpload type="image" v-on:fileUpload="deepFakeMovieUpload" v-on:removeImg="removeImg" content="생성할 이미지"></FileUpload>
       </div>
 
       <div style="text-align: center">
@@ -74,7 +72,9 @@ export default {
       if (this.damedameImg == '') {
         Swal.fire({
           icon: 'error',
-          title: '파일이 없어요...',
+          title: '파일이 없습니다',
+          width: 550,
+          height: 30,
         });
         return;
       }

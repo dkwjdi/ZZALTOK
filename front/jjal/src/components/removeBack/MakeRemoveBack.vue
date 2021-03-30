@@ -1,5 +1,6 @@
 <template>
   <div id="container">
+    <div><v-img src="@/assets/banner3.png" alt="" max-width="100%" max-height="300px" /></div>
     <v-container>
       <v-container v-if="isTransfer">
         {{ video.sources.src }}
@@ -7,13 +8,10 @@
           <my-video :sources="video.sources" :options="video.options"></my-video>
         </div>
       </v-container>
-      <v-container v-else style="text-align: center">
-        <div>이 자리에는 사용법이 들어갈거임 그리고 동영상 변환하면 동영상으로 바뀜 이자리</div>
-      </v-container>
 
       <div>
         <FileUpload type="image" v-on:fileUpload="removeBackImgUpload" v-on:removeImg="removeImg" content="배경 이미지"></FileUpload>
-        <FileUpload type="video" v-on:fileUpload="removeBackVideoUpload" v-on:removeVideo="removeVideo" content="배경제거할 동영상"></FileUpload>
+        <FileUpload type="video" v-on:fileUpload="removeBackVideoUpload" v-on:removeVideo="removeVideo" content="배경제거동영상"></FileUpload>
       </div>
       <div style="text-align: center">
         <div>
@@ -107,7 +105,8 @@ export default {
       if (this.removeBackImg == '' || this.removeBackVideo == '') {
         Swal.fire({
           icon: 'error',
-          title: '파일이 없어요...',
+          title: '파일이 없습니다',
+          width: 550,
         });
         return;
       }
