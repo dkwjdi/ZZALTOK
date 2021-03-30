@@ -5,20 +5,27 @@ pipeline {
         stage('Docker build') {
             agent any
             steps {
-                sh 'docker build -t base-pjt-back:latest ./back'
-	    	    sh 'docker build -t base-pjt-front:latest ./front/jjal'
+				script{
+					mattermostSend (
+									color: "#2A42EE", 
+									message: "Build STARTED: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)"
+					)
+				}
+				sh 'docker build -t base-pjt-back:latest ./back'
+				sh 'docker build -t base-pjt-front:latest ./front/jjal'
             }
         }
         stage('Docker Container rm') {
 	        agent any
 	        steps {
-	        
-                sh 'docker ps -f name=base-pjt-back -q | xargs --no-run-if-empty docker container stop'
-                sh 'docker container ls -a -fname=base-pjt-back -q | xargs -r docker container rm'
-		        sh 'docker ps -f name=base-pjt-front -q | xargs --no-run-if-empty docker container stop'
-		        sh 'docker container ls -a -fname=base-pjt-front -q | xargs -r docker container rm'
-                sh 'docker ps -a -f "status=exited" -q | xargs -r docker container rm'
-		        sh 'docker rmi $(docker images -f "dangling=true" -q)'
+				script {
+					sh 'docker ps -f name=base-pjt-back -q | xargs --no-run-if-empty docker container stop'
+					sh 'docker container ls -a -fname=base-pjt-back -q | xargs -r docker container rm'
+					sh 'docker ps -f name=base-pjt-front -q | xargs --no-run-if-empty docker container stop'
+					sh 'docker container ls -a -fname=base-pjt-front -q | xargs -r docker container rm'
+					sh 'docker ps -a -f "status=exited" -q | xargs -r docker container rm'
+					sh 'docker rmi $(docker images -f "dangling=true" -q)'
+				}
 	        }
 	    }
         stage('Docker run') {
@@ -29,4 +36,22 @@ pipeline {
             }
         }
     }
+	post {
+        success {
+			script{
+				mattermostSend (
+					color: "good", 
+					message: "Build SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)"
+				)
+			}
+        }
+        failure {
+			script{
+				mattermostSend (
+					color: "danger", 
+					message: "Build FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)"
+				)
+			}
+        }
+	}
 }
