@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <div>
+      <div><v-img src="@/assets/banner1.png" alt="" max-width="100%" max-height="300px" /></div>
       <div>
         <v-container>
           <div :class="{ hide: isHide }">
@@ -146,7 +147,8 @@ export default {
       if (this.file.target == '' || this.file.origin == '') {
         Swal.fire({
           icon: 'error',
-          title: '파일이 없어요...',
+          title: '파일이 없습니다',
+          width: 550,
         });
         return;
       }
