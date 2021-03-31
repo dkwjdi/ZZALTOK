@@ -37,8 +37,8 @@
           </div>
 
           <v-img v-if="getShareDetail.content_type == 'image'" :src="getShareDetail.url" aspect-ratio="1.6" class="detail-img mt-3"> </v-img>
-          <my-video v-if="getShareDetail.content_type == 'video'" :sources="getVideo()" :options="video.options"></my-video>
-
+          <my-video v-if="getShareDetail.content_type == 'video' && getShareDetail.url" :sources="getVideo()" :options="getOption()"></my-video>
+          <!-- {{ getShareDetail.url }} -->
           <div class="text-main">
             <!-- <div class="mt-5 detail-text">
             <div class="text-h5">제목</div>
@@ -107,14 +107,14 @@ export default {
   data: () => ({
     shareItem: {},
     listItem: [{ title: '수정' }, { title: '삭제' }, { title: '공유' }, { title: 'Download' }],
-    video: {
-      options: {
-        controls: true,
-        muted: true,
-        poster: 'https://ifh.cc/g/fP091M.jpg',
-        autoplay: true,
-      },
-    },
+    // video: {
+    //   options: {
+    //     controls: true,
+    //     muted: true,
+    //     poster: 'https://ifh.cc/g/fP091M.jpg',
+    //     autoplay: true,
+    //   },
+    // },
   }),
   methods: {
     ...mapActions('mainStore', ['findShareDetail', 'updateDetailLike']),
@@ -126,12 +126,31 @@ export default {
         },
       };
     },
+    getOption() {
+      return {
+        options: {
+          controls: true,
+          muted: true,
+          poster: 'https://ifh.cc/g/fP091M.jpg',
+          autoplay: true,
+        },
+      };
+    },
   },
   created() {
     window.scrollTo(0, 0);
     this.findShareDetail(this.$route.query.no);
-  },
+    let btn = document.getElementsByClassName('__cov-contrl-play-btn');
+    console.log(btn[0]);
+    btn[0].click();
 
+    // appbar 관리
+  },
+  mounted() {
+    let btn = document.getElementsByClassName('__cov-contrl-play-btn');
+    console.log(btn[0]);
+    btn[0].click();
+  },
 };
 </script>
 
