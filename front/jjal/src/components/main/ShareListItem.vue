@@ -1,28 +1,34 @@
 <template>
   <v-row class="mt-4" align="center" justify="center">
     <v-col cols="12">
-      <div data-aos="fade-up" data-aos-duration="1000">
-        <div class="figure">
+      <div>
+        <div class="figure" @mouseleave="isOverlay = false">
           <v-img
             :src="thumbnail"
             aspect-ratio="1.6"
-            class="img cur-point"
+            class="cur-point share-img2"
             @click="moveDetail()"
+            @mouseover="isOverlay = true"
           >
-            <div class="img-text">더 보기</div>
+            <div class="img-icon" v-if="content_type=='image'"><i class="fas fa-camera"></i></div>
+            <div class="img-icon" v-if="content_type=='video'"><i class="fas fa-play"></i></i></div>
+            <div class="img-overlay" v-if="isOverlay">
+              <div data-aos="zoom-in" class="overlay-border"> </div>
+            </div>
           </v-img>
         </div>
-        
+
         <div class="ml-1 mt-3">
           <div class="font-weight-bold text-md-body-1">
-            <span class="title-choice" @click="moveDetail()"
-              >{{title}}</span>
+            <span class="title-choice" @click="moveDetail()">{{ title }}</span>
           </div>
           <div class="font-weight-bold like-lookup mt-1">
-            <v-icon small class="mr-1" style="margin-top: -3px">mdi-thumb-up-outline</v-icon>
-            <span>{{good}}</span>
-            <i class="far fa-eye ml-2"></i> <span>{{view_cnt}}</span>
-            <span>&middot;{{regdate}}</span>
+            <v-icon small class="mr-1" style="margin-top: -3px"
+              >mdi-thumb-up-outline</v-icon
+            >
+            <span>{{ good }}</span>
+            <i class="far fa-eye ml-2"></i> <span>{{ view_cnt }}</span>
+            <span>&middot;{{ regdate }}</span>
           </div>
         </div>
       </div>
@@ -34,30 +40,32 @@
 import http from "@/util/http-common.js";
 
 export default {
-  props:{
-        board_no : {Type : Number},
-        title : {Type : String},
-        content : {Type : String},
-        contentType : {Type : String},
-        ip : {Type : String},
-        good : {Type : Number},
-        regdate : {Type : String},
-        imageUrl : {Type : String},
-        view_cnt : {Type : String},
+  props: {
+    board_no: { Type: Number },
+    title: { Type: String },
+    content: { Type: String },
+    content_type: { Type: String },
+    ip: { Type: String },
+    good: { Type: Number },
+    regdate: { Type: String },
+    imageUrl: { Type: String },
+    view_cnt: { Type: String },
   },
   data: () => ({
-    thumbnail : '',
+    thumbnail: "",
+    isOverlay: false,
   }),
   methods: {
     async moveDetail() {
       await this.$store.dispatch("mainStore/findShareDetail", this.board_no);
       this.$router.push(`/shareDetail?no=${this.board_no}`);
     },
-    findThumbnail(){
+    findThumbnail() {
       http
         .get(`/v1/thumbnails/${this.board_no}.png`)
         .then(() => {
-          this.thumbnail = "/api/v1/content/thumbnails/" +this.board_no +".png";
+          this.thumbnail =
+            "/api/v1/content/thumbnails/" + this.board_no + ".png";
         })
         .catch((error) => {
           console.log("에러", error);
@@ -65,7 +73,7 @@ export default {
         });
     },
   },
-  created(){
+  created() {
     this.findThumbnail();
   },
 };
@@ -79,32 +87,6 @@ export default {
   -webkit-transition: all 0.35s ease;
   transition: all 0.35s ease;
 }
-.img {
-  z-index: 1;
-  -webkit-transform: all 0.5s ease;
-  transition: all 0.5s ease;
-  overflow: hidden;
-  border-radius: 4px;
-}
-
-.img:hover {
-  opacity: 0.8;
-  -webkit-transform: scale(1.15);
-  transform: scale(1.15);
-}
-
-.img-text:hover{
-  opacity: 0.8;
-  text-align: center;
-  color: #ffffff;
-}
-
-.img-text {
-  opacity: 0;
-  transform: scale(2);
-  transition: all 0.3s linear;
-  padding-top: 80px;
-}
 
 .title-choice:hover {
   cursor: pointer;
@@ -114,5 +96,59 @@ export default {
 .like-lookup {
   font-size: 13px;
   color: #888888;
+}
+
+.img-overlay {
+  background: rgba(0,0,0,0.3);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  /* 가운데로 보내는 법 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.overlay-icon{
+  color : white;
+}
+/* 
+.img-overlay-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+} */
+
+.share-img2{
+  -webkit-transform: scale(1);
+	transform: scale(1);
+	-webkit-transition: .3s ease-in-out;
+	transition: .3s ease-in-out;
+  border-radius: 4px;
+}
+
+.share-img2:hover{
+	-webkit-transform: scale(1.3);
+	transform: scale(1.3);
+}
+
+.img-icon{
+  float: right;
+  margin-right : 15px;
+  margin-top : 10px;
+  color : white;
+  font-size: 20px;
+  filter: drop-shadow(0 0 .75px rgba(0,0,0,.42)) drop-shadow(0 1px .5px rgba(0,0,0,.18)) drop-shadow(0 2px 3px rgba(0,0,0,.2))
+}
+
+.overlay-border{
+  width: 65%;
+  height: 65%;
+  border : 2px solid white
 }
 </style>
