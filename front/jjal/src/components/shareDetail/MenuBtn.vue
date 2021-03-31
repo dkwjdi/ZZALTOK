@@ -1,6 +1,6 @@
 <template>
   <div class="v-btn--example" style="float: left">
-    <a href="javascript:;" class="kakao-link"> 호우! </a>
+    <!-- <a href="javascript:;" class="kakao-link"> 호우! </a> -->
     <div class="mt-3">
       <v-btn color="indigo" dark fab @click="pwdDialog('update')">
         <v-icon>mdi-pencil</v-icon>
@@ -49,33 +49,27 @@ export default {
       feedSettings: {
         objectType: 'feed',
         content: {
-          title: '청하, CHUNG HA ｜ チョンハ',
-          description:
-            '청하는 대한민국의 가수이다. 2016년 엠넷에서 주관한 서바이벌 프로그램 《프로듀스 101》에 김청하라는 예명으로 출연해 최종순위 11명 중 4위로 프로젝트 걸그룹 아이오아이의 멤버로 데뷔 했으며, 활동을 마친 후 2017년 6월에 솔로로 데뷔했다.',
-          imageUrl:
-            'https://w.namu.la/s/5a218e413a95f08b57a7b18998c294f9a8c18f2447e7e5ec6d369557b876646c8bf998ec5fd20db50eec75cfa5aeb7defb174242ace627c8d73bd90c86f934a98adb426c8a2f3cb512c7a66b69637bf92ce125f3becd127e0ae6aa7429ab11a2c5e5a9af2dd1895ac4aaebd346c8581d',
+          title: this.title,
+          description: this.content,
+          imageUrl: 'https://j4d101.p.ssafy.io/api/v1/content/thumbnails/' + this.board_no + '.png',
           link: {
-            mobileWebUrl: 'http://webruden.tistory.com',
+            mobileWebUrl: `https://j4d101.p.ssafy.io/shareDetail?no=${this.board_no}`,
+            webUrl: `https://j4d101.p.ssafy.io/shareDetail?no=${this.board_no}`,
           },
-        },
-        social: {
-          likeCount: 1234,
-          commentCount: 431,
-          sharedCount: 8493,
-          viewCount: 47298,
-          subscriberCount: 3489,
         },
         buttons: [
           {
             title: '웹으로 이동',
             link: {
-              webUrl: 'http://webruden.tistory.com',
+              webUrl: `https://j4d101.p.ssafy.io/shareDetail?no=${this.board_no}`,
+              mobileWebUrl: `https://j4d101.p.ssafy.io/shareDetail?no=${this.board_no}`,
             },
           },
           {
             title: '앱으로 이동',
             link: {
-              mobileWebUrl: 'https://developers.kakao.com',
+              webUrl: `https://j4d101.p.ssafy.io/shareDetail?no=${this.board_no}`,
+              mobileWebUrl: `https://j4d101.p.ssafy.io/shareDetail?no=${this.board_no}`,
             },
           },
         ],
@@ -107,6 +101,8 @@ export default {
     },
 
     kakaoShare() {
+      this.feedSettings.content.title = this.title;
+      this.feedSettings.content.description = this.content;
       Kakao.Link.sendDefault(this.feedSettings);
     },
 
@@ -178,6 +174,8 @@ export default {
 
   mounted() {
     Kakao.Link.createDefaultButton(Object.assign({}, this.feedSettings, { container: '.kakao-link' }));
+    console.log('여기확인:' + this.feedSettings.content.title);
+    console.log('여기확인:' + this.feedSettings.content.description);
   },
 };
 </script>
