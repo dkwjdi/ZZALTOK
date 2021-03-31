@@ -129,8 +129,9 @@ export default {
   },
   created() {
     window.scrollTo(0, 0);
-    // appbar 관리
+    this.findShareDetail(this.$route.query.no);
   },
+
 };
 </script>
 
