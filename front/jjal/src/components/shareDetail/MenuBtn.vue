@@ -159,15 +159,15 @@ export default {
     down() {
       const download = document.getElementById('downloadDetail');
 
-      if (this.contentType == 'image') {
+      if (this.content_type == 'image') {
         //이미지 일때
         download.setAttribute('download', 'my-photo.jpg');
-      } else if (this.contentType == 'video') {
+      } else {
         //비디오 일 때
         download.setAttribute('download', 'my-video.mp4');
       }
 
-      console.log(download);
+      console.log('콘텐트타입' + this.content_type);
       download.setAttribute('href', this.url); //파일생성
     },
   },
