@@ -7,7 +7,7 @@ import RemoveBack from '@/components/removeBack/MakeRemoveBack.vue';
 import $ from "jquery";
 export default {
   components: { RemoveBack },
-  created(){
+  mounted(){
     // appbar 관리
     console.log("왜 안되지")
     window.scrollTo(0,0);

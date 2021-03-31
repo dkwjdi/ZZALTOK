@@ -9,7 +9,7 @@ import DeepFakeMovie from '@/components/deepFakeMovie/MakeDeepFakeMovie.vue';
 import $ from "jquery";
 export default {
   components: { DeepFakeMovie },
-  created(){
+  mounted(){
         // appbar 관리
     window.scrollTo(0,0);
     $("#nav-ul-id").removeClass("main-bar");
