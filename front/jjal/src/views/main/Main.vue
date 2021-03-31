@@ -12,7 +12,14 @@
                 <span>내가 만든 밈을 공유하고 사람들의 밈을 확인해보세요!</span>
               </div>
               <div>
-                <v-btn class="mt-3" outlined dark large>바로가기</v-btn>
+                <v-btn
+                  class="mt-3"
+                  outlined
+                  dark
+                  large
+                  @click="movePage('ShareMain')"
+                  >바로가기</v-btn
+                >
               </div>
             </div>
           </div>
@@ -26,7 +33,7 @@
           </div>
           <i class="far fa-laugh-squint"></i>
           <div class="mt-3">원하는 인물과 자신의 사진을 합성해보세요!</div>
-          <v-btn class="mt-3" rounded outlined large color="#ff5757"
+          <v-btn class="mt-3" rounded outlined large color="#ff5757" @click="movePage('DeepFakeImage')"
             >바로가기</v-btn
           >
         </div>
@@ -40,7 +47,7 @@
             width="1260px"
             height="950px"
             style="float: right"
-            ><div class="main-img-text hidden-md-and-up">
+            ><div class="main-img-text hidden-lg-and-up">
               <div class="text-xl-h3 text-md-h4 text-h6">
                 <span>얼굴 체인지</span>
               </div>
@@ -48,7 +55,7 @@
                 <span>원하는 인물과 자신의 사진을 합성해보세요!</span>
               </div>
               <div>
-                <v-btn class="mt-3" rounded outlined dark large>바로가기</v-btn>
+                <v-btn class="mt-3" rounded outlined dark large  @click="movePage('DeepFakeImage')">바로가기</v-btn>
               </div>
             </div>
           </v-img>
@@ -67,7 +74,7 @@
             class=""
             width="1260px"
             height="950px"
-            ><div class="main-img-text hidden-md-and-up">
+            ><div class="main-img-text hidden-lg-and-up">
               <div class="text-xl-h3 text-md-h4 text-h6">
                 <span>다메다메 영상</span>
               </div>
@@ -77,7 +84,7 @@
                 >
               </div>
               <div>
-                <v-btn class="mt-3" rounded outlined dark large>바로가기</v-btn>
+                <v-btn class="mt-3" rounded outlined dark large @click="movePage('DeepFakeMovie')">바로가기</v-btn>
               </div>
             </div></v-img
           >
@@ -95,7 +102,7 @@
           <div class="mt-3">
             핫한 다메다메 아저씨 영상에 자신의 얼굴을 넣어보세요!
           </div>
-          <v-btn class="mt-3" rounded outlined large color="#d4bdad"
+          <v-btn class="mt-3" rounded outlined large color="#d4bdad" @click="movePage('DeepFakeMovie')"
             >바로가기</v-btn
           >
         </div>
@@ -107,7 +114,13 @@
             <span>나만의 배경</span>
           </div>
           <div class="mt-3">원하는 동영상에 배경을 바꾸고 싶다면?</div>
-          <v-btn class="mt-3" rounded outlined large color="#fce9b5"
+          <v-btn
+            class="mt-3"
+            rounded
+            outlined
+            large
+            color="#fce9b5"
+            @click="movePage('RemoveBack')"
             >바로가기</v-btn
           >
         </div>
@@ -119,7 +132,7 @@
             :src="require('../../assets/3.png')"
             width="1260px"
             height="950px"
-            ><div class="main-img-text hidden-md-and-up">
+            ><div class="main-img-text hidden-lg-and-up">
               <div class="text-xl-h3 text-md-h4 text-h6">
                 <span>나만의 배경</span>
               </div>
@@ -127,7 +140,7 @@
                 <span>원하는 동영상에 배경을 바꾸고 싶다면?</span>
               </div>
               <div>
-                <v-btn class="mt-3" rounded outlined dark large>바로가기</v-btn>
+                <v-btn class="mt-3" rounded outlined dark large @click="movePage('RemoveBack')">바로가기</v-btn>
               </div>
             </div></v-img
           >
@@ -173,8 +186,9 @@ export default {
   }),
   methods: {
     ...mapActions("mainStore", ["fetchShareList"]),
-    movePage: function (move) {
+    movePage(move) {
       this.$router.push({ name: move });
+      this.$store.commit("SET_ON_OFF_MENU", false);
     },
   },
 
