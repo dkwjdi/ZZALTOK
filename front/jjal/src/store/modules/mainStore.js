@@ -76,8 +76,8 @@ const mainStore = {
     },
 
     //공유 디테일
-    findShareDetail({ commit, dispatch }, no) {
-      http
+    async findShareDetail({ commit, dispatch }, no) {
+      await http
         .get(`/v1/board/detail/${no}`)
         .then((res) => {
           console.log("공유 디테일 불러오기 성공");
