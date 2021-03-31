@@ -45,7 +45,6 @@
             </div>
           </div>
 
-<<<<<<< HEAD
           <v-img
             v-if="getShareDetail.content_type == 'image'"
             :src="getShareDetail.url"
@@ -59,11 +58,6 @@
             :options="video.options"
           ></my-video>
 
-=======
-          <v-img v-if="getShareDetail.content_type == 'image'" :src="getShareDetail.url" aspect-ratio="1.6" class="detail-img mt-3"> </v-img>
-          <my-video v-if="getShareDetail.content_type == 'video' && getShareDetail.url" :sources="getVideo()" :options="getOption()"></my-video>
-          <!-- {{ getShareDetail.url }} -->
->>>>>>> 36aa793fae17cdac9f81f3f4ba2bda3ab3253a61
           <div class="text-main">
             <!-- <div class="mt-5 detail-text">
             <div class="text-h5">제목</div>
@@ -89,14 +83,10 @@
                         <i class="fas fa-thumbs-up fa-lg"></i>
                       </v-btn>
                       <div class="mt-3">
-<<<<<<< HEAD
                         <i class="fas fa-thumbs-up mr-1"></i
                         >{{ getShareDetail.good }}
                         <i class="far fa-eye ml-1"></i>
                         {{ getShareDetail.view_cnt }}
-=======
-                        <i class="fas fa-thumbs-up mr-1"></i>{{ getShareDetail.good }} <i class="far fa-eye ml-1"></i> {{ getShareDetail.view_cnt }}
->>>>>>> 36aa793fae17cdac9f81f3f4ba2bda3ab3253a61
                         <i class="fas fa-comment"></i> {{ getCommentSize }}
                       </div>
 
