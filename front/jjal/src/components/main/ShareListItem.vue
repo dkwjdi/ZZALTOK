@@ -49,7 +49,8 @@ export default {
     thumbnail : '',
   }),
   methods: {
-    moveDetail() {
+    async moveDetail() {
+      await this.$store.dispatch("mainStore/findShareDetail", this.board_no);
       this.$router.push(`/shareDetail?no=${this.board_no}`);
     },
     findThumbnail(){

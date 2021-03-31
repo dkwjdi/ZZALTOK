@@ -1,7 +1,20 @@
 <template>
   <v-container class="main-container back-img" fluid>
     <v-row class="mt-7">
-      <slider />
+      <v-col cols="12" style="padding:0px">
+        <div class="section2 share-img">
+          <div class="share-text-body2">
+            <div data-aos="fade-up" data-aos-duration="2000" class="share-text">
+              <div class="text-xl-h3 text-md-h4 text-h6">
+                <span>나만의 밈 공유</span>
+              </div>
+              <div class="mt-3">
+                <span>내가 만든 밈을 공유하고 사람들의 밈을 확인해보세요!</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </v-col>
       <v-container>
         <v-row>
           <v-col cols="12">
@@ -54,6 +67,7 @@ import ShareListItem from "../../components/main/ShareListItem.vue";
 import { mapGetters, mapActions } from "vuex";
 import Slider from "../../components/main/Slider.vue";
 import ListTab from "../../components/main/ListTab.vue";
+import $ from "jquery";
 
 export default {
   components: { VueSlickCarousel, ShareListItem, Slider, ListTab },
@@ -123,6 +137,14 @@ export default {
     this.$store.commit("mainStore/SET_PAGE_COUNT", "first");
     this.$store.commit("mainStore/SET_SHARE_ITEMS_RESET");
     this.fetchShareList('good');
+
+        console.log("하이")
+    $("#nav-ul-id").removeClass("main-bar");
+    $("#nav-ul-id").addClass("func-bar");
+    $(".nav_ul").css("color", "black");
+    $("#navbar").css("background-color", "#ffffff");
+
+    $(".v-slide-group__content").css("text-align", "center");
   },
 };
 </script>
@@ -130,6 +152,23 @@ export default {
 <style>
 .main-container {
   margin-top: -40px;
+}
+
+.section2 {
+  height: 300px;
+  width: 100vw;
+  display: table;
+  table-layout: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+}
+
+.share-text-body2 {
+  position: absolute;
+  padding-top : 100px;
+  text-align: center;
+  width: 100vw;
 }
 
 .back-img {
