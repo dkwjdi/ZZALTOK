@@ -13,18 +13,18 @@ if not os.path.isdir(config.first_order_model_path):
 if not os.path.isdir(config.dame_path):
     print("다메다메 학습 모델 및 템플릿 다운로드 중 - 오래 걸림", end=' ')
     urllib.request.urlretrieve(
-        "https://github.com/KeepSOBP/dame/releases/download/damesource/damesource.zip" # noqa
-        , filename=os.path.join(config.root, "damesource.zip"))  # noqa
-    with zipfile.ZipFile(os.path.join(config.root, "damesource.zip"), "r") as zip_ref:  # noqa
+        "https://github.com/KeepSOBP/dame/releases/download/damesource/damesource.zip" # NOSONAR
+        , filename=os.path.join(config.root, "damesource.zip"))  # NOSONAR
+    with zipfile.ZipFile(os.path.join(config.root, "damesource.zip"), "r") as zip_ref:  # NOSONAR
         zip_ref.extractall(config.dame_path)
-    os.remove(os.path.join(config.root, "damesource.zip"))  # noqa
+    os.remove(os.path.join(config.root, "damesource.zip"))  # NOSONAR
     print("done")
 
-if not os.path.exists(os.path.join(config.dame_path, "bakamitai_template.mp3")):  # noqa
+if not os.path.exists(os.path.join(config.dame_path, "bakamitai_template.mp3")):  # NOSONAR
     print("다메다메 오디오 리소스 다운로드 중", end=' ')
     urllib.request.urlretrieve(
         "https://github.com/KeepSOBP/dame/releases/download/damesource/bakamitai_template.mp3"
-        , filename=os.path.join(config.dame_path, "bakamitai_template.mp3"))  # noqa
+        , filename=os.path.join(config.dame_path, "bakamitai_template.mp3"))  # NOSONAR
     print("done")
 
 # make damedane
@@ -37,7 +37,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from skimage.transform import resize
 import warnings
-from demo import load_checkpoints, make_animation  # noqa
+from demo import load_checkpoints, make_animation  # noqa # NOSONAR
 from skimage import img_as_ubyte
 
 
@@ -74,7 +74,7 @@ def make_damedame(upload_image_path, output: str = os.path.join(config.video_pat
     print("영상 오디오 소스 추가 및 배속 변경 중", end=' ')
     video.convert3x_faster_video(origin_path, sub_path)
     video.insert_audio_on_video(sub_path,
-                                os.path.join(config.dame_path, "bakamitai_template.mp3"),  # noqa
+                                os.path.join(config.dame_path, "bakamitai_template.mp3"),  # NOSONAR
                                 output)
 
     if os.path.exists(origin_path):

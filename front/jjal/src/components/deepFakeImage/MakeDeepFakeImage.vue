@@ -1,65 +1,75 @@
 <template>
   <v-app>
     <div>
+      <div><v-img src="@/assets/banner1.png" alt="" max-width="100%" max-height="300px" /></div>
       <div>
-        <div :class="{ hide: isHide }">
-          <v-container>
+        <v-container>
+          <div :class="{ hide: isHide }">
             <!-- <img :src="previewImgUrl" alt="" /> -->
-            <v-row no-gutters justify="center" ref="printMe" style="margin-right: 50px; margin-left: 50px">
+            <v-row no-gutters justify="center" style="margin-right: 50px; margin-left: 50px">
               <v-col cols="3"></v-col>
 
-              <v-col> <img :src="previewImgUrl" alt="" style="width: 100%; height: 100%" /> </v-col>
-              <v-col class="font-change" style="background: black; text-align: center">
-                <div style="color: white"><p v-html="OutProverbContent"></p></div>
-                <div style="color: white"><p v-html="OutProverbName"></p></div>
+              <v-col>
+                <v-row no-gutters justify="center" ref="printMe">
+                  <v-col> <img :src="previewImgUrl" alt="" style="width: 100%; height: 100%" /> </v-col>
+                  <v-col class="font-change" style="background: black; text-align: center">
+                    <div style="color: white"><p v-html="OutProverbContent"></p></div>
+                    <div style="color: white"><p v-html="OutProverbName"></p></div>
+                  </v-col>
+                </v-row>
               </v-col>
 
               <v-col cols="3"></v-col>
             </v-row>
+          </div>
+
+          <FileUpload type="image" v-on:fileUpload="originUpload" v-on:removeImg="removeOriginImg" content="배경 사진"></FileUpload>
+          <FileUpload type="image" v-on:fileUpload="targetUpload" v-on:removeImg="removeTargetImg" content="합성 할 사진"></FileUpload>
+
+          <v-container>
+            <v-row no-gutters justify="center">
+              <v-col></v-col>
+              <v-col>
+                명언
+                <textarea
+                  label="명언입력"
+                  hide-details="auto"
+                  v-model="proverb.proverbContent"
+                  style="resize: none; width: 100%; border: 1px solid black"
+                ></textarea>
+              </v-col>
+
+              <v-col></v-col>
+            </v-row>
+            <v-row no-gutters justify="center">
+              <v-col></v-col>
+              <v-col>
+                이름
+                <textarea style="resize: none; width: 100%; border: 1px solid black" label="이름입력" v-model="proverb.proverbName"></textarea>
+              </v-col>
+              <v-col></v-col>
+            </v-row>
           </v-container>
-        </div>
 
-        <FileUpload type="image" v-on:fileUpload="originUpload" content="배경 사진"></FileUpload>
-        <FileUpload type="image" v-on:fileUpload="targetUpload" content="합성 할 사진"></FileUpload>
-
-        <v-container>
-          <v-row no-gutters justify="center">
-            <v-col></v-col>
-            <v-col>
-              명언
-              <textarea
-                label="명언입력"
-                hide-details="auto"
-                v-model="proverb.proverbContent"
-                style="resize: none; width: 100%; border: 1px solid black"
-              ></textarea>
-            </v-col>
-
-            <v-col></v-col>
-          </v-row>
-          <v-row no-gutters justify="center">
-            <v-col></v-col>
-            <v-col>
-              이름
-              <textarea style="resize: none; width: 100%; border: 1px solid black" label="이름입력" v-model="proverb.proverbName"></textarea>
-            </v-col>
-            <v-col></v-col>
-          </v-row>
+          <div class="text-center">
+            <div>
+              <input type="checkbox" name="success" value="success" v-model="checkbox" class="mt-2 mb-5" />
+              <span class="agreement-terms" @click="showAgreement">약관</span>에 동의하십니까?
+              <agreement-to-terms />
+            </div>
+            <v-btn style="width: 30%" x-large :loading="loading" :disabled="!checkbox" color="primary" @click="print"> 변환하기 </v-btn>
+            <!-- <v-btn @click="print"> 변환하기</v-btn> -->
+          </div>
+          <div style="text-align: center; margin-top: 15px" v-if="btnHide">
+            <ShareAndDownBtn :downloadLink="boardWritedownloadLink" contentType="image"></ShareAndDownBtn>
+          </div>
         </v-container>
 
         <!-- <img :src="output" alt="" />  캔버스  -->
 
         <!--  -->
-
-        <v-btn @click="print"> 변환하기</v-btn>
       </div>
-      <div style="text-align: center">
-        <ShareAndDownBtn :downloadLink="boardWritedownloadLink" contentType="image"></ShareAndDownBtn>
 
-        <v-btn>
-          <!-- <a id="downloadPhoto" download="my-photo.jpg" class="button" role="button" @click="down"> Download </a> -->
-        </v-btn>
-      </div>
       <!-- <v-img max-height="100%" max-width="100%" v-if="downloadLink" :src="downloadLink"></v-img> -->
     </div>
   </v-app>
@@ -70,11 +80,13 @@ import http from '@/util/http-common.js';
 import FileUpload from '@/components/common/FileUpload.vue';
 import ShareAndDownBtn from '@/components/common/ShareAndDownBtn.vue';
 import Swal from 'sweetalert2';
+import AgreementToTerms from '../common/AgreementToTerms.vue';
 
 export default {
   data() {
     return {
       isHide: true,
+      btnHide: false,
       previewImgUrl: '',
       downloadLink: '',
       boardWritedownloadLink: '',
@@ -87,14 +99,35 @@ export default {
         origin: '',
         target: '',
       },
+      loader: null,
+      loading: false,
       // imgPath: require('@/assets/nineone.png'),
+
+      checkbox: false,
     };
+  },
+  watch: {
+    loader() {
+      const l = this.loader;
+      this[l] = !this[l];
+
+      setTimeout(() => (this[l] = false), 1500);
+
+      this.loader = null;
+    },
   },
   components: {
     FileUpload,
     ShareAndDownBtn,
+    AgreementToTerms,
   },
   methods: {
+    removeOriginImg() {
+      this.file.origin = '';
+    },
+    removeTargetImg() {
+      this.file.target = '';
+    },
     originUpload(file) {
       this.previewImgUrl = URL.createObjectURL(file);
       this.isHide = false;
@@ -111,6 +144,15 @@ export default {
     },
 
     async print() {
+      if (this.file.target == '' || this.file.origin == '') {
+        Swal.fire({
+          icon: 'error',
+          title: '파일이 없습니다',
+          width: 550,
+        });
+        return;
+      }
+      this.loader = 'loading';
       const el = this.$refs.printMe; //캔버스 들고와서
       const options = {
         type: 'dataURL',
@@ -142,13 +184,13 @@ export default {
           console.log(this.downloadLink);
           console.log('성공 + 다운로드링크');
           console.log(this.downloadLink);
+          this.btnHide = true;
           Swal.fire({
-            title: 'Sweet!',
-            text: 'Modal with a custom image.',
+            title: '변환결과!',
             imageUrl: this.downloadLink,
             imageWidth: 2000,
             imageHeight: 400,
-            width: 1000,
+            width: 800,
 
             imageAlt: 'Custom image',
           });
@@ -161,6 +203,10 @@ export default {
 
       //파일 삭제 하기
       // this.$swal('Heading', 'this is a Heading', 'OK');
+    },
+
+    showAgreement() {
+      this.$store.commit('SET_IS_AGREEMENT_TO_TERMS', true);
     },
   },
   computed: {
@@ -177,7 +223,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .hide {
   display: none;
 }
@@ -191,4 +237,47 @@ export default {
 .swal-wide {
   width: 850px !important;
 }
+/* 로더 */
+.custom-loader {
+  animation: loader 1s infinite;
+  display: flex;
+}
+@-moz-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@-o-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.agreement-terms {
+  color: blue;
+  cursor: pointer;
+}
+/* 로더 */
 </style>

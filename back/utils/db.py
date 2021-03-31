@@ -170,6 +170,78 @@ async def increase_view_count(
         cursor.close()
 
 
+# S04P23D101-91      백엔드 RESTful API 프로토콜 / 게시글 조회수 감소
+async def decrease_view_count(
+        board_no: int
+):
+    cursor = database.cursor()
+    sql = """
+           UPDATE board 
+              SET view_cnt = view_cnt-1
+            WHERE board_no = %s
+          """
+    val = (board_no,)
+    try:
+        cursor = database.cursor()
+        cursor.execute(sql, val)
+        database.commit()
+        return "게시글 조회 감소 성공"
+
+    except Error as e:
+        print(e)
+        return None
+    finally:
+        cursor.close()
+
+
+#  S04P23D101-71        백엔드 RESTful API 프로토콜 / 최근 게시글들 조회(추천순 반영 상위 12개)
+async def find_all_board_on_day_by_newest(
+    page_count: int
+):
+    try:
+        cursor = database.cursor()
+        sql = """
+                SELECT * 
+                  FROM board b
+                 ORDER BY board_no DESC
+                 LIMIT %s, 12;
+               """
+        page_count = (page_count-1) * 12
+        cursor.execute(sql, (page_count,))
+        res = cursor.fetchall()
+        result = []
+        for item in res:
+            spilited_ip = item[6].split('.')
+
+            idx = 0
+            spilited_ip[2] = 'x'
+            spilited_ip[3] = 'x'
+
+            ip = ''
+            for s in spilited_ip:
+                ip += s
+                idx = idx + 1
+                if idx != 4:
+                    ip += '.'
+            result.append({'board_no': item[0],
+                           'title': item[1],
+                           'content': item[2],
+                           'content_type': item[3],
+                           'nickname': item[4],
+                           # 'password' : item[5],
+                           'ip': ip,
+                           'good': item[7],
+                           'regdate': item[8],
+                           'view_cnt': item[9]
+                           })
+        return result
+    except Error as e:
+        print(e)
+        return None
+    finally:
+        cursor.close()
+
+
 #  S04P22D101-63	백엔드 RESTful API 프로토콜 / 최근 게시글들 조회(추천순 반영 상위 12개)
 async def find_all_board_on_day_by_good(
     page_count: int
@@ -325,7 +397,9 @@ async def write_board(
         cursor = database.cursor()
         cursor.execute(sql, val)
         database.commit()
-        return "게시물 작성에 성공했습니다."
+        board_no = cursor.lastrowid
+        return {"message": "게시물 작성에 성공했습니다.",
+                "board_no": board_no}
 
     except Error as e:
         print(e)

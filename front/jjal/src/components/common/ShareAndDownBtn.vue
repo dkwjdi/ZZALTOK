@@ -1,50 +1,62 @@
 <template>
   <div>
-    <v-btn> <a id="downloadPhoto" download="my-photo.jpg" class="button" role="button" @click="down"> 다운로드 </a></v-btn>
-    <v-btn @click="kakaoShare">카카오공유하기</v-btn>
-
-    <template>
-      <v-row justify="center">
-        <v-dialog v-model="dialog" persistent max-width="600px">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark v-bind="attrs" v-on="on"> 게시판 작성하기 </v-btn>
-          </template>
-          <v-card>
-            <v-card-title class="headline">
-              <div class="board_share_title">
-                게시판 작성
-              </div>
-            </v-card-title>
-            <v-card-text>
-              <v-container>
-                <v-row no-gutters>
-                  <v-col cols="6">
-                    <v-text-field outlined label="닉네임*" required v-model="boardWriteInfo.nickname"></v-text-field>
-                  </v-col>
-                  <v-spacer></v-spacer>
-                  <v-col cols="5">
-                    <v-text-field outlined label="비밀번호*" type="password" required v-model="boardWriteInfo.password"></v-text-field>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-text-field outlined label="제목*" required v-model="boardWriteInfo.title"></v-text-field>
-                  </v-col>
-                  <!-- <v-text-field></v-text-field> -->
-                  <v-textarea outlined placeholder="내용입력" v-model="boardWriteInfo.content"></v-textarea>
-                </v-row>
+    <!-- 
+       <v-btn style="width: 30%" x-large :loading="loading" :disabled="loading" color="primary" @click="print"> 변환하기 </v-btn>
+     -->
+    <!-- <v-btn large fab color="primary">
+      <a style="color: white" id="downloadPhoto" download="my-photo.jpg" class="button" role="button" @click="down"
+        ><i class="fas fa-download fa-2x"></i>
+      </a>
+    </v-btn> -->
+    <!-- <v-btn class="x-large"> <a id="downloadPhoto" download="my-photo.jpg" class="button" role="button" @click="down"> 다운로드 </a></v-btn> -->
+    <br /><br />
+    <v-row justify="center">
+      <v-dialog v-model="dialog" persistent max-width="600px">
+        <template v-slot:activator="{ on, attrs }">
+          <!-- <v-btn color="primary" dark v-bind="attrs" v-on="on"> 게시판 작성하기 </v-btn> -->
+          <v-btn class="ma-4" dark v-bind="attrs" v-on="on" large fab color="indigo">
+            <v-icon>mdi-pencil</v-icon>
+          </v-btn>
+          <v-btn class="ma-4" large fab color="primary">
+            <a style="color: white" id="downloadPhoto" download="my-photo.jpg" class="button" role="button" @click="down"
+              ><i class="fas fa-download fa-2x"></i>
+            </a>
+          </v-btn>
+        </template>
+        <v-card>
+          <v-card-title class="headline">
+            <div class="board_share_title">게시판 작성</div>
+          </v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-row no-gutters>
+                <v-col cols="6">
+                  <v-text-field outlined label="닉네임*" required v-model="boardWriteInfo.nickname"></v-text-field>
+                </v-col>
+                <v-spacer></v-spacer>
+                <v-col cols="5">
+                  <v-text-field outlined label="비밀번호*" type="password" required v-model="boardWriteInfo.password"></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                  <v-text-field outlined label="제목*" required v-model="boardWriteInfo.title"></v-text-field>
+                </v-col>
+                <!-- <v-text-field></v-text-field> -->
+                <v-textarea outlined placeholder="내용입력" v-model="boardWriteInfo.content"></v-textarea>
+              </v-row>
               <small style="color: red" class="ml-2">*필수입력항목</small>
-              </v-container>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <div class="mb-3 mr-2">
+            </v-container>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <div class="mb-3 mr-2">
               <v-btn color="blue darken-1" text @click="boardWrite">글쓰기</v-btn>
               <v-btn color="blue darken-1" text @click="dialog = false">취소</v-btn>
-              </div>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-row>
-    </template>
+            </div>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
+    <br />
   </div>
 </template>
 
@@ -69,6 +81,7 @@ export default {
       },
     };
   },
+
   props: {
     downloadLink: { Type: String },
     contentType: { Type: String },
@@ -119,8 +132,8 @@ export default {
       // test , sdf
       http
         .post('/v1/board/write', this.boardWriteInfo)
-        .then((response) => {
-          console.log(response);
+        .then((res) => {
+          this.$router.push(`/shareDetail?no=${res.data.board_no}`);
         })
         .catch((error) => {
           console.log('에러 + 에러내용');
@@ -133,7 +146,7 @@ export default {
 </script>
 
 <style>
-.board_share_title{
+.board_share_title {
   width: 100%;
   text-align: center;
 }

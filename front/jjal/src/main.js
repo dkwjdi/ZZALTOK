@@ -15,6 +15,8 @@ Vue.use(vuetify);
 Vue.config.productionTip = false;
 Vue.AOS = new AOS.init({ disable: 'phone' });
 
+Kakao.init('ddb623655a870366ed7cf4d06b01c92a'); // Kakao init
+
 new Vue({
   router,
   store,

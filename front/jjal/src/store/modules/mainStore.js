@@ -3,9 +3,10 @@ import http from "@/util/http-common.js";
 const mainStore = {
   namespaced: true,
   state: {
-    shareItems: {},
+    shareItems: [],
     shareDetail: {},
     pageCount: 1,
+    currentTab: 'good',
 
     //댓글
     commentItems: {},
@@ -21,6 +22,9 @@ const mainStore = {
     getPageCount(state){
       return state.pageCount;
     },
+    getCurrentTab(state){
+      return state.currentTab;
+    },
     getCommentItems(state) {
       return state.commentItems;
     },
@@ -30,29 +34,39 @@ const mainStore = {
   },
   mutations: {
     SET_SHARE_ITEMS(state, payload) {
-      state.shareItems = payload;
+      for (let i = 0; i < payload.length; i++) {
+        state.shareItems.push(payload[i]);
+      }
     },
+    SET_SHARE_ITEMS_RESET(state) {
+      state.shareItems = [];
+    },
+
     SET_SHARE_DETAIL(state, payload) {
       state.shareDetail = payload;
       state.shareDetail.regdate = state.shareDetail.regdate.replace("T", " ").substr(0, 16);
-      state.shareDetail.url = "http://localhost:8000" + JSON.parse(state.shareDetail.content).url;
+      state.shareDetail.url = JSON.parse(state.shareDetail.content).url;
       state.shareDetail.content = JSON.parse(state.shareDetail.content).content;
     },
     SET_PAGE_COUNT(state, payload){
-      state.pageCount = payload;
+      if(payload == 'first') state.pageCount = 1;
+      else state.pageCount += 1;
     },
     SET_COMMENT_ITEMS(state, payload) {
       state.commentItems = payload;
       state.commentSize = Object.keys(payload).length;
     },
+    SET_CURRENT_TAB(state, payload){
+      state.currentTab = payload;
+    },
   },
   actions: {
-    //공유짤 조회
-    fetchShareList({ commit, state }) {
-      http
-        .get("/v1/board", { params: { page_count: state.pageCount } })
+    //공유짤 조회 추천순
+    async fetchShareList({ commit, state }, str) {
+      await http
+        .get(`/v1/board/${str}`, { params: { page_count: state.pageCount } })
         .then((res) => {
-          console.log("공유 리스트 불러오기 성공");
+          console.log("공유 최신순 불러오기 성공");
           commit("SET_SHARE_ITEMS", res.data.items);
         })
         .catch((error) => {
@@ -62,8 +76,8 @@ const mainStore = {
     },
 
     //공유 디테일
-    findShareDetail({ commit, dispatch }, no) {
-      http
+    async findShareDetail({ commit, dispatch }, no) {
+      await http
         .get(`/v1/board/detail/${no}`)
         .then((res) => {
           console.log("공유 디테일 불러오기 성공");
@@ -81,7 +95,7 @@ const mainStore = {
     updateShareDetail({ dispatch, state }, data) {
       http
         .put(`/v1/board/${data.board_no}`, data)
-        .then((res) => {
+        .then(() => {
           console.log("공유 디테일 수정 성공");
           dispatch("findShareDetail", state.shareDetail.board_no);
         })

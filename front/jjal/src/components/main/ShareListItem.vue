@@ -4,7 +4,7 @@
       <div data-aos="fade-up" data-aos-duration="1000">
         <div class="figure">
           <v-img
-            :src="imageUrl"
+            :src="thumbnail"
             aspect-ratio="1.6"
             class="img cur-point"
             @click="moveDetail()"
@@ -13,15 +13,16 @@
           </v-img>
         </div>
         
-        <div class="ml-1 mt-1">
+        <div class="ml-1 mt-3">
           <div class="font-weight-bold text-md-body-1">
             <span class="title-choice" @click="moveDetail()"
               >{{title}}</span>
           </div>
-          <div class="like-lookup mt-1">
+          <div class="font-weight-bold like-lookup mt-1">
             <v-icon small class="mr-1" style="margin-top: -3px">mdi-thumb-up-outline</v-icon>
             <span>{{good}}</span>
-            <i class="far fa-eye ml-1"></i> <span>100</span>
+            <i class="far fa-eye ml-2"></i> <span>{{view_cnt}}</span>
+            <span>&middot;{{regdate}}</span>
           </div>
         </div>
       </div>
@@ -30,6 +31,8 @@
 </template>
 
 <script>
+import http from "@/util/http-common.js";
+
 export default {
   props:{
         board_no : {Type : Number},
@@ -40,13 +43,30 @@ export default {
         good : {Type : Number},
         regdate : {Type : String},
         imageUrl : {Type : String},
+        view_cnt : {Type : String},
   },
   data: () => ({
+    thumbnail : '',
   }),
   methods: {
-    moveDetail() {
+    async moveDetail() {
+      await this.$store.dispatch("mainStore/findShareDetail", this.board_no);
       this.$router.push(`/shareDetail?no=${this.board_no}`);
     },
+    findThumbnail(){
+      http
+        .get(`/v1/thumbnails/${this.board_no}.png`)
+        .then(() => {
+          this.thumbnail = "/api/v1/content/thumbnails/" +this.board_no +".png";
+        })
+        .catch((error) => {
+          console.log("에러", error);
+          console.log("에러내용", error.response);
+        });
+    },
+  },
+  created(){
+    this.findThumbnail();
   },
 };
 </script>
@@ -73,7 +93,7 @@ export default {
   transform: scale(1.15);
 }
 
-.img:hover .img-text {
+.img-text:hover{
   opacity: 0.8;
   text-align: center;
   color: #ffffff;

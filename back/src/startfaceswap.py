@@ -12,8 +12,8 @@ import sys
 
 sys.path.insert(1, config.face_swap_model_path)  # 딥페이크 프로젝트 레포지토리를 추가하여 import 가능하게 조치
 
-from face_detection import select_face  # noqa
-from face_swap import face_swap  # noqa
+from face_detection import select_face  # noqa # NOSONAR
+from face_swap import face_swap  # noqa # NOSONAR
 
 
 class Arguments:
@@ -45,7 +45,7 @@ def make_deep_face(args):
 
     if src_points is None or dst_points is None:
         print('Detect 0 Face !!!')
-        exit(-1)
+        # exit(-1)
 
     output = face_swap(src_face, dst_face, src_points, dst_points, dst_shape, dst_img, args)
 

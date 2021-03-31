@@ -23,6 +23,7 @@ if not config.IS_AWS_SERVER:
     from src import startfaceswap as faceswap
     from src import MODNetVideo
 
+
 app = FastAPI()
 
 
@@ -32,7 +33,7 @@ app = FastAPI()
 # input : origin위인 사진, target합성할 얼굴 사진
 # output : 합성된 사진 (위인 사진 기준)
 @app.post("/api/v1/deepfake", name="얼굴 합성 딥페이크 서비스")
-async def create_deep_fake_image(origin: UploadFile = File(...), target: UploadFile = File(...)): # noqa
+async def create_deep_fake_image(origin: UploadFile = File(...), target: UploadFile = File(...)):  # NOSONAR
     content_origin = await origin.read()
     ext = origin.filename[origin.filename.rfind('.'):]
     origin.filename = str(uuid.uuid4()).replace('-', '') + ext
@@ -56,11 +57,11 @@ async def create_deep_fake_image(origin: UploadFile = File(...), target: UploadF
     # AWS 서버는 자체적으로 GPU 연산을 할 수 없기에 위임하여 이를 처리
     if config.IS_AWS_SERVER:
         async with httpx.AsyncClient() as client:
-            files = {'origin': (origin.filename, content_origin, "application/octet-stream"), # noqa
-                     'target': (target.filename, content_target, "application/octet-stream")} # noqa
+            files = {'origin': (origin.filename, content_origin, "application/octet-stream"),  # NOSONAR
+                     'target': (target.filename, content_target, "application/octet-stream")}  # NOSONAR
             r = await client.post(config.GPU_SERVER_DOMAIN + "/api/v1/deepfake", files=files, timeout=httpx.Timeout(60.0, connect=5.0))
             if r.status_code != httpx.codes.OK:
-                return JSONResponse(status_code=r.status_code, content={"message": "서버 내에서 위임 작업 중에 문제가 발생하였습니다. " + r.raise_for_status()}) # noqa
+                return JSONResponse(status_code=r.status_code, content={"message": "서버 내에서 위임 작업 중에 문제가 발생하였습니다. " + r.raise_for_status()})  # NOSONAR
             data = json.loads(r.text)
             urllib.request.urlretrieve(
                 config.GPU_SERVER_DOMAIN + data["url"],
@@ -68,14 +69,14 @@ async def create_deep_fake_image(origin: UploadFile = File(...), target: UploadF
     else:
         faceswap.makedeepface(upload_origin_image_path=origin_input, upload_target_image_path=target_input,
                               output=output)
-    return {"url": url.convert_path_to_url(output, base_url="/api/v1/content/")} # noqa
+    return {"url": url.convert_path_to_url(output, base_url="/api/v1/content/")}  # NOSONAR
 
 
 #  S04P22D101-55	백엔드 RESTful API 프로토콜 / 다메다메 짤 생성
 # input : 합성할 얼굴 사진
 # output : 합성된 동영상
 @app.post("/api/v1/damedame", name="다메다메 짤 생성 서비스")
-async def create_dame_meme_video(image: UploadFile = File(...)): # noqa
+async def create_dame_meme_video(image: UploadFile = File(...)):  # NOSONAR
     contents = await image.read()
     image.filename = image.filename.replace(' ', '')
     input_path = os.path.join(config.image_path, image.filename)
@@ -86,24 +87,24 @@ async def create_dame_meme_video(image: UploadFile = File(...)): # noqa
     # AWS 서버는 자체적으로 GPU 연산을 할 수 없기에 위임하여 이를 처리
     if config.IS_AWS_SERVER:
         async with httpx.AsyncClient() as client:
-            files = {'image': (image.filename, contents, "application/octet-stream")} # noqa
+            files = {'image': (image.filename, contents, "application/octet-stream")} # NOSONAR
             r = await client.post(config.GPU_SERVER_DOMAIN + "/api/v1/damedame", files=files, timeout=httpx.Timeout(60.0, connect=5.0))
             if r.status_code != httpx.codes.OK:
-                return JSONResponse(status_code=r.status_code, content={"message": "서버 내에서 위임 작업 중에 문제가 발생하였습니다. " + r.raise_for_status()}) # noqa
+                return JSONResponse(status_code=r.status_code, content={"message": "서버 내에서 위임 작업 중에 문제가 발생하였습니다. " + r.raise_for_status()})  # NOSONAR
             data = json.loads(r.text)
             urllib.request.urlretrieve(
                 config.GPU_SERVER_DOMAIN + data["url"],
                 filename=output_path)
     else:
         dame.make_damedame(upload_image_path=input_path, output=output_path)
-    return {"url": url.convert_path_to_url(output_path, base_url="/api/v1/content/")} # noqa
+    return {"url": url.convert_path_to_url(output_path, base_url="/api/v1/content/")}  # NOSONAR
 
 
 #  S04P22D101-56	백엔드 RESTful API 프로토콜 / 동영상 배경 삭제 및 배경 변경
 # input : 동영상, 배경사진
 # output : 합성된 동영상
 @app.post("/api/v1/removeBg", name="동영상 배경 변경 서비스")
-async def remove_back_ground_on_video(video: UploadFile = File(...), image: UploadFile = File(...)): # noqa
+async def remove_back_ground_on_video(video: UploadFile = File(...), image: UploadFile = File(...)):  # NOSONAR
     print("배경바꾸기 시작합니다")
     image_contents = await image.read()
     ext = image.filename[image.filename.rfind('.'):]
@@ -128,18 +129,18 @@ async def remove_back_ground_on_video(video: UploadFile = File(...), image: Uplo
     # AWS 서버는 자체적으로 GPU 연산을 할 수 없기에 위임하여 이를 처리
     if config.IS_AWS_SERVER:
         async with httpx.AsyncClient() as client:
-            files = {'video': (video.filename, video_contents, "application/octet-stream"), # noqa
-                     'image': (image.filename, image_contents, "application/octet-stream")} # noqa
+            files = {'video': (video.filename, video_contents, "application/octet-stream"),  # NOSONAR
+                     'image': (image.filename, image_contents, "application/octet-stream")}  # NOSONAR
             r = await client.post(config.GPU_SERVER_DOMAIN + "/api/v1/removeBg", files=files, timeout=httpx.Timeout(60.0, connect=5.0))
             if r.status_code != httpx.codes.OK:
-                return JSONResponse(status_code=r.status_code, content={"message": "서버 내에서 위임 작업 중에 문제가 발생하였습니다. " + r.raise_for_status()}) # noqa
+                return JSONResponse(status_code=r.status_code, content={"message": "서버 내에서 위임 작업 중에 문제가 발생하였습니다. " + r.raise_for_status()})  # NOSONAR
             data = json.loads(r.text)
             urllib.request.urlretrieve(
                 config.GPU_SERVER_DOMAIN + data["url"],
                 filename=output_path)
     else:
         MODNetVideo.bgRemove(input_video_path, input_image_path, output_path)
-    return {"url": url.convert_path_to_url(output_path, base_url="/api/v1/content/")} # noqa
+    return {"url": url.convert_path_to_url(output_path, base_url="/api/v1/content/")}  # NOSONAR
 
 
 @app.get("/api/v1/content/{rest_of_path:path}", name="파일 가져오기")
@@ -148,7 +149,7 @@ async def serve_upload_file(rest_of_path: str, download: bool = False):
     file_path = os.path.join(config.root, rest_of_path)
     if os.path.exists(file_path):
         if download:
-            return FileResponse(file_path, media_type="application/octet-stream") # noqa
+            return FileResponse(file_path, media_type="application/octet-stream")  # NOSONAR
         return FileResponse(file_path)
     else:
         return JSONResponse(status_code=400, content={"message": "존재하지 않는 파일입니다."})
@@ -168,6 +169,7 @@ async def serve_thumbnails(
 ):
     print("Thumbnails 제작 및 호출")
     thumbnail_path: str = os.path.join(config.thumbnail_path, rest_of_path)
+    no_image_path: str = os.path.join(config.image_path, "no_image.png")
 
     # 이미 해당 썸네일이 존재하는 경우. 해당 썸네일 반환
     if os.path.exists(thumbnail_path):
@@ -188,13 +190,23 @@ async def serve_thumbnails(
     global CONTENT_MATCH
     data = CONTENT_MATCH.findall(board_info["content"])
     if not data:
-        return JSONResponse(status_code=400, content={"message": "해당 게시글에 썸네일을 만들 수 있는 리소스가 존재치 않습니다."})
+        # no_image_준비
+        image = Image.open(no_image_path)
+        image_resize = image.resize((425, 265))
+        image_resize.save(thumbnail_path)
+        return FileResponse(thumbnail_path)
+        #return JSONResponse(status_code=400, content={"message": "해당 게시글에 썸네일을 만들 수 있는 리소스가 존재치 않습니다."})
 
     print(board_info)
     # create thumbnails
     resource_path = os.path.join(config.root, data[0])
     if not os.path.exists(resource_path):
-        return JSONResponse(status_code=500, content={"message": "서버 내에서 게시글에 있는 리소스 파일을 찾을 수 없습니다."})
+        # no_image_준비
+        image = Image.open(no_image_path)
+        image_resize = image.resize((425, 265))
+        image_resize.save(thumbnail_path)
+        return FileResponse(thumbnail_path)
+        #return JSONResponse(status_code=500, content={"message": "서버 내에서 게시글에 있는 리소스 파일을 찾을 수 없습니다."})
     ext = os.path.splitext(resource_path)[-1]
 
     # Image
@@ -202,7 +214,7 @@ async def serve_thumbnails(
         try:
             # if os.path.isfile(image_path) is False:
             image = Image.open(resource_path)
-            image_resize = image.resize((240, 136))
+            image_resize = image.resize((425, 265))
             image_resize.save(thumbnail_path)
             return FileResponse(thumbnail_path)
         except IOError:
@@ -215,7 +227,7 @@ async def serve_thumbnails(
             # if os.path.isfile(output) is False:
             video.create_video_thumbnail(input_video_path=resource_path, output_image_path=mid_image)
             image = Image.open(mid_image)
-            image_resize = image.resize((240, 136))
+            image_resize = image.resize((425, 265))
             image_resize.save(thumbnail_path)
             os.remove(mid_image)
             return FileResponse(thumbnail_path)
@@ -231,7 +243,7 @@ async def serve_thumbnails(
 # 여기부터 게시글 기능 시작 ###
 
 #  S04P22D101-63	백엔드 RESTful API 프로토콜 / 최근 게시글들 조회(추천순 반영)
-@app.get("/api/v1/board/good", name="전체 게시글 조회(24시간 내, 추천순)")
+@app.get("/api/v1/board/good", name="전체 게시글 조회(24시간 내, 좋아요 많은 순)")
 async def find_all_board_on_day_by_good(
         page_count: int
 ):
@@ -242,11 +254,22 @@ async def find_all_board_on_day_by_good(
 
 
 #  S04P22D101-63	백엔드 RESTful API 프로토콜 / 최근 게시글들 조회(추천순 반영)
-@app.get("/api/v1/board/view", name="전체 게시글 조회(24시간 내, 추천순)")
+@app.get("/api/v1/board/view", name="전체 게시글 조회(24시간 내, 조회많은 순)")
 async def find_all_board_on_day_by_view(
         page_count: int
 ):
     result = await db.find_all_board_on_day_by_view(page_count)
+    if result is None:
+        return JSONResponse(status_code=400, content={"message": "조회수 기준 게시글 조회에 실패하였습니다."})
+    return {"items": result}
+
+
+#  S04P23D101-71	백엔드 RESTful API 프로토콜 / 최근 게시글들 조회(추천순 반영)
+@app.get("/api/v1/board/newest", name="전체 게시글 조회(24시간 내, 최신 순)")
+async def find_all_board_on_day_by_board_no(
+        page_count: int
+):
+    result = await db.find_all_board_on_day_by_newest(page_count)
     if result is None:
         return JSONResponse(status_code=400, content={"message": "조회수 기준 게시글 조회에 실패하였습니다."})
     return {"items": result}
@@ -327,7 +350,7 @@ async def edit_board(
             return JSONResponse(status_code=400, content={"message": "게시물 수정에 실패했습니다."})
         return result
     else:
-        return JSONResponse(status_code=400, content={"message": "비밀번호가 일치하지 않습니다."}) # noqa
+        return JSONResponse(status_code=400, content={"message": "비밀번호가 일치하지 않습니다."})  # NOSONAR
 
 
 #  S04P22D101-60	백엔드 RESTful API 프로토콜 / 게시글 삭제
@@ -350,7 +373,7 @@ async def delete_board(
             return JSONResponse(status_code=400, content={"message": "게시물 삭제에 실패했습니다."})
         return result
     else:
-        return JSONResponse(status_code=400, content={"message": "비밀번호가 일치하지 않습니다."}) # noqa
+        return JSONResponse(status_code=400, content={"message": "비밀번호가 일치하지 않습니다."})  # NOSONAR
 
 
 #  S04P22D101-62	백엔드 RESTful API 프로토콜 / 게시글 추천(좋아요 기능)
@@ -361,33 +384,34 @@ async def count_up_thumbs_up_on_board(
         board_no: int, request: Request
 ):
     ip = request.client.host
+    await db.decrease_view_count(board_no)
     res_check = await check_user_ip_on_good_list(board_no, ip)
 
     if res_check['result'] is None:
-        return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."}) # noqa
+        return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})  # NOSONAR
 
     # 존재했으면 이미 누른 상태이므로 -1
     if res_check['result']:
         count_result = await db.count_down_thumbs_up_on_board(board_no)
         if count_result is None:
-            return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."}) # noqa
+            return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})  # NOSONAR
 
         delete_result = await db.delete_user_ip_on_good_list(board_no, ip)
         if delete_result is None:
             await db.count_up_thumbs_up_on_board(board_no)
-            return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."}) # noqa
+            return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})  # NOSONAR
         return "좋아요 취소"
 
     # 존재하지 않았음 좋아요+1
     else:
         count_result = await db.count_up_thumbs_up_on_board(board_no)
         if count_result is None:
-            return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."}) # noqa
+            return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})  # NOSONAR
         insert_result = await db.insert_user_ip_on_good_list(board_no, ip)
 
         if insert_result is None:
             await db.count_down_thumbs_up_on_board(board_no)
-            return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."}) # noqa
+            return JSONResponse(status_code=400, content={"message": "작업중 에러가 발생했습니다."})  # NOSONAR
         return "좋아요!"
 
 
@@ -423,6 +447,7 @@ async def share_board(
     if result is None:
         return JSONResponse(status_code=400, content={"message": "게시물 작성에 실패했습니다."})
 
+    result["url"] = "/api/v1/share/kakao/" + result["s_board_no"]
     return result
 
 
@@ -432,7 +457,7 @@ async def find_share_board(
 ):
     result = await db.find_share_board_detail_by_board_no(s_board_no)
     if result is None:
-        return JSONResponse(status_code=400, content={"message": "게시물 작성에 실패했습니다."})
+        return JSONResponse(status_code=400, content={"message": "게시물 조회에 실패했습니다."})
 
     return result
 
@@ -500,7 +525,7 @@ async def delete_comment(
             return JSONResponse(status_code=400, content={"message": "댓글 삭제에 실패했습니다."})
         return result
     else:
-        return JSONResponse(status_code=400, content={"message": "비밀번호가 일치하지 않습니다."}) # noqa
+        return JSONResponse(status_code=400, content={"message": "비밀번호가 일치하지 않습니다."})  # NOSONAR
 
 
 #  S04P22D101-66     백엔드 RESTful API 프로토콜 / 댓글 수정
@@ -526,7 +551,7 @@ async def edit_comment(
             return JSONResponse(status_code=400, content={"message": "댓글 수정에 실패했습니다."})
         return result
     else:
-        return JSONResponse(status_code=400, content={"message": "비밀번호가 일치하지 않습니다."}) # noqa
+        return JSONResponse(status_code=400, content={"message": "비밀번호가 일치하지 않습니다."})  # NOSONAR
 
 
 #  S04P22D101-85     백엔드 RESTful API 프로토콜 / 게시글 비밀번호 체크
@@ -563,7 +588,7 @@ async def create_upload_files(file: UploadFile = File(...)):
     path = os.path.join(config.upload_path, filename)
     with open(path, "wb") as fp:
         fp.write(contents)
-    return {"url": url.convert_path_to_url(path, base_url="/api/v1/content/")} # noqa
+    return {"url": url.convert_path_to_url(path, base_url="/api/v1/content/")}  # NOSONAR
 
 
 # 데모 코드
