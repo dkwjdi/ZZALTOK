@@ -35,7 +35,7 @@
               :board_no="item.board_no"
               :title="item.title"
               :content="item.content"
-              :contentType="item.contentType"
+              :content_type="item.content_type"
               :ip="item.ip"
               :good="item.good"
               :regdate="timeForToday(item.regdate)"
@@ -137,15 +137,16 @@ export default {
     this.$store.commit("mainStore/SET_PAGE_COUNT", "first");
     this.$store.commit("mainStore/SET_SHARE_ITEMS_RESET");
     this.fetchShareList('good');
-
-        console.log("하이")
+  },
+  
+  mounted(){
     $("#nav-ul-id").removeClass("main-bar");
     $("#nav-ul-id").addClass("func-bar");
     $(".nav_ul").css("color", "black");
     $("#navbar").css("background-color", "#ffffff");
 
     $(".v-slide-group__content").css("text-align", "center");
-  },
+  }
 };
 </script>
 
