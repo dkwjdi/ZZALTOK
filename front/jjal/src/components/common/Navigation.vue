@@ -7,8 +7,8 @@
       style="height: 80px"
     />
 
-    <ul class="nav_ul hidden-sm-and-down" id="nav-ul-id" style="color : white;">
-      <li class="nav_title nav-choice" @click="movePage('DeepFakeImage')">명언생성</li>
+    <ul class="nav_ul hidden-sm-and-down main-bar" id="nav-ul-id">
+      <li class="nav_title nav-choice" @click="movePage('DeepFakeImage')">얼굴 체인지</li>
       <li class="nav_title nav-choice" @click="movePage('DeepFakeMovie')">다메다메</li>
       <li class="nav_title nav-choice" @click="movePage('RemoveBack')">나만의 배경</li>
       <li class="nav_title nav-choice" @click="movePage('ShareMain')">밈 공유</li>
@@ -16,12 +16,11 @@
 
     <v-spacer></v-spacer>
 
-    <v-app-bar-nav-icon color="white" class="hidden-md-and-up" @click="OnOffMenu"></v-app-bar-nav-icon>
+    <v-app-bar-nav-icon class="hidden-md-and-up menu-bar" @click="OnOffMenu"></v-app-bar-nav-icon>
   </v-app-bar>
 </template>
 
 <script>
-import $ from "jquery";
 export default {
   data() {
     return { drawer: null };

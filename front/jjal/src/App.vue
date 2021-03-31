@@ -25,12 +25,12 @@ export default {
       // 메인페이지 클래스 존재할 시
       if ($('#nav-ul-id').hasClass("main-bar")) {
         if ($(document).scrollTop() > 980) {
-          console.log("메인페이지 980이상");
+          // console.log("메인페이지 980이상");
           $(".nav_ul").css("color", "black");
           $("#navbar").css("background-color", "#ffffff");
           $('.v-toolbar__content').css('box-shadow','0 0 6px 2px rgb(0 0 0 / 16%)');
         } else {
-          console.log("메인페이지 밈 공유");
+          // console.log("메인페이지 밈 공유");
           $('.v-toolbar__content').css('box-shadow','');
           $("#navbar").css("background-color", "rgba( 255, 255, 255, 0 )");
           $(".nav_ul").css("color", "white");
