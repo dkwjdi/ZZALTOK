@@ -22,6 +22,7 @@
             large
             fab
             color="indigo"
+            @click="changeZIndex()"
           >
             <v-icon>mdi-pencil</v-icon>
           </v-btn>
@@ -125,8 +126,12 @@ export default {
     contentType: { Type: String },
   },
   methods: {
-    aClick(){
-      document.getElementById('downloadPhoto').click();
+    changeZIndex() {
+      console.log(document.getElementsByClassName("__cov-contrl-content"));
+      document.getElementsByClassName("__cov-contrl-content")[0].style.zIndex = 1;
+    },
+    aClick() {
+      document.getElementById("downloadPhoto").click();
     },
     kakaoShare() {
       console.log("카카오 공유하기");
