@@ -127,7 +127,6 @@ export default {
   },
   methods: {
     changeZIndex() {
-      console.log(document.getElementsByClassName("__cov-contrl-content"));
       document.getElementsByClassName("__cov-contrl-content")[0].style.zIndex = 1;
     },
     aClick() {
