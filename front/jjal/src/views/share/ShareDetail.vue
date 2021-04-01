@@ -15,7 +15,12 @@
           />
 
           <div class="pt-3 pl-2">
-            <v-avatar color="indigo" size="53" style="float: left" class="mr-3 mt-1">
+            <v-avatar
+              color="indigo"
+              size="53"
+              style="float: left"
+              class="mr-3 mt-1"
+            >
               <v-icon dark> mdi-account-circle </v-icon>
             </v-avatar>
             <div style="padding-top: -10px">
@@ -24,13 +29,25 @@
               </div>
               <div class="subtitle-2">
                 <span>{{ getShareDetail.nickname }} </span>
-                <span style="font-size: 12px; color: #888888">({{ getShareDetail.ip }})</span>
+                <span style="font-size: 12px; color: #888888"
+                  >({{ getShareDetail.ip }})</span
+                >
               </div>
             </div>
           </div>
 
-          <v-img v-if="getShareDetail.content_type == 'image'" :src="getShareDetail.url" aspect-ratio="1.6" class="detail-img mt-3"> </v-img>
-          <my-video v-if="getShareDetail.content_type == 'video'" :sources="getVideo()" :options="getOption()"></my-video>
+          <v-img
+            v-if="getShareDetail.content_type == 'image'"
+            :src="getShareDetail.url"
+            aspect-ratio="1.6"
+            class="detail-img mt-3"
+          >
+          </v-img>
+          <my-video
+            v-if="getShareDetail.content_type == 'video'"
+            :sources="getVideo()"
+            :options="getOption()"
+          ></my-video>
 
           <div class="text-main">
             <!-- <div class="mt-5 detail-text">
@@ -47,17 +64,26 @@
                     <div class="pt-5 pl-5">{{ getShareDetail.content }}</div>
 
                     <div class="text-center mt-10">
-                      <v-btn color="indigo" fab large dark @click="updateDetailLike(getShareDetail.board_no)">
+                      <v-btn
+                        color="indigo"
+                        fab
+                        large
+                        dark
+                        @click="updateDetailLike(getShareDetail.board_no)"
+                      >
                         <i class="fas fa-thumbs-up fa-lg"></i>
                       </v-btn>
                       <div class="mt-3">
-                        <i class="fas fa-thumbs-up mr-1"></i>{{ getShareDetail.good }}
+                        <i class="fas fa-thumbs-up mr-1"></i
+                        >{{ getShareDetail.good }}
                         <i class="far fa-eye ml-1"></i>
                         {{ getShareDetail.view_cnt }}
                         <i class="fas fa-comment"></i> {{ getCommentSize }}
                       </div>
 
-                      <div class="mt-2">게시일 : {{ getShareDetail.regdate }}</div>
+                      <div class="mt-2">
+                        게시일 : {{ getShareDetail.regdate }}
+                      </div>
                     </div>
                   </v-col>
                 </v-row>
@@ -99,7 +125,7 @@ export default {
   components: { CommentList, MenuBtn, myVideo, DotMenu },
 
   computed: {
-    ...mapGetters('mainStore', ['getShareDetail', 'getCommentSize']),
+    ...mapGetters("mainStore", ["getShareDetail", "getCommentSize"]),
   },
   data: () => ({
     shareItem: {},
@@ -113,12 +139,12 @@ export default {
     // },
   }),
   methods: {
-    ...mapActions('mainStore', ['findShareDetail', 'updateDetailLike']),
+    ...mapActions("mainStore", ["findShareDetail", "updateDetailLike"]),
     getVideo() {
       return {
         sources: {
           src: this.getShareDetail.url,
-          type: 'video/mp4',
+          type: "video/mp4",
         },
       };
     },
@@ -127,7 +153,7 @@ export default {
         options: {
           controls: true,
           muted: true,
-          poster: '',
+          poster: "",
           autoplay: true,
         },
       };
@@ -135,18 +161,16 @@ export default {
   },
   created() {
     window.scrollTo(0, 0);
-    if(this.getShareDetail.board_no == undefined) this.findShareDetail(this.$route.query.no);
+    if (this.getShareDetail.board_no == undefined)
+      this.findShareDetail(this.$route.query.no);
   },
   mounted() {
     // appbar 관리
-    $('#nav-ul-id').removeClass('main-bar');
-    $('#nav-ul-id').addClass('func-bar');
-    $('.nav_ul').css('color', 'black');
-    $('#navbar').css('background-color', '#ffffff');
-
-    let btn = document.getElementsByClassName('__cov-contrl-play-btn');
-    console.log(btn[0]);
-    btn[0].click();
+    $("#nav-ul-id").removeClass("main-bar");
+    $("#nav-ul-id").addClass("func-bar");
+    $(".nav_ul").css("color", "black");
+    $("#navbar").css("background-color", "#ffffff");
+    document.getElementsByClassName("__cov-contrl-content")[0].style.zIndex = 1;
   },
 };
 </script>
