@@ -66,13 +66,13 @@ export default {
       let msg = '';
 
       !this.item.nickname &&
-        ((msg = '작성자를 입력해주세요'), (err = false), this.$refs.nickName.focus());
+        ((msg = '작성자를 입력해주세요'), (err = false));
       err &&
         !this.item.password &&
-        ((msg = '비밀번호를 입력해주세요'), (err = false), this.$refs.password.focus());
+        ((msg = '비밀번호를 입력해주세요'), (err = false));
       err &&
         !this.item.content &&
-        ((msg = '내용을 입력해주세요'), (err = false), this.$refs.content.focus());
+        ((msg = '내용을 입력해주세요'), (err = false));
 
       if (!err) alert(msg);
       else this.type == 'create' ? this.createHandler() : this.updateHandler();
