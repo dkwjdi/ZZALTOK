@@ -25,7 +25,7 @@
           >
             <v-icon>mdi-pencil</v-icon>
           </v-btn>
-          <v-btn class="ma-4" large fab color="primary">
+          <v-btn class="ma-4" large fab color="primary" @click="aClick">
             <a
               style="color: white"
               id="downloadPhoto"
@@ -125,6 +125,9 @@ export default {
     contentType: { Type: String },
   },
   methods: {
+    aClick(){
+      document.getElementById('downloadPhoto').click();
+    },
     kakaoShare() {
       console.log("카카오 공유하기");
       this.kakaoShareInfo.content = `{"url":"${this.downloadLink}"}`;

@@ -231,12 +231,6 @@ export default {
   font-family: 'Yeon Sung', cursive;
   font-size: 2rem;
 }
-.swal2-popup {
-  font-size: 1.6rem !important;
-}
-.swal-wide {
-  width: 850px !important;
-}
 /* 로더 */
 .custom-loader {
   animation: loader 1s infinite;

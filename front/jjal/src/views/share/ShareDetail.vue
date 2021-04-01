@@ -5,23 +5,14 @@
       <v-col cols="12" md="8">
         <div class="box-shadow">
           <!-- 메뉴 -->
-          <div class="hidden-md-and-up" style="float: right">
-            <v-menu bottom left>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn icon v-bind="attrs" v-on="on" class="mt-5 mr-1">
-                  <v-icon>mdi-dots-vertical</v-icon>
-                </v-btn>
-              </template>
-
-              <v-list>
-                <v-list-item v-for="(item, i) in listItem" :key="i">
-                  <v-list-item-title class="menu-choice">{{
-                    item.title
-                  }}</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </div>
+          <dot-menu
+            :board_no="getShareDetail.board_no"
+            :title="getShareDetail.title"
+            :content="getShareDetail.content"
+            :url="getShareDetail.url"
+            :content_type="getShareDetail.content_type"
+            :nickname="getShareDetail.nickname"
+          />
 
           <div class="pt-3 pl-2">
             <v-avatar
@@ -126,18 +117,18 @@
 import CommentList from "../../components/shareDetail/CommentList.vue";
 import { mapGetters, mapActions } from "vuex";
 import MenuBtn from "../../components/shareDetail/MenuBtn.vue";
+import DotMenu from "../../components/shareDetail/DotMenu.vue";
 import myVideo from "vue-video";
 import $ from "jquery";
 
 export default {
-  components: { CommentList, MenuBtn, myVideo },
+  components: { CommentList, MenuBtn, myVideo, DotMenu },
 
   computed: {
     ...mapGetters("mainStore", ["getShareDetail", "getCommentSize"]),
   },
   data: () => ({
     shareItem: {},
-    listItem: [{ title: '수정' }, { title: '삭제' }, { title: '공유' }, { title: 'Download' }],
     // video: {
     //   options: {
     //     controls: true,
@@ -162,7 +153,7 @@ export default {
         options: {
           controls: true,
           muted: true,
-          poster: 'https://ifh.cc/g/fP091M.jpg',
+          poster: "https://ifh.cc/g/fP091M.jpg",
           autoplay: true,
         },
       };
@@ -170,10 +161,7 @@ export default {
   },
   created() {
     window.scrollTo(0, 0);
-    this.findShareDetail(this.$route.query.no);
-    let btn = document.getElementsByClassName('__cov-contrl-play-btn');
-    console.log(btn[0]);
-    btn[0].click();
+    if(this.getShareDetail.board_no == undefined) this.findShareDetail(this.$route.query.no);
   },
   mounted() {
     // appbar 관리

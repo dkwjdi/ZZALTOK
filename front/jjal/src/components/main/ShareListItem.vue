@@ -11,7 +11,7 @@
             @mouseover="isOverlay = true"
           >
             <div class="img-icon" v-if="content_type=='image'"><i class="fas fa-camera"></i></div>
-            <div class="img-icon" v-if="content_type=='video'"><i class="fas fa-play"></i></i></div>
+            <div class="img-icon" v-if="content_type=='video'"><i class="fas fa-play"></i></div>
             <div class="img-overlay" v-if="isOverlay">
               <div data-aos="zoom-in" class="overlay-border"> </div>
             </div>
@@ -56,9 +56,18 @@ export default {
     isOverlay: false,
   }),
   methods: {
-    async moveDetail() {
-      await this.$store.dispatch("mainStore/findShareDetail", this.board_no);
-      this.$router.push(`/shareDetail?no=${this.board_no}`);
+    moveDetail() {
+      this.$store
+        .dispatch("mainStore/findShareDetail", this.board_no)
+        .then((res) => {
+          console.log("이동합니다");
+          this.$store.commit('mainStore/SET_IS_SHARE_DETAIL_VIEW', true);
+          this.$router.push(`/shareDetail?no=${res}`);
+        })
+        .catch((error) => {
+          console.log("에러", error);
+          console.log("에러내용", error.response);
+        });
     },
     findThumbnail() {
       http
@@ -99,7 +108,7 @@ export default {
 }
 
 .img-overlay {
-  background: rgba(0,0,0,0.3);
+  background: rgba(0, 0, 0, 0.3);
   width: 100%;
   height: 100%;
   position: absolute;
@@ -112,8 +121,8 @@ export default {
   align-items: center;
 }
 
-.overlay-icon{
-  color : white;
+.overlay-icon {
+  color: white;
 }
 /* 
 .img-overlay-text {
@@ -124,31 +133,33 @@ export default {
   color: white;
 } */
 
-.share-img2{
+.share-img2 {
   -webkit-transform: scale(1);
-	transform: scale(1);
-	-webkit-transition: .3s ease-in-out;
-	transition: .3s ease-in-out;
+  transform: scale(1);
+  -webkit-transition: 0.3s ease-in-out;
+  transition: 0.3s ease-in-out;
   border-radius: 4px;
 }
 
-.share-img2:hover{
-	-webkit-transform: scale(1.3);
-	transform: scale(1.3);
+.share-img2:hover {
+  -webkit-transform: scale(1.3);
+  transform: scale(1.3);
 }
 
-.img-icon{
+.img-icon {
   float: right;
-  margin-right : 15px;
-  margin-top : 10px;
-  color : white;
+  margin-right: 15px;
+  margin-top: 10px;
+  color: white;
   font-size: 20px;
-  filter: drop-shadow(0 0 .75px rgba(0,0,0,.42)) drop-shadow(0 1px .5px rgba(0,0,0,.18)) drop-shadow(0 2px 3px rgba(0,0,0,.2))
+  filter: drop-shadow(0 0 0.75px rgba(0, 0, 0, 0.42))
+    drop-shadow(0 1px 0.5px rgba(0, 0, 0, 0.18))
+    drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
 }
 
-.overlay-border{
+.overlay-border {
   width: 65%;
   height: 65%;
-  border : 2px solid white
+  border: 2px solid white;
 }
 </style>

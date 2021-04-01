@@ -5,6 +5,7 @@ const mainStore = {
   state: {
     shareItems: [],
     shareDetail: {},
+    isShareDetailView: false,
     pageCount: 1,
     currentTab: 'good',
 
@@ -18,6 +19,9 @@ const mainStore = {
     },
     getShareDetail(state) {
       return state.shareDetail;
+    },
+    getIsShareDetailView(state){
+      return state.isShareDetailView;
     },
     getPageCount(state){
       return state.pageCount;
@@ -48,6 +52,10 @@ const mainStore = {
       state.shareDetail.url = JSON.parse(state.shareDetail.content).url;
       state.shareDetail.content = JSON.parse(state.shareDetail.content).content;
     },
+
+    SET_IS_SHARE_DETAIL_VIEW(state, payload){
+      state.isShareDetailView = payload;
+    },
     SET_PAGE_COUNT(state, payload){
       if(payload == 'first') state.pageCount = 1;
       else state.pageCount += 1;
@@ -77,18 +85,21 @@ const mainStore = {
 
     //공유 디테일
     async findShareDetail({ commit, dispatch }, no) {
+      let board_no = 0;
       await http
         .get(`/v1/board/detail/${no}`)
         .then((res) => {
           console.log("공유 디테일 불러오기 성공");
           commit("SET_SHARE_DETAIL", res.data);
-
           dispatch("fetchCommentList", res.data.board_no);
+          board_no = res.data.board_no;
         })
         .catch((error) => {
           console.log("에러", error);
           console.log("에러내용", error.response);
         });
+        
+        return board_no;
     },
 
     //게시물 수정
