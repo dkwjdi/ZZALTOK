@@ -7,7 +7,7 @@
       style="height: 80px"
     />
 
-    <ul class="nav_ul hidden-sm-and-down main-bar" id="nav-ul-id">
+    <ul class="nav_ul hidden-sm-and-down main-bar" id="nav-ul-id" style="color:white">
       <li class="nav_title nav-choice" @click="movePage('DeepFakeImage')">얼굴 체인지</li>
       <li class="nav_title nav-choice" @click="movePage('DeepFakeMovie')">다메다메</li>
       <li class="nav_title nav-choice" @click="movePage('RemoveBack')">나만의 배경</li>
