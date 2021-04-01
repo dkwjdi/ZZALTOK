@@ -16,12 +16,11 @@
 
           <div class="pt-3 pl-2">
             <v-avatar
-              color="indigo"
               size="53"
               style="float: left"
               class="mr-3 mt-1"
             >
-              <v-icon dark> mdi-account-circle </v-icon>
+              <v-img :src="avatarUrl" alt="John" />
             </v-avatar>
             <div style="padding-top: -10px">
               <div class="font-weight-bold title">
@@ -39,7 +38,6 @@
           <v-img
             v-if="getShareDetail.content_type == 'image'"
             :src="getShareDetail.url"
-            aspect-ratio="1.6"
             class="detail-img mt-3"
           >
           </v-img>
@@ -129,6 +127,7 @@ export default {
   },
   data: () => ({
     shareItem: {},
+    avatarUrl: "",
     // video: {
     //   options: {
     //     controls: true,
@@ -163,6 +162,8 @@ export default {
     window.scrollTo(0, 0);
     if (this.getShareDetail.board_no == undefined)
       this.findShareDetail(this.$route.query.no);
+
+    this.avatarUrl = require('../../assets/among'+(Math.floor(Math.random() * 10)+1)+'.png')
   },
   mounted() {
     // appbar 관리

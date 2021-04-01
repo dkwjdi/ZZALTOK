@@ -7,7 +7,7 @@
       @click="isMenu = !isMenu"
     >
       <v-avatar color="indigo" size="53" style="float: left" class="mr-3">
-        <v-icon dark> mdi-account-circle </v-icon>
+        <img :src="avatarUrl">
       </v-avatar>
       <div style="padding-top: -10px">
         <div class="font-weight-bold subtitle-1">
@@ -16,7 +16,7 @@
           &middot;
           <span style="color: #a9a9a9; font-size: 13px">{{
             regdate
-          }}</span>
+          }}{{avatarUrle}}</span>
 
           <div style="float: right" v-if="isMenu">
             <!-- 수정 -->
@@ -80,6 +80,7 @@ export default {
       dialogContent: "",
 
       pwd: "",
+      avatarUrl: "",
     };
   },
 
@@ -152,6 +153,9 @@ export default {
       return flag;
     },
   },
+  created(){
+    this.avatarUrl = require('../../assets/among'+(Math.floor(Math.random() * 10)+1)+'.png')
+  }
 };
 </script>
 
