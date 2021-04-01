@@ -12,7 +12,7 @@
       </v-btn>
     </div>
     <div class="mt-3">
-      <v-btn color="green" fab dark>
+      <v-btn color="green" fab dark @click="aClick">
         <a style="color: white" id="downloadDetail" download="my-photo.jpg" class="button" role="button" @click="down"
           ><v-icon>mdi-download</v-icon>
         </a>
@@ -79,6 +79,9 @@ export default {
 
   methods: {
     ...mapActions('mainStore', ['updateShareDetail', 'deleteShareDetail']),
+    aClick(){
+      document.getElementById('downloadDetail').click();
+    },
     pwdDialog(str) {
       Swal.fire({
         title: '비밀번호를 입력해주세요',
