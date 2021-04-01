@@ -15,7 +15,7 @@
           <span style="color: #a9a9a9; font-size: 13px">({{ ip }})</span>
           &middot;
           <span style="color: #a9a9a9; font-size: 13px">{{
-            regdate.replace("T", " ")
+            regdate
           }}</span>
 
           <div style="float: right" v-if="isMenu">
@@ -44,7 +44,9 @@
             </v-btn>
           </div>
         </div>
-        <div class="subtitle-2"><span>{{ content }}</span></div>
+        <div class="subtitle-2">
+          <span>{{ content }}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -141,7 +143,6 @@ export default {
           } else {
             this.deleteComment({ no: this.comment_no, password: this.pwd });
           }
-
         })
         .catch((error) => {
           console.log("에러", error);
