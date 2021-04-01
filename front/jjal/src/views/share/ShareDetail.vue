@@ -15,11 +15,7 @@
           />
 
           <div class="pt-3 pl-2">
-            <v-avatar
-              size="53"
-              style="float: left"
-              class="mr-3 mt-1"
-            >
+            <v-avatar size="53" style="float: left" class="mr-3 mt-1">
               <v-img :src="avatarUrl" alt="John" />
             </v-avatar>
             <div style="padding-top: -10px">
@@ -34,18 +30,20 @@
               </div>
             </div>
           </div>
-
-          <v-img
-            v-if="getShareDetail.content_type == 'image'"
-            :src="getShareDetail.url"
-            class="detail-img mt-3"
-          >
-          </v-img>
-          <my-video
-            v-if="getShareDetail.content_type == 'video'"
-            :sources="getVideo()"
-            :options="getOption()"
-          ></my-video>
+          <div>
+            <v-img
+              v-if="getShareDetail.content_type == 'image'"
+              :src="getShareDetail.url"
+              class="detail-img mt-3"
+            >
+            </v-img>
+            <my-video
+              v-if="getShareDetail.content_type == 'video'"
+              :sources="getVideo()"
+              :options="getOption()"
+              style="width: 50%; position: relative; top: 30%; left: 23%"
+            ></my-video>
+          </div>
 
           <div class="text-main">
             <!-- <div class="mt-5 detail-text">
@@ -112,18 +110,18 @@
 </template>
 
 <script>
-import CommentList from "../../components/shareDetail/CommentList.vue";
-import { mapGetters, mapActions } from "vuex";
-import MenuBtn from "../../components/shareDetail/MenuBtn.vue";
-import DotMenu from "../../components/shareDetail/DotMenu.vue";
-import myVideo from "vue-video";
-import $ from "jquery";
+import CommentList from '../../components/shareDetail/CommentList.vue';
+import { mapGetters, mapActions } from 'vuex';
+import MenuBtn from '../../components/shareDetail/MenuBtn.vue';
+import DotMenu from '../../components/shareDetail/DotMenu.vue';
+import myVideo from 'vue-video';
+import $ from 'jquery';
 
 export default {
   components: { CommentList, MenuBtn, myVideo, DotMenu },
 
   computed: {
-    ...mapGetters("mainStore", ["getShareDetail", "getCommentSize"]),
+    ...mapGetters('mainStore', ['getShareDetail', 'getCommentSize']),
   },
   data: () => ({
     shareItem: {},
@@ -138,12 +136,12 @@ export default {
     // },
   }),
   methods: {
-    ...mapActions("mainStore", ["findShareDetail", "updateDetailLike"]),
+    ...mapActions('mainStore', ['findShareDetail', 'updateDetailLike']),
     getVideo() {
       return {
         sources: {
           src: this.getShareDetail.url,
-          type: "video/mp4",
+          type: 'video/mp4',
         },
       };
     },
@@ -152,7 +150,7 @@ export default {
         options: {
           controls: true,
           muted: true,
-          poster: "",
+          poster: '',
           autoplay: true,
         },
       };
@@ -167,11 +165,14 @@ export default {
   },
   mounted() {
     // appbar 관리
-    $("#nav-ul-id").removeClass("main-bar");
-    $("#nav-ul-id").addClass("func-bar");
-    $(".nav_ul").css("color", "black");
-    $("#navbar").css("background-color", "#ffffff");
-    document.getElementsByClassName("__cov-contrl-content")[0].style.zIndex = 1;
+    $('#nav-ul-id').removeClass('main-bar');
+    $('#nav-ul-id').addClass('func-bar');
+    $('.nav_ul').css('color', 'black');
+    $('#navbar').css('background-color', '#ffffff');
+    document.getElementsByClassName('__cov-contrl-content')[0].style.zIndex = 1;
+
+    let btn = document.getElementsByClassName('__cov-contrl-play-btn');
+    btn[0].click();
   },
 };
 </script>
