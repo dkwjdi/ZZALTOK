@@ -13,6 +13,7 @@ if not config.IS_GPU_SERVER:
         database="jjal",
         autocommit=True
     )
+    database.time_zone = "+09:00"
 else:
     database = None
 
@@ -312,11 +313,11 @@ async def write_board(
 ):
     print(board_info)
     sql = """
-            INSERT INTO board (title, content, content_type, nickname, password, ip, regdate)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO board (title, content, content_type, nickname, password, ip)
+            VALUES (%s, %s, %s, %s, %s, %s)
           """
     val = (board_info['title'], board_info['content'], board_info['content_type'],
-           board_info['nickname'], board_info['password'], board_info['ip'], dt.datetime.now())
+           board_info['nickname'], board_info['password'], board_info['ip'])
     with database.cursor() as cursor:
         cursor.execute(sql, val)
         database.commit()
@@ -399,11 +400,11 @@ async def write_share_board(
 ):
     print("공유게시글:", board_info)
     sql = """
-            INSERT INTO shareboard (content, content_type, nickname, ip, regdate)
-            VALUES (%s, %s, %s, %s, %s)
+            INSERT INTO shareboard (content, content_type, nickname, ip)
+            VALUES (%s, %s, %s, %s)
           """
     val = (board_info['content'], board_info['content_type'],
-           board_info['nickname'], board_info['ip'], dt.datetime.now())
+           board_info['nickname'], board_info['ip'])
     with database.cursor() as cursor:
         cursor.execute(sql, val)
         database.commit()
@@ -495,12 +496,12 @@ async def write_comment(
         comment_info: dict
 ):
     sql = """
-            INSERT INTO comment (board_no, content, nickname, password, ip, regdate)
-            VALUES (%s, %s, %s, %s, %s, %s)
+            INSERT INTO comment (board_no, content, nickname, password, ip)
+            VALUES (%s, %s, %s, %s, %s)
           """
     val = (comment_info['board_no'], comment_info['content'],
            comment_info['nickname'], comment_info['password'],
-           comment_info['ip'], dt.datetime.now())
+           comment_info['ip'])
     with database.cursor() as cursor:
         cursor.execute(sql, val)
         database.commit()
