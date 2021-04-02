@@ -42,6 +42,7 @@ export default {
     return {
       isHide: true,
       btnHide: false,
+      isTransfer: false,
       removeBackImg: '',
       removeBackVideo: '',
       downloadLink: '',
@@ -76,12 +77,9 @@ export default {
       await http
         .post('/v1/removeBg', formData)
         .then((response) => {
+          this.video.sources.splice(0, 1);
           this.downloadLink = response.data.url;
-          this.video.sources[0].src = this.downloadLink;
-
-          console.log('성공요');
-          console.log(this.downloadLink);
-          console.log(response);
+          this.video.sources.push({ src: this.downloadLink, type: 'video/mp4' });
           Swal.close();
           Swal.fire({
             icon: 'success',
@@ -89,7 +87,6 @@ export default {
             showConfirmButton: false,
             timer: 1000,
           });
-
           this.btnHide = true;
           this.isTransfer = true;
         })
@@ -102,6 +99,7 @@ export default {
       return true;
     },
     async transfer() {
+      this.isTransfer = false;
       if (this.removeBackImg == '' || this.removeBackVideo == '') {
         Swal.fire({
           icon: 'error',
