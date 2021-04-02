@@ -46,6 +46,7 @@ export default {
     return {
       isHide: true,
       btnHide: false,
+      isTransfer: false,
       damedameImg: '',
       downloadLink: '',
       video: {
@@ -69,6 +70,7 @@ export default {
 
   methods: {
     transfer() {
+      this.isTransfer = false;
       if (this.damedameImg == '') {
         Swal.fire({
           icon: 'error',
