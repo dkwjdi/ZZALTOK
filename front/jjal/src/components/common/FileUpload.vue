@@ -55,10 +55,22 @@ export default {
       this.createFile(files[0]);
     },
     createFile(file) {
-      if (!file.type.match(this.type)) {
-        alert('please select' + this.type + 'file');
-        this.dragging = false;
-        return;
+      let fileTypeSplit = file.name.split('.');
+      let fileType = fileTypeSplit[1];
+      console.log(fileType);
+      console.log(typeof fileType);
+      if (this.type == 'image') {
+        if (fileType != 'jpg' && fileType != 'png' && fileType != 'gif' && fileType != 'jpeg') {
+          alert('png, jpg, gif 파일을 넣어주세요');
+          this.dragging = false;
+          return;
+        }
+      } else if (this.type == 'video') {
+        if (fileType != 'mp4') {
+          alert('mp4 파일을 넣어주세요');
+          this.dragging = false;
+          return;
+        }
       }
 
       if (file.size > 5000000) {
