@@ -196,6 +196,12 @@ export default {
           });
         })
         .catch((error) => {
+          Swal.fire({
+            icon: 'error',
+            title: '변환실패',
+            text: '권장 : 정면, 얼굴이 잘나오는 사진',
+            width: 550,
+          });
           console.log('에러 + 에러내용');
           console.log(error);
           console.log(error.response);
