@@ -24,24 +24,18 @@
               </div>
               <div class="subtitle-2">
                 <span>{{ getShareDetail.nickname }} </span>
-                <span style="font-size: 12px; color: #888888"
-                  >({{ getShareDetail.ip }})</span
-                >
+                <span style="font-size: 12px; color: #888888">({{ getShareDetail.ip }})</span>
               </div>
             </div>
           </div>
           <div>
-            <v-img
-              v-if="getShareDetail.content_type == 'image'"
-              :src="getShareDetail.url"
-              class="detail-img mt-3"
-            >
-            </v-img>
+            <v-img v-if="getShareDetail.content_type == 'image'" :src="getShareDetail.url" class="detail-img mt-3"> </v-img>
             <my-video
               v-if="getShareDetail.content_type == 'video'"
               :sources="getVideo()"
               :options="getOption()"
-              style="width: 50%; position: relative; top: 30%; left: 23%"
+              style="max-width: 660px; min-width: 350px display: block; margin: 0px auto"
+              @click="play()"
             ></my-video>
           </div>
 
@@ -60,26 +54,17 @@
                     <div class="pt-5 pl-5">{{ getShareDetail.content }}</div>
 
                     <div class="text-center mt-10">
-                      <v-btn
-                        color="indigo"
-                        fab
-                        large
-                        dark
-                        @click="updateDetailLike(getShareDetail.board_no)"
-                      >
+                      <v-btn color="indigo" fab large dark @click="updateDetailLike(getShareDetail.board_no)">
                         <i class="fas fa-thumbs-up fa-lg"></i>
                       </v-btn>
                       <div class="mt-3">
-                        <i class="fas fa-thumbs-up mr-1"></i
-                        >{{ getShareDetail.good }}
+                        <i class="fas fa-thumbs-up mr-1"></i>{{ getShareDetail.good }}
                         <i class="far fa-eye ml-1"></i>
                         {{ getShareDetail.view_cnt }}
                         <i class="fas fa-comment"></i> {{ getCommentSize }}
                       </div>
 
-                      <div class="mt-2">
-                        게시일 : {{ getShareDetail.regdate }}
-                      </div>
+                      <div class="mt-2">게시일 : {{ getShareDetail.regdate }}</div>
                     </div>
                   </v-col>
                 </v-row>
@@ -125,7 +110,7 @@ export default {
   },
   data: () => ({
     shareItem: {},
-    avatarUrl: "",
+    avatarUrl: '',
     // video: {
     //   options: {
     //     controls: true,
@@ -137,6 +122,9 @@ export default {
   }),
   methods: {
     ...mapActions('mainStore', ['findShareDetail', 'updateDetailLike']),
+    play() {
+      console.log('동영상 클릭');
+    },
     getVideo() {
       return {
         sources: {
@@ -158,10 +146,9 @@ export default {
   },
   created() {
     window.scrollTo(0, 0);
-    if (this.getShareDetail.board_no == undefined)
-      this.findShareDetail(this.$route.query.no);
+    if (this.getShareDetail.board_no == undefined) this.findShareDetail(this.$route.query.no);
 
-    this.avatarUrl = require('../../assets/among'+(Math.floor(Math.random() * 10)+1)+'.png')
+    this.avatarUrl = require('../../assets/among' + (Math.floor(Math.random() * 10) + 1) + '.png');
   },
   mounted() {
     // appbar 관리
