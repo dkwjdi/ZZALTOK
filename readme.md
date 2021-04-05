@@ -53,9 +53,9 @@ Jenkins 파이프라인을 위한 스크립트를 사용합니다. 해당 문서
 
 ### 주요 3기능 - 얼굴 체인지, 다메다메 영상, 나만의 배경 기능
 
-<img src="/uploads/6f2cb9d337511a82cf8d02525fba5e73/3.gif" width="30%" height="400"></img>
-<img src="/uploads/32af7c3d15bb992614cf69c004f429e3/2.gif" width="30%" height="400"></img>
-<img src="/uploads/6d568150ae68cff9155e4a05237edc5c/4.gif" width="30%" height="400"></img>
+<img src="/uploads/6f2cb9d337511a82cf8d02525fba5e73/3.gif" width="30%" height="300"></img>
+<img src="/uploads/32af7c3d15bb992614cf69c004f429e3/2.gif" width="30%" height="300"></img>
+<img src="/uploads/6d568150ae68cff9155e4a05237edc5c/4.gif" width="30%" height="300"></img>
 
 ### 짤 공유 기능, 게시글 댓글 쓰기 기능
 
