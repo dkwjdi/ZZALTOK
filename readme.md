@@ -49,7 +49,14 @@ Jenkins 파이프라인을 위한 스크립트를 사용합니다. 해당 문서
 - Defining a [Pipeline in SCM](https://www.jenkins.io/doc/book/pipeline/getting-started#defining-a-pipeline-in-scm),
   a Jenkinsfile is a text file that contains the definition of a Jenkins Pipeline and is checked into source control. Using `Jenkinsfile`.
 
-## 사용법
+## 기능소개
+
+<img src="/uploads/4676e702c6057b830a69b737c6bd6153/1.gif" width="45%"></img>
+<img src="/uploads/32af7c3d15bb992614cf69c004f429e3/2.gif" width="45%"></img>
+<img src="/uploads/6f2cb9d337511a82cf8d02525fba5e73/3.gif" width="45%"></img>
+<img src="/uploads/6d568150ae68cff9155e4a05237edc5c/4.gif" width="45%"></img>
+<img src="/uploads/2780bc02d80e99e51493a4c5927bc05e/5.gif" width="45%"></img>
+<img src="/uploads/d8b79ac593b0ec3472fc7fa349167063/6.gif" width="45%"></img>
 
 ## 기여
 
