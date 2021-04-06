@@ -15,7 +15,7 @@ FFMPEG_ZIP = FFMPEG_FILENAME + ".zip"
 # ffmpeg 파일 다운로드
 if not os.path.isdir(config.ffmpeg_path):
     urllib.request.urlretrieve(
-        "http://kumoh.synology.me/ffmpeg.zip",
+        "http://kumoh.synology.me/ffmpeg.zip",  # NOSONAR
         filename=os.path.join(config.root, FFMPEG_ZIP))
     with zipfile.ZipFile(os.path.join(config.root, FFMPEG_ZIP), "r") as zip_ref:
         os.makedirs(config.ffmpeg_path, exist_ok=True)
@@ -60,7 +60,7 @@ def insert_audio_on_video_fps30(input_video_path: str, input_audio_path: str, ou
 
 def create_video_thumbnail(input_video_path, output_image_path):
     if os.path.splitext(output_image_path)[-1].lower() != '.png':
-        raise Exception('Only png files are allowed for output')  # NOSNAR
+        raise Exception('Only png files are allowed for output')  # NOSONAR
     # !ffmpeg.exe -i twice.mp4 -vcodec png -vframes 1 -vf thumbnail=100 result.png
     ffmpy.FFmpeg(
         inputs={input_video_path: None},
