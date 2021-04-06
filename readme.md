@@ -1,4 +1,4 @@
-# 프로젝트 개요
+# :calendar: 프로젝트 개요
 
 - **진행기간** : 2021.02.24 ~ 2021.04.06
 - **목표**
@@ -9,11 +9,11 @@
 - **웹사이트 이름** : ZZalTok(짤톡)
   - 사용자의 사진과 동영상을 활용하여 재미를 제공하고 서로 공유하는 서비스
 
-# 팀원소개
+# :wave: 팀원소개
 
 <img src="/uploads/dcf8d833788e4564ab4e3a04212c684b/team.PNG" width="800px" height="300px">&emsp;
 
-## 설치방법
+##:cd: 설치방법
 
 Jenkins 파이프라인을 위한 스크립트를 사용합니다. 해당 문서를 확인해주세요.
 
@@ -41,7 +41,7 @@ Jenkins 파이프라인을 위한 스크립트를 사용합니다. 해당 문서
 - Defining a [Pipeline in SCM](https://www.jenkins.io/doc/book/pipeline/getting-started#defining-a-pipeline-in-scm),
   a Jenkinsfile is a text file that contains the definition of a Jenkins Pipeline and is checked into source control. Using `Jenkinsfile`.
 
-## 기능소개
+##:mag: 기능소개
 
 ### 주요 3기능 - 얼굴 체인지, 다메다메 영상, 나만의 배경 기능
 
@@ -54,7 +54,7 @@ Jenkins 파이프라인을 위한 스크립트를 사용합니다. 해당 문서
 <img src="/uploads/2780bc02d80e99e51493a4c5927bc05e/5.gif" width="45%"></img>
 <img src="/uploads/d8b79ac593b0ec3472fc7fa349167063/6.gif" width="45%"></img>
 
-## 기여
+##:loudspeaker: 기여
 
 Pull & Merge Request 요청을 환영합니다.
 
