@@ -31,7 +31,7 @@
           <div class="text-xl-h3 text-md-h4 text-h6 height-medi">
             <span>얼굴 체인지</span>
           </div>
-          <i class="far fa-laugh-squint"></i>
+          <i class="far fa-laugh-squint"></i> <!-- Compliant icon fonts usage -->
           <div class="mt-3">원하는 인물과 자신의 사진을 합성해보세요!</div>
           <v-btn class="mt-3" rounded outlined large color="#ff5757" @click="movePage('DeepFakeImage')"
             >바로가기</v-btn

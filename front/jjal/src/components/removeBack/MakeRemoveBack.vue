@@ -46,7 +46,6 @@ export default {
       removeBackImg: '',
       removeBackVideo: '',
       downloadLink: '',
-      btnHide: false,
       video: {
         sources: [
           {

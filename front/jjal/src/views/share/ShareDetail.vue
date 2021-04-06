@@ -40,12 +40,6 @@
           </div>
 
           <div class="text-main">
-            <!-- <div class="mt-5 detail-text">
-            <div class="text-h5">제목</div>
-            <div class="mt-2 body-2">조회수 10회 | 2021.03.16</div>
-            <div class="mt-2 body-2">by 익명</div>
-          </div> -->
-
             <v-sheet min-height="100px">
               <v-sheet>
                 <v-row>
@@ -55,13 +49,15 @@
 
                     <div class="text-center mt-10">
                       <v-btn color="indigo" fab large dark @click="updateDetailLike(getShareDetail.board_no)">
-                        <i class="fas fa-thumbs-up fa-lg"></i>
+                        <i class="fas fa-thumbs-up fa-lg"></i> <!-- Compliant icon fonts usage -->
                       </v-btn>
                       <div class="mt-3">
-                        <i class="fas fa-thumbs-up mr-1"></i>{{ getShareDetail.good }}
-                        <i class="far fa-eye ml-1"></i>
+                        <i class="fas fa-thumbs-up mr-1"></i> <!-- Compliant icon fonts usage -->
+                        {{ getShareDetail.good }}
+                        <i class="far fa-eye ml-1"></i> <!-- Compliant icon fonts usage -->
                         {{ getShareDetail.view_cnt }}
-                        <i class="fas fa-comment"></i> {{ getCommentSize }}
+                        <i class="fas fa-comment"></i> <!-- Compliant icon fonts usage -->
+                        {{ getCommentSize }}
                       </div>
 
                       <div class="mt-2">게시일 : {{ getShareDetail.regdate }}</div>
@@ -148,7 +144,7 @@ export default {
     window.scrollTo(0, 0);
     if (this.getShareDetail.board_no == undefined) this.findShareDetail(this.$route.query.no);
 
-    this.avatarUrl = require('../../assets/among' + (Math.floor(Math.random() * 10) + 1) + '.png');
+    this.avatarUrl = require('../../assets/among' + (Math.floor(Math.random() * 10) + 1) + '.png'); //NOSONAR
   },
   mounted() {
     // appbar 관리

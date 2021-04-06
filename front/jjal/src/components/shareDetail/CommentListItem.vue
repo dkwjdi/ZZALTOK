@@ -7,7 +7,7 @@
       @click="isMenu = !isMenu"
     >
       <v-avatar color="indigo" size="53" style="float: left" class="mr-3">
-        <img :src="avatarUrl">
+        <img :src="avatarUrl" alt="프로필">
       </v-avatar>
       <div style="padding-top: -10px">
         <div class="font-weight-bold subtitle-1">
@@ -154,7 +154,7 @@ export default {
     },
   },
   created(){
-    this.avatarUrl = require('../../assets/among'+(Math.floor(Math.random() * 10)+1)+'.png')
+    this.avatarUrl = require('../../assets/among'+(Math.floor(Math.random() * 10)+1)+'.png') // NOSONAR
   }
 };
 </script>
