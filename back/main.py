@@ -139,7 +139,7 @@ async def remove_back_ground_on_video(video: UploadFile = File(...), image: Uplo
                 config.GPU_SERVER_DOMAIN + data["url"],
                 filename=output_path)
     else:
-        MODNetVideo.bgRemove(input_video_path, input_image_path, output_path)
+        MODNetVideo.bg_remove(input_video_path, input_image_path, output_path)
     return {"url": url.convert_path_to_url(output_path, base_url="/api/v1/content/")}  # NOSONAR
 
 
@@ -194,8 +194,8 @@ async def serve_thumbnails(
         image = Image.open(no_image_path)
         image_resize = image.resize((425, 265))
         image_resize.save(thumbnail_path)
+        # return JSONResponse(status_code=400, content={"message": "해당 게시글에 썸네일을 만들 수 있는 리소스가 존재치 않습니다."})
         return FileResponse(thumbnail_path)
-        #return JSONResponse(status_code=400, content={"message": "해당 게시글에 썸네일을 만들 수 있는 리소스가 존재치 않습니다."})
 
     print(board_info)
     # create thumbnails
@@ -205,8 +205,8 @@ async def serve_thumbnails(
         image = Image.open(no_image_path)
         image_resize = image.resize((425, 265))
         image_resize.save(thumbnail_path)
-        return FileResponse(thumbnail_path)
         #return JSONResponse(status_code=500, content={"message": "서버 내에서 게시글에 있는 리소스 파일을 찾을 수 없습니다."})
+        return FileResponse(thumbnail_path)
     ext = os.path.splitext(resource_path)[-1]
 
     # Image

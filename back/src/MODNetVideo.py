@@ -100,12 +100,12 @@ def matting(modnet, video, background, result, fps=30):
 
     print('Start matting...')
     with tqdm(range(int(num_frame)))as t:
-        for c in t:
+        for c in t:  # NOSONAR
             frame_np = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             frame_np = cv2.resize(frame_np, (rw, rh), cv2.INTER_AREA)
 
-            frame_PIL = Image.fromarray(frame_np)
-            frame_tensor = torch_transforms(frame_PIL)
+            frame_pil = Image.fromarray(frame_np)
+            frame_tensor = torch_transforms(frame_pil)
             frame_tensor = frame_tensor[None, :, :, :]
             if GPU:
                 frame_tensor = frame_tensor.cuda()
@@ -124,13 +124,13 @@ def matting(modnet, video, background, result, fps=30):
             video_writer.write(view_np)
 
             rval, frame = vc.read()
-            c += 1
+            c += 1  # NOSONAR
 
     video_writer.release()
     print('Save the result video to {0}'.format(result))
 
 
-def bgRemove(video_path: str, background_image_path: str, result_path: str, fps: int = 30):
+def bg_remove(video_path: str, background_image_path: str, result_path: str, fps: int = 30):
     print('Load pre-trained MODNet...')
     pretrained_ckpt = PRETRAINED_CKPT_FILEPATH
     modnet = MODNet(backbone_pretrained=False)
@@ -151,10 +151,12 @@ def bgRemove(video_path: str, background_image_path: str, result_path: str, fps:
     video.insert_audio_on_video_fps30(mid_path, video_path, result_path)
     return result_path
 
+
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser()  # NOSONAR
     parser.add_argument('--video', type=str, default=r"C:\Users\YSM\Desktop\test\dance.mp4", help='input video file')
-    parser.add_argument('--background-path', type=str, default=r"C:\Users\YSM\Desktop\test\green.jpg", help="input image file")
+    parser.add_argument('--background-path', type=str, default=r"C:\Users\YSM\Desktop\test\green.jpg",
+                        help="input image file")
     parser.add_argument('--result-type', type=str, default='fg', choices=['fg', 'matte'],
                         help='matte - save the alpha matte; fg - save the foreground')
     parser.add_argument('--fps', type=int, default=30, help='fps of the result video')
