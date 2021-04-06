@@ -1,25 +1,17 @@
-# 요즘짤생성기
+# 프로젝트 개요
 
-딥러닝을 접목한 요소로 딥러닝이라는 학문에 보다 친근감 있게 접근할 수 있는 재미를 위한 요소 개발에 중점을 둔 프로젝트
+- **진행기간** : 2021.02.24 ~ 2021.04.06
+- **목표**
+  - 사용자가 원하는 얼굴 사진을 합성
+  - 원하는 사진으로 재미난 영상 제작
+  - 동영상 배경 제거 및 배경 사진 합성
+  - 다양한 합성 결과물들의 게시판 공유와 카카오톡 공유
+- **웹사이트 이름** : ZZalTok(짤톡)
+  - 사용자의 사진과 동영상을 활용하여 재미를 제공하고 서로 공유하는 서비스
 
 # 팀원소개
 
-### 프론트
-
-<img src="/uploads/95c86ac00bb9068fbaddfde923ea99f8/goo.jpg" width="100px" height="100px">&emsp;
-<img src="/uploads/ba2a3448a0c37d1793d6c6ee48c57055/4.jpg" width="100px" height="100px">
-<br>&emsp;강구원 &emsp;&emsp;&emsp;&emsp;&emsp;정준영
-
-### 백엔드
-
-<img src="/uploads/7640898ee20c5daec513d93820395bf8/2.jpg" width="100px" height="100px">&emsp;
-<img src="/uploads/102c25d71feaf1951631d7100c99c180/3.jpg" width="100px" height="100px">
-<br>&emsp;현진혁 &emsp;&emsp;&emsp;&emsp;&emsp;곽충섭
-
-### 서버
-
-<img src="/uploads/caba213988a96f88a9509cf2d29a3b9a/5.png" width="100px" height="100px">
-<br>&emsp;박정환
+<img src="/uploads/5c154b4e33abec4b79aef9adabe47803/tem.PNG" width="800px" height="300px">&emsp;
 
 ## 설치방법
 
