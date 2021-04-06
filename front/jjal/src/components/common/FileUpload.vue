@@ -7,7 +7,6 @@
             <span class="fa fa-cloud-upload dropZone-title"></span>
             <span class="dropZone-title">{{ content }} Drag&Drop</span>
             <div class="dropZone-upload-limit-info">
-              <!-- <div>extension support: image</div> -->
               <div>maximum file size: 5 MB</div>
             </div>
           </div>

@@ -1,6 +1,5 @@
 <template>
   <div class="v-btn--example" style="float: left">
-    <!-- <a href="javascript:;" class="kakao-link"> 호우! </a> -->
     <div class="mt-3">
       <v-btn color="indigo" dark fab @click="pwdDialog('update')">
         <v-icon>mdi-pencil</v-icon>

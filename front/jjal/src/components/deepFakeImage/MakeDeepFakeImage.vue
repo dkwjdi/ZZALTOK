@@ -5,7 +5,6 @@
       <div>
         <v-container>
           <div :class="{ hide: isHide }">
-            <!-- <img :src="previewImgUrl" alt="" /> -->
             <v-row no-gutters justify="center" style="margin-right: 50px; margin-left: 50px">
               <v-col cols="3"></v-col>
 
@@ -58,19 +57,12 @@
               <agreement-to-terms />
             </div>
             <v-btn style="width: 30%" x-large :loading="loading" :disabled="!checkbox" color="primary" @click="print"> 변환하기 </v-btn>
-            <!-- <v-btn @click="print"> 변환하기</v-btn> -->
           </div>
           <div style="text-align: center; margin-top: 15px" v-if="btnHide">
             <ShareAndDownBtn :downloadLink="boardWritedownloadLink" contentType="image"></ShareAndDownBtn>
           </div>
         </v-container>
-
-        <!-- <img :src="output" alt="" />  캔버스  -->
-
-        <!--  -->
       </div>
-
-      <!-- <v-img max-height="100%" max-width="100%" v-if="downloadLink" :src="downloadLink"></v-img> -->
     </div>
   </v-app>
 </template>

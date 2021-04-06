@@ -1,19 +1,9 @@
 <template>
   <div>
-    <!-- 
-       <v-btn style="width: 30%" x-large :loading="loading" :disabled="loading" color="primary" @click="print"> 변환하기 </v-btn>
-     -->
-    <!-- <v-btn large fab color="primary">
-      <a style="color: white" id="downloadPhoto" download="my-photo.jpg" class="button" role="button" @click="down"
-        ><i class="fas fa-download fa-2x"></i>
-      </a>
-    </v-btn> -->
-    <!-- <v-btn class="x-large"> <a id="downloadPhoto" download="my-photo.jpg" class="button" role="button" @click="down"> 다운로드 </a></v-btn> -->
     <br /><br />
     <v-row justify="center">
       <v-dialog v-model="dialog" persistent max-width="600px">
         <template v-slot:activator="{ on, attrs }">
-          <!-- <v-btn color="primary" dark v-bind="attrs" v-on="on"> 게시판 작성하기 </v-btn> -->
           <v-btn
             class="ma-4"
             dark
@@ -71,7 +61,6 @@
                     v-model="boardWriteInfo.title"
                   ></v-text-field>
                 </v-col>
-                <!-- <v-text-field></v-text-field> -->
                 <v-textarea
                   outlined
                   placeholder="내용입력"
