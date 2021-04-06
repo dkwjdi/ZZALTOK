@@ -10,8 +10,12 @@
             @click="moveDetail()"
             @mouseover="isOverlay = true"
           >
-            <div class="img-icon" v-if="content_type=='image'"><i class="fas fa-camera"></i></div>
-            <div class="img-icon" v-if="content_type=='video'"><i class="fas fa-play"></i></div>
+            <div class="img-icon" v-if="content_type=='image'">
+              <i class="fas fa-camera"></i> <!-- Compliant icon fonts usage -->
+            </div>
+            <div class="img-icon" v-if="content_type=='video'">
+              <i class="fas fa-play"></i> <!-- Compliant icon fonts usage -->
+              </div>
             <div class="img-overlay" v-if="isOverlay">
               <div data-aos="zoom-in" class="overlay-border"> </div>
             </div>

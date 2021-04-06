@@ -1,14 +1,14 @@
 <template>
   <v-carousel cycle height="sliderHeight" hide-delimiter-background show-arrows-on-hover>
     <template v-slot:prev="{ on, attrs }">
-      <v-btn color="info" v-bind="attrs" v-on="on" fab small
-        ><i class="fas fa-chevron-left"></i
-      ></v-btn>
+      <v-btn color="info" v-bind="attrs" v-on="on" fab small>
+        <i class="fas fa-chevron-left"></i> <!-- Compliant icon fonts usage -->
+      </v-btn>
     </template>
     <template v-slot:next="{ on, attrs }">
-      <v-btn color="info" v-bind="attrs" v-on="on" fab small
-        ><i class="fas fa-chevron-right"></i
-      ></v-btn>
+      <v-btn color="info" v-bind="attrs" v-on="on" fab small>
+        <i class="fas fa-chevron-right"></i> <!-- Compliant icon fonts usage -->
+        </v-btn>
     </template>
     <v-carousel-item>
       <v-img :src="require('../../assets/banner1.png')" class="club-image" :aspect-ratio="ratio"></v-img>

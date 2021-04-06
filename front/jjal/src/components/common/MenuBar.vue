@@ -3,7 +3,7 @@
     <v-list dense style="font-size:20px">
       <v-list-item v-for="item in items" :key="item.title" link @click="movePage(item.name)">
         <v-list-item-icon class="mt-4">
-          <i :class="item.icon"></i>
+          <i :class="item.icon"></i> <!-- Compliant icon fonts usage -->
         </v-list-item-icon>
 
         <v-list-item-content>

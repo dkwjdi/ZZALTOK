@@ -34,7 +34,7 @@
               class="button"
               role="button"
               @click="down"
-              ><i class="fas fa-download fa-2x"></i>
+              ><i class="fas fa-download fa-2x"></i> <!-- Compliant icon fonts usage -->
             </a>
           </v-btn>
         </template>
