@@ -11,7 +11,7 @@
 
 # 팀원소개
 
-<img src="/uploads/5c154b4e33abec4b79aef9adabe47803/tem.PNG" width="800px" height="300px">&emsp;
+<img src="/uploads/dcf8d833788e4564ab4e3a04212c684b/team.PNG" width="800px" height="300px">&emsp;
 
 ## 설치방법
 
