@@ -56,8 +56,8 @@ export default {
     createFile(file) {
       let fileTypeSplit = file.name.split('.');
       let fileType = fileTypeSplit[1];
-      console.log(fileType);
-      console.log(typeof fileType);
+      // console.log(fileType);
+      // console.log(typeof fileType);
       if (this.type == 'image') {
         if (fileType != 'jpg' && fileType != 'png' && fileType != 'gif' && fileType != 'jpeg') {
           alert('png, jpg, gif 파일을 넣어주세요');
@@ -85,10 +85,10 @@ export default {
     removeFile() {
       this.file = '';
       if (this.type == 'image') {
-        console.log('removeiMG 에밋호출');
+        // console.log('removeiMG 에밋호출');
         this.$emit('removeImg'); //파일보내줌!
       } else if (this.type == 'video') {
-        console.log('removeVideo 에밋호출');
+        // console.log('removeVideo 에밋호출');
         this.$emit('removeVideo');
       }
     },

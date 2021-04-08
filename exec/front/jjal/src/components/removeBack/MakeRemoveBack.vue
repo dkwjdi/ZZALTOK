@@ -90,9 +90,9 @@ export default {
           this.isTransfer = true;
         })
         .catch((error) => {
-          console.log('에러요');
+          // console.log('에러요');
           console.log(error);
-          console.log(error.response);
+          // console.log(error.response);
         });
 
       return true;
@@ -107,7 +107,7 @@ export default {
         });
         return;
       }
-      console.log('배경교체 변환시작');
+      // console.log('배경교체 변환시작');
       let formData = new FormData();
       formData.append('video', this.removeBackVideo);
       formData.append('image', this.removeBackImg);
@@ -121,7 +121,7 @@ export default {
           Swal.showLoading();
 
           if (this.httpCall(formData)) {
-            console.log('????');
+            // console.log('????');
           }
         },
         willClose: () => {
@@ -130,17 +130,17 @@ export default {
       }).then((result) => {
         /* Read more about handling dismissals below */
         if (result.dismiss === Swal.DismissReason.timer) {
-          console.log('I was closed by the timer');
+          // console.log('I was closed by the timer');
         }
       });
     },
     removeBackImgUpload(file) {
       this.removeBackImg = file;
-      console.log(file);
+      // console.log(file);
     },
     removeBackVideoUpload(file) {
       this.removeBackVideo = file;
-      console.log(file);
+      // console.log(file);
     },
     showAgreement() {
       this.$store.commit('SET_IS_AGREEMENT_TO_TERMS', true);

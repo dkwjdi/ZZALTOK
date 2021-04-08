@@ -99,7 +99,7 @@ export default {
         showLoaderOnConfirm: true,
         allowOutsideClick: () => !Swal.isLoading(),
       }).then((result) => {
-        console.log(result);
+        // console.log(result);
         if (result.isConfirmed) {
           this.pwd = result.value;
           this.findCommentPwd(str);
@@ -112,7 +112,7 @@ export default {
       http
         .post(`/v1/comment/check/${this.comment_no}`, { password: this.pwd })
         .then((res) => {
-          console.log("댓글 비빌번호 성공 : " + res.data.result);
+          // console.log("댓글 비빌번호 성공 : " + res.data.result);
 
           if (!res.data.result) {
             Swal.fire({
@@ -131,7 +131,7 @@ export default {
               inputValue: this.content,
               showCancelButton: true,
             }).then((result) => {
-              console.log(result);
+              // console.log(result);
               if (result.isConfirmed) {
                 let data = {};
                 data.no = this.comment_no;
@@ -147,7 +147,7 @@ export default {
         })
         .catch((error) => {
           console.log("에러", error);
-          console.log("에러내용", error.response);
+          // console.log("에러내용", error.response);
         });
 
       return flag;

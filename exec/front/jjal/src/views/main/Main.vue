@@ -196,7 +196,7 @@ export default {
     window.scrollTo(0, 0);
 
     // appbar 관리
-    console.log("여기???");
+    // console.log("여기???");
     $("#nav-ul-id").addClass("main-bar");
     $("#nav-ul-id").removeClass("func-bar");
     $("#navbar").css("background-color", "rgba( 255, 255, 255, 0 )");

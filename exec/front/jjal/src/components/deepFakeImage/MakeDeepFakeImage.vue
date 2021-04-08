@@ -124,15 +124,15 @@ export default {
       this.previewImgUrl = URL.createObjectURL(file);
       this.isHide = false;
       //FileUpload 컴포넌트에서 #emit으로 불러서 파일전해줌
-      console.log('오리진파일 업로드');
+      // console.log('오리진파일 업로드');
       this.file.origin = file;
-      console.log(this.file.origin);
+      // console.log(this.file.origin);
     },
     targetUpload(file) {
       //FileUpload 컴포넌트에서 #emit으로 불러서 파일전해줌
-      console.log('타겟파일 업로드');
+      // console.log('타겟파일 업로드');
       this.file.target = file;
-      console.log(this.file.target);
+      // console.log(this.file.target);
     },
 
     async print() {
@@ -159,7 +159,7 @@ export default {
       for (let i = 0; i < decodImg.length; i++) {
         array.push(decodImg.charCodeAt(i));
       }
-      console.log('canvas-> file 변환');
+      // console.log('canvas-> file 변환');
       const target = new Blob([new Uint8Array(array)], { type: 'image/jpeg' }); //canvas 값으 Blob배열형태로 저장해줌
 
       let formData = new FormData(); //폼데이터 만들고
@@ -173,9 +173,9 @@ export default {
         .then((response) => {
           this.downloadLink = response.data.url + '?download=true'; //바로 다운받을 수 있게 downloadLink에다가 url넣어줌
           this.boardWritedownloadLink = response.data.url;
-          console.log(this.downloadLink);
-          console.log('성공 + 다운로드링크');
-          console.log(this.downloadLink);
+          // console.log(this.downloadLink);
+          // console.log('성공 + 다운로드링크');
+          // console.log(this.downloadLink);
           this.btnHide = true;
           Swal.fire({
             title: '변환결과!',
@@ -194,9 +194,9 @@ export default {
             text: '권장 : 정면, 얼굴이 잘나오는 사진',
             width: 550,
           });
-          console.log('에러 + 에러내용');
+          // console.log('에러 + 에러내용');
           console.log(error);
-          console.log(error.response);
+          // console.log(error.response);
         });
 
       //파일 삭제 하기

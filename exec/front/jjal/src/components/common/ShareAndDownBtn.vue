@@ -122,22 +122,22 @@ export default {
       document.getElementById("downloadPhoto").click();
     },
     kakaoShare() {
-      console.log("카카오 공유하기");
+      // console.log("카카오 공유하기");
       this.kakaoShareInfo.content = `{"url":"${this.downloadLink}"}`;
       this.kakaoShareInfo.content_type = this.contentType;
-      console.log(this.kakaoShareInfo);
+      // console.log(this.kakaoShareInfo);
 
       http
         .post("/v1/share/kakao", this.kakaoShareInfo)
         .then((response) => {
-          console.log(response);
-          console.log(response.data.s_board_no);
+          // console.log(response);
+          // console.log(response.data.s_board_no);
           //카카오 페이지
         })
         .catch((error) => {
-          console.log("에러 + 에러내용");
+          // console.log("에러 + 에러내용");
           console.log(error);
-          console.log(error.response);
+          // console.log(error.response);
         });
     },
     down() {
@@ -151,7 +151,7 @@ export default {
         download.setAttribute("download", "my-video.mp4");
       }
 
-      console.log(download);
+      // console.log(download);
       download.setAttribute("href", this.downloadLink); //파일생성
     },
     boardWrite() {
@@ -162,7 +162,7 @@ export default {
 
       this.boardWriteInfo.content_type = this.contentType; //컨텐트 타입넣어주기
 
-      console.log(this.boardWriteInfo);
+      // console.log(this.boardWriteInfo);
       // test , sdf
       http
         .post("/v1/board/write", this.boardWriteInfo)
@@ -170,18 +170,18 @@ export default {
           this.$store
             .dispatch("mainStore/findShareDetail", res.data.board_no)
             .then(() => {
-              console.log("이동합니다");
+              // console.log("이동합니다");
               this.$router.push(`/shareDetail?no=${res.data.board_no}`);
             })
             .catch((error) => {
-              console.log("에러", error);
-              console.log("에러내용", error.response);
+              // console.log("에러", error);
+              // console.log("에러내용", error.response);
             });
         })
         .catch((error) => {
-          console.log("에러 + 에러내용");
+          // console.log("에러 + 에러내용");
           console.log(error);
-          console.log(error.response);
+          // console.log(error.response);
         });
     },
   },

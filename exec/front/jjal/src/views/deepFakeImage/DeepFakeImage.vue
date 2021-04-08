@@ -13,7 +13,7 @@ export default {
   mounted() {
     // appbar 관리
     window.scrollTo(0,0);
-    console.log("dddddd")
+    // console.log("dddddd")
     $("#nav-ul-id").removeClass("main-bar");
     $("#nav-ul-id").addClass("func-bar");
     $(".nav_ul").css("color", "black");

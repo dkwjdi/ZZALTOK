@@ -94,7 +94,7 @@ export default {
         showLoaderOnConfirm: true,
         allowOutsideClick: () => !Swal.isLoading(),
       }).then((result) => {
-        console.log(result);
+        // console.log(result);
         if (result.isConfirmed) {
           this.pwd = result.value;
           this.findshareDetailPwd(str);
@@ -112,7 +112,7 @@ export default {
       http
         .post(`/v1/board/check/${this.board_no}`, { password: this.pwd })
         .then((res) => {
-          console.log('게시판 비빌번호 성공 : ' + res.data.result);
+          // console.log('게시판 비빌번호 성공 : ' + res.data.result);
 
           if (!res.data.result) {
             Swal.fire({
@@ -134,11 +134,11 @@ export default {
                 return [document.getElementById('swal-input1').value, document.getElementById('swal-input2').value];
               },
             }).then((result) => {
-              console.log(result);
+              // console.log(result);
               if (result.isConfirmed) {
                 let data = {};
                 let temp = this.url.substr(this.url.indexOf('/api'));
-                console.log(temp);
+                // console.log(temp);
                 data.board_no = this.board_no;
                 data.title = result.value[0];
                 data.content = `{"url":"${temp}", "content":"${result.value[1]}"}`;
@@ -169,15 +169,15 @@ export default {
         download.setAttribute('download', 'my-video.mp4');
       }
 
-      console.log('콘텐트타입' + this.content_type);
+      // console.log('콘텐트타입' + this.content_type);
       download.setAttribute('href', this.url); //파일생성
     },
   },
 
   mounted() {
     Kakao.Link.createDefaultButton(Object.assign({}, this.feedSettings, { container: '.kakao-link' }));
-    console.log('여기확인:' + this.feedSettings.content.title);
-    console.log('여기확인:' + this.feedSettings.content.description);
+    // console.log('여기확인:' + this.feedSettings.content.title);
+    // console.log('여기확인:' + this.feedSettings.content.description);
   },
 };
 </script>

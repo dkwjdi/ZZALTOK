@@ -64,13 +64,13 @@ export default {
       this.$store
         .dispatch("mainStore/findShareDetail", this.board_no)
         .then((res) => {
-          console.log("이동합니다");
+          // console.log("이동합니다");
           this.$store.commit('mainStore/SET_IS_SHARE_DETAIL_VIEW', true);
           this.$router.push(`/shareDetail?no=${res}`);
         })
         .catch((error) => {
           console.log("에러", error);
-          console.log("에러내용", error.response);
+          // console.log("에러내용", error.response);
         });
     },
     findThumbnail() {
@@ -82,7 +82,7 @@ export default {
         })
         .catch((error) => {
           console.log("에러", error);
-          console.log("에러내용", error.response);
+          // console.log("에러내용", error.response);
         });
     },
   },
