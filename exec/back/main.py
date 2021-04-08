@@ -1,4 +1,6 @@
 import os
+import asyncio
+
 import uuid
 import re
 import json
@@ -10,7 +12,9 @@ from pydantic import BaseModel
 import urllib.request
 import httpx
 
+
 from init import init
+
 init()
 
 from utils import db, url, video
@@ -23,11 +27,12 @@ if not config.IS_AWS_SERVER:
     from src import startfaceswap as faceswap
     from src import MODNetVideo
 
-
 app = FastAPI()
 
-
 # 여기부터 메인기능 시작 ###
+
+lock: asyncio.Lock = asyncio.Lock()  # 메인 기능별로 wait를 부여하기 위해 lock을 부여
+
 
 #  S04P22D101-54	백엔드 RESTful API 프로토콜 / 가짜 격언 생성 기능에서 얼굴 합성 딥페이크
 # input : origin위인 사진, target합성할 얼굴 사진
@@ -59,16 +64,19 @@ async def create_deep_fake_image(origin: UploadFile = File(...), target: UploadF
         async with httpx.AsyncClient() as client:
             files = {'origin': (origin.filename, content_origin, "application/octet-stream"),  # NOSONAR
                      'target': (target.filename, content_target, "application/octet-stream")}  # NOSONAR
-            r = await client.post(config.GPU_SERVER_DOMAIN + "/api/v1/deepfake", files=files, timeout=httpx.Timeout(60.0, connect=5.0))
+            r = await client.post(config.GPU_SERVER_DOMAIN + "/api/v1/deepfake", files=files,
+                                  timeout=httpx.Timeout(300.0, connect=5.0))
             if r.status_code != httpx.codes.OK:
-                return JSONResponse(status_code=r.status_code, content={"message": "서버 내에서 위임 작업 중에 문제가 발생하였습니다. " + r.raise_for_status()})  # NOSONAR
+                return JSONResponse(status_code=r.status_code, content={
+                    "message": "서버 내에서 위임 작업 중에 문제가 발생하였습니다. " + r.raise_for_status()})  # NOSONAR
             data = json.loads(r.text)
             urllib.request.urlretrieve(
                 config.GPU_SERVER_DOMAIN + data["url"],
                 filename=output)
     else:
-        faceswap.makedeepface(upload_origin_image_path=origin_input, upload_target_image_path=target_input,
-                              output=output)
+        async with lock:
+            faceswap.makedeepface(upload_origin_image_path=origin_input, upload_target_image_path=target_input,
+                                  output=output)
     return {"url": url.convert_path_to_url(output, base_url="/api/v1/content/")}  # NOSONAR
 
 
@@ -87,16 +95,19 @@ async def create_dame_meme_video(image: UploadFile = File(...)):  # NOSONAR
     # AWS 서버는 자체적으로 GPU 연산을 할 수 없기에 위임하여 이를 처리
     if config.IS_AWS_SERVER:
         async with httpx.AsyncClient() as client:
-            files = {'image': (image.filename, contents, "application/octet-stream")} # NOSONAR
-            r = await client.post(config.GPU_SERVER_DOMAIN + "/api/v1/damedame", files=files, timeout=httpx.Timeout(60.0, connect=5.0))
+            files = {'image': (image.filename, contents, "application/octet-stream")}  # NOSONAR
+            r = await client.post(config.GPU_SERVER_DOMAIN + "/api/v1/damedame", files=files,
+                                  timeout=httpx.Timeout(300.0, connect=5.0))
             if r.status_code != httpx.codes.OK:
-                return JSONResponse(status_code=r.status_code, content={"message": "서버 내에서 위임 작업 중에 문제가 발생하였습니다. " + r.raise_for_status()})  # NOSONAR
+                return JSONResponse(status_code=r.status_code, content={
+                    "message": "서버 내에서 위임 작업 중에 문제가 발생하였습니다. " + r.raise_for_status()})  # NOSONAR
             data = json.loads(r.text)
             urllib.request.urlretrieve(
                 config.GPU_SERVER_DOMAIN + data["url"],
                 filename=output_path)
     else:
-        dame.make_damedame(upload_image_path=input_path, output=output_path)
+        async with lock:
+            dame.make_damedame(upload_image_path=input_path, output=output_path)
     return {"url": url.convert_path_to_url(output_path, base_url="/api/v1/content/")}  # NOSONAR
 
 
@@ -131,15 +142,18 @@ async def remove_back_ground_on_video(video: UploadFile = File(...), image: Uplo
         async with httpx.AsyncClient() as client:
             files = {'video': (video.filename, video_contents, "application/octet-stream"),  # NOSONAR
                      'image': (image.filename, image_contents, "application/octet-stream")}  # NOSONAR
-            r = await client.post(config.GPU_SERVER_DOMAIN + "/api/v1/removeBg", files=files, timeout=httpx.Timeout(60.0, connect=5.0))
+            r = await client.post(config.GPU_SERVER_DOMAIN + "/api/v1/removeBg", files=files,
+                                  timeout=httpx.Timeout(300.0, connect=5.0))
             if r.status_code != httpx.codes.OK:
-                return JSONResponse(status_code=r.status_code, content={"message": "서버 내에서 위임 작업 중에 문제가 발생하였습니다. " + r.raise_for_status()})  # NOSONAR
+                return JSONResponse(status_code=r.status_code, content={
+                    "message": "서버 내에서 위임 작업 중에 문제가 발생하였습니다. " + r.raise_for_status()})  # NOSONAR
             data = json.loads(r.text)
             urllib.request.urlretrieve(
                 config.GPU_SERVER_DOMAIN + data["url"],
                 filename=output_path)
     else:
-        MODNetVideo.bg_remove(input_video_path, input_image_path, output_path)
+        async with lock:
+            MODNetVideo.bg_remove(input_video_path, input_image_path, output_path)
     return {"url": url.convert_path_to_url(output_path, base_url="/api/v1/content/")}  # NOSONAR
 
 
@@ -205,7 +219,7 @@ async def serve_thumbnails(
         image = Image.open(no_image_path)
         image_resize = image.resize((425, 265))
         image_resize.save(thumbnail_path)
-        #return JSONResponse(status_code=500, content={"message": "서버 내에서 게시글에 있는 리소스 파일을 찾을 수 없습니다."})
+        # return JSONResponse(status_code=500, content={"message": "서버 내에서 게시글에 있는 리소스 파일을 찾을 수 없습니다."})
         return FileResponse(thumbnail_path)
     ext = os.path.splitext(resource_path)[-1]
 
