@@ -11,8 +11,8 @@ pipeline {
 									message: "빌드 시작: ${env.JOB_NAME} #${env.BUILD_NUMBER} (<${env.BUILD_URL}|Link to build>)"
 					)
 				}
-				sh 'docker build -t base-pjt-back:latest ./back'
-				sh 'docker build -t base-pjt-front:latest ./front/jjal'
+				sh 'docker build -t base-pjt-back:latest ./exec/back'
+				sh 'docker build -t base-pjt-front:latest ./exec/front/jjal'
             }
         }
         stage('Docker Container rm') {
