@@ -118,6 +118,7 @@ def matting(modnet, video, background, result, fps=30):
             height, width, _ = matte_np.shape
 
             back_image_np = cv2.resize(back_image, (width, height), cv2.INTER_AREA)
+            back_image_np = cv2.cvtColor(back_image_np.astype(np.uint8), cv2.COLOR_RGB2BGR)
             view_np = matte_np * frame_np + (1 - matte_np) * back_image_np
             view_np = cv2.cvtColor(view_np.astype(np.uint8), cv2.COLOR_RGB2BGR)
             view_np = cv2.resize(view_np, (w, h))
