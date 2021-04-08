@@ -119,7 +119,7 @@ export default {
   methods: {
     ...mapActions('mainStore', ['findShareDetail', 'updateDetailLike']),
     play() {
-      console.log('동영상 클릭');
+      // console.log('동영상 클릭');
     },
     getVideo() {
       return {

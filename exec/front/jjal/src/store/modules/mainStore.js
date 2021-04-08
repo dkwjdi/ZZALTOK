@@ -74,7 +74,7 @@ const mainStore = {
       await http
         .get(`/v1/board/${str}`, { params: { page_count: state.pageCount } })
         .then((res) => {
-          console.log("공유 최신순 불러오기 성공");
+          // console.log("공유 최신순 불러오기 성공");
           commit("SET_SHARE_ITEMS", res.data.items);
         })
         .catch((error) => {
@@ -89,7 +89,7 @@ const mainStore = {
       await http
         .get(`/v1/board/detail/${no}`)
         .then((res) => {
-          console.log("공유 디테일 불러오기 성공");
+          // console.log("공유 디테일 불러오기 성공");
           commit("SET_SHARE_DETAIL", res.data);
           dispatch("fetchCommentList", res.data.board_no);
           board_no = res.data.board_no;
@@ -107,7 +107,7 @@ const mainStore = {
       http
         .put(`/v1/board/${data.board_no}`, data)
         .then(() => {
-          console.log("공유 디테일 수정 성공");
+          // console.log("공유 디테일 수정 성공");
           dispatch("findShareDetail", state.shareDetail.board_no);
         })
         .catch((error) => {
@@ -121,7 +121,7 @@ const mainStore = {
       http
         .delete(`/v1/board/${data.no}`, { params: { password: data.password } })
         .then(() => {
-          console.log("게시물 삭제 성공");
+          // console.log("게시물 삭제 성공");
           dispatch("fetchShareList");
         })
         .catch((error) => {
@@ -135,7 +135,7 @@ const mainStore = {
       http
         .get(`/v1/comment/${no}`)
         .then((res) => {
-          console.log("댓글 조회 불러오기 성공");
+          // console.log("댓글 조회 불러오기 성공");
           commit("SET_COMMENT_ITEMS", res.data);
         })
         .catch((error) => {
@@ -149,7 +149,7 @@ const mainStore = {
       http
         .post(`/v1/comment/write/${data.no}`, data.item)
         .then((res) => {
-          console.log("댓글 등록 성공");
+          // console.log("댓글 등록 성공");
           dispatch("fetchCommentList", data.no);
         })
         .catch((error) => {
@@ -164,7 +164,7 @@ const mainStore = {
           `/v1/comment/${data.no}?content=${data.content}&nickname=${data.nickname}&password=${data.password}`
         )
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           dispatch("fetchCommentList", state.shareDetail.board_no);
         })
         .catch((error) => {
@@ -174,11 +174,11 @@ const mainStore = {
     },
 
     deleteComment({ dispatch, state }, data) {
-      console.log(data.password);
+      // console.log(data.password);
       http
         .delete(`/v1/comment/${data.no}`, { params: { password: data.password } })
         .then(() => {
-          console.log("댓글 삭제 성공");
+          // console.log("댓글 삭제 성공");
           dispatch("fetchCommentList", state.shareDetail.board_no);
         })
         .catch((error) => {
@@ -192,7 +192,7 @@ const mainStore = {
       http
         .post(`/v1/board/like/${no}`)
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data);
           dispatch("findShareDetail", state.shareDetail.board_no);
         })
         .catch((error) => {

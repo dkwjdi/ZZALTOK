@@ -90,7 +90,7 @@ export default {
   methods: {
     ...mapActions("mainStore", ["updateShareDetail", "deleteShareDetail"]),
     move(number) {
-      console.log(number);
+      // console.log(number);
       switch (number) {
         case 0:
           this.pwdDialog("update");
@@ -99,7 +99,7 @@ export default {
           this.pwdDialog("delete");
           break;
         case 2:
-          console.log("ddd")
+          // console.log("ddd")
           document.getElementById("downloadDot").click();
           break;
         case 3:
@@ -120,7 +120,7 @@ export default {
         showLoaderOnConfirm: true,
         allowOutsideClick: () => !Swal.isLoading(),
       }).then((result) => {
-        console.log(result);
+        // console.log(result);
         if (result.isConfirmed) {
           this.pwd = result.value;
           this.findshareDetailPwd(str);
@@ -138,7 +138,7 @@ export default {
       http
         .post(`/v1/board/check/${this.board_no}`, { password: this.pwd })
         .then((res) => {
-          console.log("게시판 비빌번호 성공 : " + res.data.result);
+          // console.log("게시판 비빌번호 성공 : " + res.data.result);
 
           if (!res.data.result) {
             Swal.fire({
@@ -163,11 +163,11 @@ export default {
                 ];
               },
             }).then((result) => {
-              console.log(result);
+              // console.log(result);
               if (result.isConfirmed) {
                 let data = {};
                 let temp = this.url.substr(this.url.indexOf("/api"));
-                console.log(temp);
+                // console.log(temp);
                 data.board_no = this.board_no;
                 data.title = result.value[0];
                 data.content = `{"url":"${temp}", "content":"${result.value[1]}"}`;
@@ -198,7 +198,7 @@ export default {
         download.setAttribute("download", "my-video.mp4");
       }
 
-      console.log("콘텐트타입" + this.content_type);
+      // console.log("콘텐트타입" + this.content_type);
       download.setAttribute("href", this.url); //파일생성
     },
   },
@@ -207,8 +207,8 @@ export default {
     Kakao.Link.createDefaultButton(
       Object.assign({}, this.feedSettings, { container: ".kakao-link" })
     );
-    console.log("여기확인:" + this.feedSettings.content.title);
-    console.log("여기확인:" + this.feedSettings.content.description);
+    // console.log("여기확인:" + this.feedSettings.content.title);
+    // console.log("여기확인:" + this.feedSettings.content.description);
   },
 };
 </script>

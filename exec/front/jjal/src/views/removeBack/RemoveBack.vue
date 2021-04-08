@@ -9,7 +9,7 @@ export default {
   components: { RemoveBack },
   mounted(){
     // appbar 관리
-    console.log("왜 안되지")
+    // console.log("왜 안되지")
     window.scrollTo(0,0);
     $("#nav-ul-id").removeClass("main-bar");
     $("#nav-ul-id").addClass("func-bar");

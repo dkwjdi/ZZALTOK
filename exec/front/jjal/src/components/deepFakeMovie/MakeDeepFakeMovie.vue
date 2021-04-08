@@ -81,7 +81,7 @@ export default {
         return;
       }
       let formData = new FormData();
-      console.log(this.damedameImg);
+      // console.log(this.damedameImg);
       formData.append('image', this.damedameImg);
 
       let timerInterval;
@@ -100,9 +100,9 @@ export default {
               this.downloadLink = response.data.url;
               this.video.sources[0].src = this.downloadLink;
 
-              console.log('성공요');
-              console.log(this.downloadLink);
-              console.log(response);
+              // console.log('성공요');
+              // console.log(this.downloadLink);
+              // console.log(response);
               Swal.close();
               // 여기서 새로운 SWAL창 띄어주기
               Swal.fire({
@@ -116,10 +116,10 @@ export default {
               this.isTransfer = true;
             })
             .catch((error) => {
-              console.log('에러요');
+              // console.log('에러요');
               console.log(error);
               Swal.close();
-              console.log(error.response);
+              // console.log(error.response);
             });
         },
         willClose: () => {
@@ -128,13 +128,13 @@ export default {
       }).then((result) => {
         /* Read more about handling dismissals below */
         if (result.dismiss === Swal.DismissReason.timer) {
-          console.log('I was closed by the timer');
+          // console.log('I was closed by the timer');
         }
       });
     },
     deepFakeMovieUpload(file) {
-      console.log('파일업로드완료');
-      console.log(file);
+      // console.log('파일업로드완료');
+      // console.log(file);
       this.damedameImg = file;
     },
     showAgreement() {
