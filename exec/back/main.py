@@ -1,5 +1,4 @@
 import os
-import asyncio
 
 import uuid
 import re
@@ -30,8 +29,6 @@ if not config.IS_AWS_SERVER:
 app = FastAPI()
 
 # 여기부터 메인기능 시작 ###
-
-lock: asyncio.Lock = asyncio.Lock()  # 메인 기능별로 wait를 부여하기 위해 lock을 부여
 
 
 #  S04P22D101-54	백엔드 RESTful API 프로토콜 / 가짜 격언 생성 기능에서 얼굴 합성 딥페이크
@@ -74,9 +71,8 @@ async def create_deep_fake_image(origin: UploadFile = File(...), target: UploadF
                 config.GPU_SERVER_DOMAIN + data["url"],
                 filename=output)
     else:
-        async with lock:
-            faceswap.makedeepface(upload_origin_image_path=origin_input, upload_target_image_path=target_input,
-                                  output=output)
+        faceswap.makedeepface(upload_origin_image_path=origin_input, upload_target_image_path=target_input,
+                                output=output)
     return {"url": url.convert_path_to_url(output, base_url="/api/v1/content/")}  # NOSONAR
 
 
@@ -106,8 +102,7 @@ async def create_dame_meme_video(image: UploadFile = File(...)):  # NOSONAR
                 config.GPU_SERVER_DOMAIN + data["url"],
                 filename=output_path)
     else:
-        async with lock:
-            dame.make_damedame(upload_image_path=input_path, output=output_path)
+        dame.make_damedame(upload_image_path=input_path, output=output_path)
     return {"url": url.convert_path_to_url(output_path, base_url="/api/v1/content/")}  # NOSONAR
 
 
@@ -152,8 +147,7 @@ async def remove_back_ground_on_video(video: UploadFile = File(...), image: Uplo
                 config.GPU_SERVER_DOMAIN + data["url"],
                 filename=output_path)
     else:
-        async with lock:
-            MODNetVideo.bg_remove(input_video_path, input_image_path, output_path)
+        MODNetVideo.bg_remove(input_video_path, input_image_path, output_path)
     return {"url": url.convert_path_to_url(output_path, base_url="/api/v1/content/")}  # NOSONAR
 
 
