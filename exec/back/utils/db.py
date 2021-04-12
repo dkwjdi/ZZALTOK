@@ -13,7 +13,7 @@ if not config.IS_GPU_SERVER:
         database="jjal",
         autocommit=True
     )
-    database.ping(True)
+    database.ping(reconnect=True, attempts=100, delay=3)
     database.time_zone = "+09:00"
 else:
     database = None
