@@ -38,7 +38,7 @@ export default {
         { title: '얼굴 체인지', icon: 'fas fa-smile', name: 'DeepFakeImage' },
         { title: '다메다메', icon: 'fas fa-microphone pl-1', name: 'DeepFakeMovie' },
         { title: '나만의 배경', icon: 'fas fa-images', name: 'RemoveBack' },
-        { title: '밈 공유', icon: 'fas fa-share-square', name: 'ShareMain' },
+        { title: '짤 공유', icon: 'fas fa-share-square', name: 'ShareMain' },
       ],
       nickname: '',
     };
