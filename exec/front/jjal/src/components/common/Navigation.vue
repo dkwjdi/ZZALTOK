@@ -11,7 +11,7 @@
       <li class="nav_title nav-choice" @click="movePage('DeepFakeImage')">얼굴 체인지</li>
       <li class="nav_title nav-choice" @click="movePage('DeepFakeMovie')">다메다메</li>
       <li class="nav_title nav-choice" @click="movePage('RemoveBack')">나만의 배경</li>
-      <li class="nav_title nav-choice" @click="movePage('ShareMain')">밈 공유</li>
+      <li class="nav_title nav-choice" @click="movePage('ShareMain')">짤 공유</li>
     </ul>
 
     <v-spacer></v-spacer>

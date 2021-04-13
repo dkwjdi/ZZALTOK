@@ -6,10 +6,10 @@
           <div class="share-text-body">
             <div data-aos="fade-up" data-aos-duration="2000" class="share-text">
               <div class="text-xl-h3 text-md-h4 text-h6">
-                <span>나만의 밈 공유</span>
+                <span>나만의 짤 공유</span>
               </div>
               <div class="mt-3">
-                <span>내가 만든 밈을 공유하고 사람들의 밈을 확인해보세요!</span>
+                <span>내가 만든 짤을 공유하고 사람들의 짤을 확인해보세요!</span>
               </div>
               <div>
                 <v-btn
