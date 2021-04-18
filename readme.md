@@ -1,5 +1,5 @@
 # Awards
-+ SSAFY 특화 프로젝트 2
++ SSAFY 특화 프로젝트 2등
 
 # :calendar: 프로젝트 개요
 
